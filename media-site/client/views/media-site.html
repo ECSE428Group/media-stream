@@ -1,16 +1,54 @@
 <head>
   <title>Media Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-  <div class="container-fluid">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a href="#tab1" data-toggle="tab">Home</a>
+    </li>
+    <li><a href="#tab2" data-toggle="tab">Video</a></li>
+    <li><a href="#tab3" data-toggle="tab">Audio</a></li>
+    <li><a href="#tab4" data-toggle="tab">Pictures</a><li>
+  </ul>
+  
+  <div class="tab-content">
 
-    <div id="title" class="row-fluid">
-      <h1 class="center">
-          <a href="/"> Media Site </a>
-      </h1>
+    <div class="tab-pane active" id="tab1">
+      <div id="title" class="hero-unit">
+       <h1 class="center">Media Site</h1>
+      </div>
+      {{> home-page}}
     </div>
 
+    <div class="tab-pane" id="tab2">
+     <div id="title" class="hero-unit">
+       <h1 class="center">Video</h1>
+     </div>
+     {{> video-page}}
+    </div>
+
+    <div class="tab-pane" id="tab3">
+      <div id="title" class="hero-unit">
+       <h1 class="center">Audio</h1>
+      </div>
+      {{> audio-page}}
+    </div>
+
+    <div class="tab-pane" id="tab4">
+      <div id="title" class="hero-unit">
+       <h1 class="center">Pictures</h1>
+      </div>
+      {{> picture-page}}
+    </div>
+
+  </div>
+<!--    <div id="title" class="hero-unit">
+      <h1 class="center">
+        <a href="/">Media Site</a>
+      </h1>
+    </div>-->
     <div class="row-fluid">
 
       <div id="player-container" class="span0">
@@ -24,5 +62,4 @@
     </div>
 
   </div>
-
 </body>

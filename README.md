@@ -1,2 +1,4 @@
-Server-side media manager
-=========================
+media-stream
+============
+
+Media Stream

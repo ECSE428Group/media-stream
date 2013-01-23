@@ -2,7 +2,10 @@ Meteor.startup(function () {
 
   Meteor.methods( {
     getMedia : function (mediaPath) {
-      var media = { "music" : [] , "video" : [] };
+    //  var path = require('path');
+//      console.log(path);
+      mediaPath = "public/";
+      var media = { "audio" : [] , "video" : [] };
 
       var require = __meteor_bootstrap__.require;
       var path = require('path');
@@ -15,7 +18,7 @@ Meteor.startup(function () {
         var file = contents[i];
 
         if (isMusic(file)) {
-          media.music.push(file);
+          media.audio.push(file);
         }
         else if (isVideo(file)) {
           media.video.push(file);

@@ -1,21 +1,30 @@
-Session.set("contents", []);
+Session.set("video-contents", []);
+Session.set("audio-contents",[]);
 
-Template.datagrid.contents = function () {
-  return Session.get("contents");
+Template.videogrid.contents = function () {
+  return Session.get("video-contents");
 }
 
-Template.datagrid.events({
-  'click': function (a, b, c) {
-    $('#list-container').removeClass("span10");
-    $('#list-container').addClass("span6");
-    $('#player-container').removeClass("span0");
-    $('#player-container').addClass("span8");
+Template.audiogrid.contents = function () {
+  return Session.get("audio-contents");
+}
 
-    jwplayer("player").setup({
-      file : a.currentTarget.innerText
+Template.videogrid.events({
+  'click': function (data) {
+    $('#player-video').empty();
+    jwplayer("player-video").setup({
+      file : data.currentTarget.innerText
     });
+  }
+});
 
-    var x = 1;
+
+Template.audiogrid.events({
+  'click': function (data) {
+    $('#player-audio').empty();
+    jwplayer("player-audio").setup({
+      file : data.currentTarget.innerText
+    });
   }
 });
 
@@ -26,12 +35,6 @@ Meteor.call('getMedia', mediaPath, function (error, result) {
     alert("The path returned a error");
     return;
   }
-  Session.set("contents", result.video.concat(result.music));
-  var x = result;
-});
-
-Template.datagrid.events({
-  'click row' : function(result, opts) {
-    var x = result;
-  }
+  Session.set("video-contents", result.video);
+  Session.set("audio-contents",result.audio);
 });

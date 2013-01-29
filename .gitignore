@@ -1,1 +1,2 @@
-media-site/public
+media-site/public/*
+.DS_Store

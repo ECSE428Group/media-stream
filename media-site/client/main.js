@@ -1,5 +1,6 @@
 Session.set("video-contents", []);
 Session.set("audio-contents",[]);
+Session.set("picture-contents",[]);
 
 Template.videogrid.contents = function () {
   return Session.get("video-contents");
@@ -7,6 +8,20 @@ Template.videogrid.contents = function () {
 
 Template.audiogrid.contents = function () {
   return Session.get("audio-contents");
+}
+
+Template.pictureviewer.contents = function(){
+	return Session.get("picture-contents");
+	
+}
+Template.pictureviewer.rendered = function(){
+	// Slideshow 3
+      $("#slider3").responsiveSlides({
+        auto: true,
+        speed: 1000,
+		timeout: 2000,
+        maxwidth: 800,
+      });
 }
 
 Template.videogrid.events({
@@ -34,6 +49,7 @@ Meteor.call('getMedia', mediaPath, function (error, result) {
   }
   Session.set("video-contents", result.video);
   Session.set("audio-contents",result.audio);
+  Session.set("picture-contents",result.picture);
 });
 
 

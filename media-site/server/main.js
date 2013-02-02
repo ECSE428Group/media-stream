@@ -5,7 +5,7 @@ Meteor.startup(function () {
     //  var path = require('path');
 //      console.log(path);
       mediaPath = "public/";
-      var media = { "audio" : [] , "video" : [] };
+      var media = { "audio" : [] , "video" : [], "picture" : []};
 
       var require = __meteor_bootstrap__.require;
       var path = require('path');
@@ -23,6 +23,9 @@ Meteor.startup(function () {
         else if (isVideo(file)) {
           media.video.push(file);
         }
+		else if(isPicture(file)){
+			media.picture.push(file);
+		}
       }
       return media;
     }
@@ -40,11 +43,21 @@ function isVideo(path) {
 }
 
 function isMusic(path) {
-  var supportedFiletypes = [ ".mp3", ".wav", ".wma", ];
+  var supportedFiletypes = [ ".mp3", ".wav", ".wma" ];
   for (var i = 0; i < supportedFiletypes.length; i++) {
     if (path.indexOf(supportedFiletypes[i]) != -1) {
       return true;
     }
   }
   return false;
+}
+
+function isPicture(path){
+	var supportedFileTypes = [".jpg",".png",".gif",".bmp"];
+	for(var i = 0; i < supportedFileTypes.length; i++){
+		if(path.indexOf(supportedFileTypes[i]) != -1){
+			return true;
+		}
+	}
+	return false;
 }

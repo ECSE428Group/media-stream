@@ -56,8 +56,10 @@ function videoPlayerInit(file) {
   var mobile = ( navigator.userAgent.match(/(android|iPad|iPhone|iPod)/i) ? true : false );
       getSelectedFile(file);
       if (!mobile){
-        if(!isSupported(file)){
+        if(!isHTMLSupported(file)){
+          if(isDIVXSupported){
             addDivx(file);
+          }
         }
         else {
             $('#select-modal').addClass("show");
@@ -110,8 +112,18 @@ function addDivx(file){
     document.getElementById('player-content').appendChild(divx);
 }
 
-function isSupported(path) {
+function isHTMLSupported(path) {
   var supportedFiletypes = [ ".mp4" ];
+  for (var i = 0; i < supportedFiletypes.length; i++) {
+    if (path.indexOf(supportedFiletypes[i]) != -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isDIVXSupported(path) {
+  var supportedFiletypes = [ ".avi", ".mkv", ".divx" ];
   for (var i = 0; i < supportedFiletypes.length; i++) {
     if (path.indexOf(supportedFiletypes[i]) != -1) {
       return true;

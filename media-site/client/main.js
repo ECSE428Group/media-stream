@@ -1,37 +1,36 @@
-Session.set("video-contents", []);
+Session.set("video-contents",[]);
 Session.set("audio-contents",[]);
 Session.set("picture-contents",[]);
 
 Template.videogrid.contents = function () {
   return Session.get("video-contents");
-}
+};
 
 Template.audiogrid.contents = function () {
   return Session.get("audio-contents");
-}
+};
 
 Template.pictureviewer.contents = function(){
-	return Session.get("picture-contents");
-	
-}
+    return Session.get("picture-contents");
+};
+
 Template.pictureviewer.rendered = function(){
-	// Slideshow 3
+    // Slideshow 3
       $("#slider3").responsiveSlides({
         auto: true,
         speed: 1000,
-		timeout: 2000,
-        maxwidth: 800,
+        timeout: 2000,
+        maxwidth: 800
       });
-}
+};
 
 Template.videogrid.events({
   'click': function (data) {
-    /*$('#player-video').empty();*/
+    $('#player-content').empty();
     var file = data.currentTarget.innerText;
     videoPlayerInit(file);
   }
 });
-
 
 Template.audiogrid.events({
   'click': function (data) {
@@ -48,49 +47,68 @@ Meteor.call('getMedia', mediaPath, function (error, result) {
     return;
   }
   Session.set("video-contents", result.video);
-  Session.set("audio-contents",result.audio);
-  Session.set("picture-contents",result.picture);
+  Session.set("audio-contents", result.audio);
+  Session.set("picture-contents", result.picture);
 });
 
 
 function videoPlayerInit(file) {
-      displayMessage();
-      playSelectedFile(file);
-       // inputNode = document.querySelector('input');
-    //  if (!URL) {
-    //      displayMessage('Your browser is not ' + '<a href="http://caniuse.com/bloburls">supported</a>!', true);
-    //      return;
-    // }
-      $('#select-modal').addClass("show");
-   // inputNode.addEventListener('change', playSelectedFile, false);
-      $(".video-modal .close").click(function(){
-        $(this).closest(".video-modal").removeClass("show");
-        $(this).next('video').get(0).pause();
-    });
-}
-
-function playSelectedFile(file) {
-            var videoNode = document.querySelector('video');
-            //var canPlay = videoNode.canPlayType(type);
-            //canPlay = (canPlay === '' ? 'no' : canPlay);
-            //var message = 'Can play type "' + type + '": ' + canPlay;
-            //var isError = canPlay === 'no';
-            //displayMessage(message, isError);
-            //if (isError) {
-            //    return;
-            //}
-          videoNode.src = file;
-          console.log(videoNode.src);
-}
-
-function displayMessage() {
-            var node = document.querySelector('#message');
-
-            return function displayMessage(message, isError) {
-                node.innerHTML = message;
-                node.className = isError ? 'error' : 'info';
-            };
+  var mobile = ( navigator.userAgent.match(/(android|iPad|iPhone|iPod)/i) ? true : false );
+      getSelectedFile(file);
+      if (!mobile){
+        if(!isSupported(file)){
+            addDivx(file);
         }
+        else {
+            $('#select-modal').addClass("show");
+            $(".video-modal .close").click(function(){
+              $(this).closest(".video-modal").removeClass("show");
+              $(this).next('video').get(0).pause();
+            });
+          }
+      } else{
+        if (video.webkitSupportsFullscreen){
+          var video = document.querySelector('video');
+          video.addEventListener('ended', videoEnd, false);
+          video.addEventListener('webkitendfullscreen', onVideoEndsFullScreen, false);
+          video.webkitEnterFullScreen();
+          video.load();
+          video.play();
+        }
+    }
+}
+
+function getSelectedFile(file) {
+          var videoNode = document.querySelector('video');
+          videoNode.src = file;
+  }
+
+function addDivx(file){
+  var code = '<center> \
+          <object id="ie_plugin" classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616" \
+            width="660" \
+            height="300" \
+            codebase="http://go.divx.com/plugin/DivXBrowserPlugin.cab"> \
+          <param name="custommode" value="stage6" /> \
+          <param name="autoPlay" value="false" /> \
+          <param name="src" value="'+ file +'" /> \
+          <param name="bannerEnabled" value="false" /> \
+          <embed id="np_plugin" type="video/divx" \
+          src="'+file+'" \
+          custommode="stage6" \
+          width="660" \
+          height="300" \
+          autoPlay="false" \
+          bannerEnabled="false" \
+          pluginspage="http://go.divx.com/plugin/download/"> \
+          </embed> \
+          </object> \
+          </center>';
+
+    var divx= document.createElement('div');
+    divx.innerHTML= code;
+    document.getElementById('player-content').appendChild(divx);
+}
 
 function isSupported(path) {
   var supportedFiletypes = [ ".mp4" ];
@@ -101,5 +119,3 @@ function isSupported(path) {
   }
   return false;
 }
-
-

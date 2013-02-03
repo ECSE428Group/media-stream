@@ -1,9 +1,13 @@
-<template name="pictureviewer">
-	<div class="rslides_container">
-		<ul class="rslides" id="slider3">
-			{{#each contents}}
-				<li><img src={{this}} alt=""></li>
-			{{/each}}
-		</ul>
-    </div>
+<template name="picturegrid">
+	<div class="picturegrid_container">
+		{{#each contents}}
+			<div id="wrapper">
+				<div class="rslides_container">
+					<ul class="rslides" id="slider3">
+						<li><img src={{this}} alt=""></li>
+					</ul>
+				</div>
+			</div>
+		{{/each}}
+	</div>
 </template>

@@ -10,18 +10,21 @@ Template.audiogrid.contents = function () {
   return Session.get("audio-contents");
 }
 
-Template.pictureviewer.contents = function(){
+Template.picturegrid.contents = function(){
 	return Session.get("picture-contents");
 	
 }
-Template.pictureviewer.rendered = function(){
-	// Slideshow 3
-      $("#slider3").responsiveSlides({
-        auto: true,
-        speed: 1000,
-		timeout: 2000,
-        maxwidth: 800,
-      });
+
+Template.picturegrid.rendered = function(){
+	//Slideshow
+	 $("#slider3").responsiveSlides({
+		auto: false,
+		pager: false,
+		nav: true,
+		speed: 500,
+		maxwidth: 800,
+		namespace: "large-btns"
+	});
 }
 
 Template.videogrid.events({

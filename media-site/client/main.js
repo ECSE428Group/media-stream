@@ -15,7 +15,6 @@ Template.picturegrid.contents = function(){
 	return Session.get("picture-contents");
 	
 }
-
 Template.picturegrid.rendered = function(){
 	//Slideshow
 	 $("#slider3").responsiveSlides({
@@ -39,7 +38,8 @@ Template.videogrid.events({
 Template.audiogrid.events({
   'click': function (data) {
     var selected = data.currentTarget.innerText;
-    $('#player-audio').empty();
+    //following is used for inline code
+    inlinePlayer.init();
   }
 });
 

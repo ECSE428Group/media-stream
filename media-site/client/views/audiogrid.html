@@ -1,10 +1,10 @@
 <template name ="audiogrid">
   <div id="grid">
-    {{#each contents}}
-    <div class="row-fluid">
-      <div class="span8">{{this}}</div>
-    </div>
-    {{/each}}
+    <ul class="graphic">
+      {{#each contents}}
+       <li><a href="{{this}}">{{this}}</a></li>
+      {{/each}}
+    </ul>
   </div>
 </template>
 

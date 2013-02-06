@@ -15,7 +15,6 @@ Template.picturegrid.contents = function(){
 	return Session.get("picture-contents");
 	
 }
-
 Template.picturegrid.rendered = function(){
 	window.Code.PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), {} );
 }
@@ -31,7 +30,8 @@ Template.videogrid.events({
 Template.audiogrid.events({
   'click': function (data) {
     var selected = data.currentTarget.innerText;
-    $('#player-audio').empty();
+    //following is used for inline code
+    inlinePlayer.init();
   }
 });
 

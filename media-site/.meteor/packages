@@ -5,6 +5,6 @@
 
 preserve-inputs
 bootstrap
-jquery
 accounts-ui
 accounts-password
+jquery

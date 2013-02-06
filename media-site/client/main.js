@@ -17,15 +17,7 @@ Template.picturegrid.contents = function(){
 }
 
 Template.picturegrid.rendered = function(){
-	//Slideshow
-	 $("#slider3").responsiveSlides({
-		auto: false,
-		pager: false,
-		nav: true,
-		speed: 500,
-		maxwidth: 800,
-		namespace: "large-btns"
-	});
+	window.Code.PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), {} );
 }
 
 Template.videogrid.events({

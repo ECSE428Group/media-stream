@@ -1,13 +1,7 @@
 <template name="picturegrid">
-	<div class="picturegrid_container">
+	<ul id="Gallery" class="gallery">
 		{{#each contents}}
-			<div id="wrapper">
-				<div class="rslides_container">
-					<ul class="rslides" id="slider3">
-						<li><img src={{this}} alt=""></li>
-					</ul>
-				</div>
-			</div>
+			<li><a href={{this}} rel="external"><img src={{this}} alt="Image 01" /></a></li>	
 		{{/each}}
-	</div>
+	</ul>
 </template>

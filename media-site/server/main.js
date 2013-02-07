@@ -43,7 +43,7 @@ function isVideo(path) {
 }
 
 function isMusic(path) {
-  var supportedFiletypes = [ ".mp3", ".wav", ".wma" ];
+  var supportedFiletypes = [ ".mp3", ".wav", ".wma", "ogg" ];
   for (var i = 0; i < supportedFiletypes.length; i++) {
     if (path.indexOf(supportedFiletypes[i]) != -1) {
       return true;

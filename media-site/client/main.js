@@ -1,6 +1,16 @@
 Session.set("video-contents",[]);
 Session.set("audio-contents",[]);
 Session.set("picture-contents",[]);
+Session.set("errors",[]);
+Session.set("audioview360",{show:false,type:"Inline View"});
+var defined = false;
+Template.error.errorStatement = function () {
+  return Session.get("errors");
+};
+
+Template.audiogrid.inline = function () {
+  return Session.get("audioview360");
+};
 
 Template.videogrid.contents = function () {
   return Session.get("video-contents");
@@ -36,10 +46,36 @@ Template.videogrid.events({
 });
 
 Template.audiogrid.events({
+  
+  'click #audioButton': function () {
+    var audioview360 = Session.get("audioview360");
+    if(audioview360.result == true){ 
+      audioview360.result = false;
+      audioview360.type = "Inline View";
+      Session.set("audioview360",audioview360);
+    }else{
+     audioview360.result = true;
+     audioview360.type = "360 View";
+     Session.set("audioview360",audioview360);
+    }
+    
+    return false;
+  },
+  
   'click': function (data) {
-    var selected = data.currentTarget.innerText;
-    //following is used for inline code
-    inlinePlayer.init();
+    try{
+      var results = Session.get("audioview360");
+      if(results.result){
+       inlinePlayer.init();
+      }else{
+        threeSixtyPlayer.init();
+      }
+    }catch (err){
+     var error = "Audio error :" + err;
+     var results = Session.get("errors");
+     results.push(error);
+     Session.set("errors",results);
+    }
   }
 });
 

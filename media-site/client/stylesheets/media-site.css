@@ -3,3 +3,20 @@
 .center {
   text-align: center;
 }
+
+.left-btn {
+  margin-left:8px;
+  margin-bottom:8px;
+}
+
+.right-btn {
+  float:right;
+  margin-right:5px;
+}
+
+.error-message {
+  display:block;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom:3px;
+}

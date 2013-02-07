@@ -1,10 +1,21 @@
 <template name ="audiogrid">
+  <div>
+    <button id="audioButton" style="display:none;"  class="btn btn-primary left-btn" type="button">{{inline.type}}</button>  
+  </div>
   <div id="grid">
+   {{#if inline.result}}
     <ul class="graphic">
       {{#each contents}}
        <li><a href="{{this}}">{{this}}</a></li>
       {{/each}}
     </ul>
+   {{else}}
+    <div class="sm2-inline-list">
+      {{#each contents}}
+       <div class="ui360 ui360-vis"><a href="{{this}}">{{this}}</a></div>
+      {{/each}}
+    </div>
+  {{/if}}
   </div>
 </template>
 

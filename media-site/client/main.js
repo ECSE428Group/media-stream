@@ -15,6 +15,20 @@ Template.navigation.rendered = function () {
   $('#tab-picture').hide();
 };
 
+Template.navigation.events({
+
+	'click #tab-login': function() {
+		Meteor.logout();
+		
+		//successful logout
+		$('#tab-audio').hide();
+		$('#tab-video').hide();
+		$('#tab-picture').hide();
+		$('#tab-login a').text(get_lang("buttons.login"));
+	}
+
+});
+
 Template.error.errorStatement = function () {
   return Session.get("errors");
 };
@@ -103,11 +117,14 @@ Template.loginpage.events({
 				$('#tab-video').show();
 				$('#tab-picture').show();
 				$('#tab-login a').text(get_lang("buttons.logout"));
-
+				$('#login-user').val("");
+				$('#login-pass').val("");
 			}
 		});
 
 	}
+
+	
 	
 
 });

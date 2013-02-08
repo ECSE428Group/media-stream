@@ -1,9 +1,20 @@
+// Session Stuff ========================================
 Session.set("video-contents",[]);
 Session.set("audio-contents",[]);
 Session.set("picture-contents",[]);
 Session.set("errors",[]);
 Session.set("audioview360",{show:false,type:"Inline View"});
+
+// Global Variables =====================================
 var defined = false;
+
+// Template Processing ==================================
+Template.navigation.rendered = function () {
+  $('#tab-audio').hide();
+  $('#tab-video').hide();
+  $('#tab-picture').hide();
+};
+
 Template.error.errorStatement = function () {
   return Session.get("errors");
 };
@@ -77,9 +88,15 @@ Template.audiogrid.events({
 });
 
 Template.loginpage.events({
-	
+
+	// Login-Related =================	
 	'click #login-submit': function(){
-		alert("Testing")
+
+		// On successful login, update tabs
+		$('#tab-audio').show();
+		$('#tab-video').show();
+		$('#tab-picture').show();
+		$('#tab-login a').text(get_lang("buttons.logout"));
 	}
 
 });

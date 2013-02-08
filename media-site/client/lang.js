@@ -42,13 +42,16 @@ var language_array =
 
 		"login":   { "en": "Login",
 			     "fr": "Connexion"
+			   },
+
+		"logout":  { "en": "Logout",
+			     "fr": "Deconnexion"
 			   }
 	}
 };
 
-
-// Register the string template call
-Handlebars.registerHelper("string", function(string_id)
+// === FUNCTIONS ==============================================
+function get_lang(string_id)
 {
 	// [REMOVE] Have this work with user sessions, or browser local storage
 	var user_lang = "en";
@@ -73,4 +76,10 @@ Handlebars.registerHelper("string", function(string_id)
 
 	// Return the localized string
 	return str;
+}
+
+// Register the string template call
+Handlebars.registerHelper("string", function(string_id)
+{
+	return get_lang(string_id);
 });

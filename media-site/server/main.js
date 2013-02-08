@@ -2,9 +2,13 @@ Meteor.startup(function () {
 
   Meteor.methods( {
     getMedia : function (mediaPath) {
-    //  var path = require('path');
-//      console.log(path);
-      mediaPath = "public/";
+      //var path = require('path');
+      //console.log(path);
+
+      // Check if the path was set
+      if (typeof mediaPath === 'undefined')
+            mediaPath = "public/";
+
       var media = { "audio" : [] , "video" : [], "picture" : []};
 
       var require = __meteor_bootstrap__.require;

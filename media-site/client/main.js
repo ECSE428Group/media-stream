@@ -76,17 +76,15 @@ Template.audiogrid.events({
   }
 });
 
-Template.loginPage.events({
+Template.loginpage.events({
 	
-	'click #loginSubmit': function(){
+	'click #login-submit': function(){
 		alert("Testing")
 	}
 
 });
 
-
-var mediaPath = "public";
-
+var mediaPath = "public/";
 Meteor.call('getMedia', mediaPath, function (error, result) {
   if (error != undefined) {
     alert("The path returned a error");

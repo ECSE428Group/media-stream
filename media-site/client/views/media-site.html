@@ -6,13 +6,13 @@
 <body>
   {{> error}}
   <ul class="nav nav-tabs">
-    <li class="active">
+    <li id="tab-home" class="active">
       <a href="#tab1" data-toggle="tab">{{string "buttons.home"}}</a>
     </li>
-    <li><a href="#tab2" data-toggle="tab">{{string "buttons.video"}}</a></li>
-    <li><a href="#tab3" data-toggle="tab">{{string "buttons.audio"}}</a></li>
-    <li><a href="#tab4" data-toggle="tab">{{string "buttons.picture"}}</a><li>
-    <li><a class="btn btn-primary" href="#tab5" data-toggle="tab">{{string "buttons.login"}}</a></li>
+    <li id="tab-video"><a href="#tab2" data-toggle="tab">{{string "buttons.video"}}</a></li>
+    <li id="tab-audio"><a href="#tab3" data-toggle="tab">{{string "buttons.audio"}}</a></li>
+    <li id="tab-picture"><a href="#tab4" data-toggle="tab">{{string "buttons.picture"}}</a><li>
+    <li id="tab-login"><a class="btn btn-primary" href="#tab5" data-toggle="tab">{{string "buttons.login"}}</a></li>
   </ul>
   
   <div class="tab-content">
@@ -30,11 +30,11 @@
     </div>
 
     <div class="tab-pane" id="tab4">
-		{{> picture-page}}
+	{{> picture-page}}
     </div>
 
     <div class="tab-pane" id="tab5">
-      {{> loginPage}}
+      {{> loginpage}}
     </div>
 
   </div>

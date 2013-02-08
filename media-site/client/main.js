@@ -34,6 +34,11 @@ Template.videogrid.events({
     $('#player-content').empty();
     var file = data.currentTarget.innerText;
     videoPlayerInit(file);
+  },
+  'touchstart': function (data) {
+    $('#player-content').empty();
+    var file = data.currentTarget.innerText;
+    videoPlayerInit(file);
   }
 });
 
@@ -101,14 +106,9 @@ function videoPlayerInit(file) {
             });
           }
       } else{
-        if (video.webkitSupportsFullscreen){
-          var video = document.querySelector('video');
-          video.addEventListener('ended', videoEnd, false);
-          video.addEventListener('webkitendfullscreen', onVideoEndsFullScreen, false);
-          video.webkitEnterFullScreen();
-          video.load();
-          video.play();
-        }
+          $('video').get(0).load();
+          $('#select-modal').addClass("show");
+          $('video').get(0).play();
     }
 }
 

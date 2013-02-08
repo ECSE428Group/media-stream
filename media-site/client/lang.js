@@ -13,60 +13,69 @@
 // Language Array
 var language_array =
 {
-	// === General website strings ===
-	"site":
-	{
-		"name":	{ "en": "Media Site",
-			  "fr": "Media Site"
-			}
-	},
+  // === General website strings ===
+  "site":
+  {
+    "name":  { "en": "Media Site", "fr": "Media Site" }
+  },
 
-	// === Strings appearing on buttons ===
-	"buttons":
-	{
-		"home":	   { "en": "Home",
-			     "fr": "Accueil"
-			   },
+  // === Strings appearing on buttons ===
+  "buttons":
+  {
+    // Menu Items
+    "home":      { "en": "Home",     "fr": "Accueil" },
+    "video":     { "en": "Video",    "fr": "Video" },
+    "audio":     { "en": "Audio",    "fr": "Audio" },
+    "picture":   { "en": "Image",    "fr": "Image" },
+    "login":     { "en": "Sign In",  "fr": "Connexion" },
+    "register":  { "en": "Sign Up",  "fr": "Enregistrez-vous" },
+    "logout":    { "en": "Sign Out", "fr": "Deconnexion" }
 
-		"video":   { "en": "Video",
-			     "fr": "Video"
-			   },
+    // Submit Buttons
+  },
 
-		"audio":   { "en": "Audio",
-			     "fr": "Audio"
-			   },
+  // === Captions and Labels and stuff ===
+  "labels":
+  {
+    // Text boxes
+    "username":  { "en": "username",   "fr": "pseudo" },
+    "password":  { "en": "password",   "fr": "mot de passe" },
+    "confirm":   { "en": "pass again", "fr": "confirmation" }
+  },
 
-		"picture": { "en": "Image",
-			     "fr": "Image"
-			   },
+  "headings":
+  {
+    "login":     { "en": "LOGIN",    "fr": "CONNEXION" },
+    "register":  { "en": "REGISTER", "fr": "NOUVEAU COMPTE" }
+  },
 
-		"login":   { "en": "Login",
-			     "fr": "Connexion"
-			   },
+  "errors":
+  {
+    "bad_login":      {
+                        "en": "Couldn't log you in! Bad username/password combination.",
+                        "fr": "Votre combinaison pseudo/mot de passe ne fonctionne pas."
+                      },
 
-		"logout":  { "en": "Logout",
-			     "fr": "Deconnexion"
-			   }
-	},
+    "pass_mismatch":  {
+                        "en": "Your passwords don't match.",
+                        "fr": "Vos mots de passe sont differents."
+                      },
 
-	"errors":
-	{
-		"bad_login":		{ "en": "Couldn't log you in! Bad username/password combination.",
-					  "fr": "Votre combinaison pseudo/mot de passe ne fonctionne pas."
-					},
+    "user_exists":    {
+                        "en": "Couldn't create an account for you! This username's already taken.",
+                        "fr": "Ce pseudo est deja utilise."
+                      },
 
-		"pass_mismatch":	{ "en": "Your passwords don't match.",
-					  "fr": "Vos mots de passe sont differents."
-					},
+    "fill_fields":    {
+                        "en": "Please fill all fields.",
+                        "fr": "SVP remplir tous les champs."
+                      },
 
-		"user_exists":		{ "en": "Couldn't create an account for you! This username's already taken.",
-					  "fr": "Ce pseudo est deja utilise."
-					},
-
-		"fill_fields":		{ "en": "Please fill all fields.",
-					  "fr": "SVP remplir tous les champs."
-					}
-	}
+    "audio":          {
+                        "en": "There was an error with the audio playback: ",
+                        "fr": "Il y a eu un probleme avec l'audio: "
+                      }
+  }
 };
 
 // === FUNCTIONS ==============================================

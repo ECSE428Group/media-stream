@@ -161,7 +161,7 @@ Template.loginpage.events({
 var mediaPath = "public/";
 Meteor.call('getMedia', mediaPath, function (error, result) {
   if (error != undefined) {
-    alert("Fatal: Can't find the media folder.\nMake sure " + Meteor.absoluteUrl() + "/" + mediaPath + " exists");
+    alert("Fatal: Can't find the media folder.\nMake sure you've created a " + mediaPath + " folder!");
     return;
   }
   Session.set("video-contents", result.video);

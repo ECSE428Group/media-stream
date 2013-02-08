@@ -89,15 +89,26 @@ Template.audiogrid.events({
 
 Template.loginpage.events({
 
-	// Login-Related =================	
 	'click #login-submit': function(){
+		
+		Meteor.loginWithPassword($('#login-user').val(), $('#login-pass').val(), function(error){
+			if (error){
+				alert("Error");
+			}
 
-		// On successful login, update tabs
-		$('#tab-audio').show();
-		$('#tab-video').show();
-		$('#tab-picture').show();
-		$('#tab-login a').text(get_lang("buttons.logout"));
+			else{		
+				alert("works");
+				// On successful login, update tabs
+				$('#tab-audio').show();
+				$('#tab-video').show();
+				$('#tab-picture').show();
+				$('#tab-login a').text(get_lang("buttons.logout"));
+
+			}
+		});
+
 	}
+	
 
 });
 

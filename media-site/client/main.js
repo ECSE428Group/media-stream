@@ -76,6 +76,15 @@ Template.audiogrid.events({
   }
 });
 
+Template.loginPage.events({
+	
+	'click #loginSubmit': function(){
+		alert("Testing")
+	}
+
+});
+
+
 var mediaPath = "public";
 
 Meteor.call('getMedia', mediaPath, function (error, result) {

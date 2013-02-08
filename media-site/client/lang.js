@@ -47,6 +47,25 @@ var language_array =
 		"logout":  { "en": "Logout",
 			     "fr": "Deconnexion"
 			   }
+	},
+
+	"errors":
+	{
+		"bad_login":		{ "en": "Couldn't log you in! Bad username/password combination.",
+					  "fr": "Votre combinaison pseudo/mot de passe ne fonctionne pas."
+					},
+
+		"pass_mismatch":	{ "en": "Your passwords don't match.",
+					  "fr": "Vos mots de passe sont differents."
+					},
+
+		"user_exists":		{ "en": "Couldn't create an account for you! This username's already taken.",
+					  "fr": "Ce pseudo est deja utilise."
+					},
+
+		"fill_fields":		{ "en": "Please fill all fields.",
+					  "fr": "SVP remplir tous les champs."
+					}
 	}
 };
 

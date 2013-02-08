@@ -9,24 +9,28 @@ Session.set("audioview360",{show:false,type:"Inline View"});
 var defined = false;
 
 // Template Processing ==================================
-Template.navigation.rendered = function () {
-  $('#tab-audio').hide();
-  $('#tab-video').hide();
-  $('#tab-picture').hide();
+Template.navigation.rendered = function ()
+{
+	// Remove tabs unless logged in.
+	if(Meteor.user())
+		process_login_more();
+
+	else
+		process_logout();
 };
 
-Template.navigation.events({
+Template.navigation.events(
+{
+	// Clear any error
+	'click': function()
+	{
+		clear_error();
+	},
 
-	'click #tab-login': function() {
-		Meteor.logout();
-		
-		//successful logout
-		$('#tab-audio').hide();
-		$('#tab-video').hide();
-		$('#tab-picture').hide();
-		$('#tab-login a').text(get_lang("buttons.login"));
+	'click #tab-login': function()
+	{
+		process_logout();
 	}
-
 });
 
 Template.error.errorStatement = function () {
@@ -93,46 +97,71 @@ Template.audiogrid.events({
         threeSixtyPlayer.init();
       }
     }catch (err){
-     var error = "Audio error :" + err;
-     var results = Session.get("errors");
-     results.push(error);
-     Session.set("errors",results);
+     show_error(get_lang("errors.audio") + err);
     }
   }
 });
 
 Template.loginpage.events({
 
-	'click #login-submit': function(){
-		
-		Meteor.loginWithPassword($('#login-user').val(), $('#login-pass').val(), function(error){
-			if (error){
-				alert("Error");
-			}
+	// LOGIN ====================================================
+	'click #login-submit': function()
+	{
+		// Grab Values
+		var user_id = $('#login-user').val();
+		var pass = $('#login-pass').val();
 
-			else{		
-				alert("works");
-				// On successful login, update tabs
-				$('#tab-audio').show();
-				$('#tab-video').show();
-				$('#tab-picture').show();
-				$('#tab-login a').text(get_lang("buttons.logout"));
-				$('#login-user').val("");
-				$('#login-pass').val("");
-			}
-		});
+		// Are all fields filled
+		if (user_id == "" || pass == "")
+		{
+			show_error(get_lang("errors.fill_fields"));
+			return;
+		}
 
+		// Log-in
+		process_login(user_id, pass);
+
+		// Clear the user and pass fields
+		$('#login-user').val("");
+		$('#login-pass').val("");
+	},
+
+	// REGISTRATION ============================================
+	'click #reg-submit': function()
+	{
+		// Grab Values
+		var user_id = $('#reg-user').val();
+		var pass = $('#reg-pass').val();
+		var confirm = $('#reg-confirm').val();
+
+		// Are all fields filled
+		if (user_id == "" || pass == "" || confirm == "")
+		{
+			show_error(get_lang("errors.fill_fields"));
+			return;
+		}
+
+		// Check if passwords are the same
+		if (pass != confirm)
+		{
+			show_error(get_lang("errors.pass_mismatch"));
+			return;
+		}
+
+		// Finally, try to add the user
+		process_login(user_id, pass, true);
+
+		// Clear the user and pass fields
+		$('#reg-user').val("");
+		$('#reg-pass').val("");
+		$('#reg-confirm').val("");
 	}
-
-	
-	
-
 });
 
 var mediaPath = "public/";
 Meteor.call('getMedia', mediaPath, function (error, result) {
   if (error != undefined) {
-    alert("The path returned a error");
+    alert("Fatal: Can't find the media folder.\nMake sure " + Meteor.absoluteUrl() + "/" + mediaPath + " exists");
     return;
   }
   Session.set("video-contents", result.video);
@@ -214,4 +243,80 @@ function isDIVXSupported(path) {
     }
   }
   return false;
+}
+
+// Log-In Processing
+function process_login(user_id, pass, new_user)
+{
+	// Logging in normally
+	if (typeof(new_user) === 'undefined' || !new_user)
+	{
+		Meteor.loginWithPassword(user_id, pass, function(error)
+		{
+			if (error)
+				show_error(get_lang("errors.bad_login"));
+
+			else
+				process_login_more();
+		});
+	}
+
+	// Creating an account
+	else
+	{
+		Accounts.createUser({username: user_id, password: pass});
+		Meteor.loginWithPassword(user_id, pass, function(error)
+		{
+			if (error)
+				show_error(get_lang("errors.user_exists"));
+
+			else
+				process_login_more();
+		});
+	}
+}
+
+// Used because of the callback function.
+// This is an attempt at keeping things tidy.
+function process_login_more()
+{
+	// Update Tabs
+	$('#tab-audio').show();
+	$('#tab-video').show();
+	$('#tab-picture').show();
+	$('#tab-login a').text(get_lang("buttons.logout"));
+
+	// Clear any error message
+	clear_error();
+}
+
+// Log-Out Processing
+function process_logout()
+{
+	Meteor.logout();
+
+	// Update Tabs
+	$('#tab-audio').hide();
+	$('#tab-video').hide();
+	$('#tab-picture').hide();
+	$('#tab-login a').text(get_lang("buttons.login"));
+
+	// Clear any error message
+	clear_error();
+}
+
+// Use this function to display an error message to the user.
+// Errors are cleared every time. To send multiple errors, concatenate them.
+// Also, use the get_lang function to get global error messages.
+function show_error(err_string)
+{
+	var errors = [];
+	errors.push(err_string);
+	Session.set("errors", errors);
+}
+
+// Clears the error message
+function clear_error()
+{
+	Session.set("errors", []);
 }

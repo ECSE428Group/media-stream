@@ -84,7 +84,6 @@ function prepare_register()
 	var user_id = $('#reg-user').val();
 	var pass = $('#reg-pass').val();
 	var confirm = $('#reg-confirm').val();
-	var settings = Session.get("config");
 
 	// Are all fields filled
 	if (user_id == "" || pass == "" || confirm == "")

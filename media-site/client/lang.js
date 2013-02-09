@@ -110,7 +110,7 @@ var language_array =
                         "fr": "Votre pseudo est trop long! Choisissez-en un entre " + min_username + " et " + max_username + " characteres."
                       },
 
-    "pass_long":     {
+    "pass_long":      {
                         "en": "How do you even remember a password this long? One between " + min_password + " and " + max_password + " characters will do fine!",
                         "fr": "Votre mot de passe est trop long! Choisissez-en un entre " + min_password + " et " + max_password + " characteres."
                       },

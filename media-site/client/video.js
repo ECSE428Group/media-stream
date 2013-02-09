@@ -43,7 +43,7 @@ function videoPlayerInit(file)
 		else
 		{
 			$('#select-modal').addClass("show");
-			$(".video-modal .close").click(function()
+			$(".video-modal .videoClose").click(function()
 			{
 				$(this).closest(".video-modal").removeClass("show");
 				$(this).next('video').get(0).pause();

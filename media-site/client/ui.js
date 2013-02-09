@@ -21,7 +21,8 @@ Template.navigation.events(
 		clear_error();
 	},
 
-	'click #tab-login': function()
+	// Hook the logout button
+	'click #tab-logout': function()
 	{
 		process_logout();
 	}

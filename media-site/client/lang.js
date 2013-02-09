@@ -10,6 +10,13 @@
 // Meteor does not support dynamic <head> tags yet apparently.
 // (see https://github.com/meteor/meteor/issues/266)
 
+// Setting global variables outside templates is a royal pain.
+// If these need to be changed, edit client/main.js too.
+var min_username = "3";
+var max_username = "15";
+var min_password = "5";
+var max_password = "15";
+
 // Language Array
 var language_array =
 {
@@ -45,8 +52,20 @@ var language_array =
 
   "headings":
   {
-    "login":     { "en": "LOGIN",    "fr": "CONNEXION" },
-    "register":  { "en": "REGISTER", "fr": "NOUVEAU COMPTE" }
+    "home":       { "en": "Media Site", "fr": "Media Site" },
+    "video":      { "en": "My Videos",  "fr": "Mes Videos" },
+    "audio":      { "en": "My Audio",   "fr": "Ma Musique" },
+    "picture":    { "en": "My Images",  "fr": "Mes Photos" },
+    "login":      { "en": "LOGIN",      "fr": "CONNEXION" },
+    "register":   { "en": "REGISTER",   "fr": "NOUVEAU COMPTE" },
+    "home_sub":   {
+                    "en": "Welcome to my Media Site!",
+                    "fr": "Bienvenue sur mon Media Site!"
+                  },
+    "video_sub":  {
+                    "en": "Check out my videos below!",
+                    "fr": "Regarde mes videos!"
+                  }
   },
 
   "errors":
@@ -74,6 +93,26 @@ var language_array =
     "fill_fields":    {
                         "en": "Please fill all fields.",
                         "fr": "SVP remplir tous les champs."
+                      },
+
+    "name_short":     {
+                        "en": "Your username's too short! Don't be shy now, make one between " + min_username + "  and " + max_username +  " characters.",
+                        "fr": "Votre pseudo est trop court! Choisissez-en un entre " + min_username +  " et " + max_username + " characteres."
+                      },
+
+    "pass_short":     {
+                        "en": "A password this short would be way too easy to guess, no? Pick one between " + min_password  + " and " + max_password + " characters.",
+                        "fr": "Votre mot de passe est trop court! Choisissez-en un entre " + min_password + " et " + max_password + " characteres."
+                      },
+
+    "name_long":      {
+                        "en": "C'mon, shorten your username: this isn't a novel! Make one between " + min_username + " and " + max_username + " characters.",
+                        "fr": "Votre pseudo est trop long! Choisissez-en un entre " + min_username + " et " + max_username + " characteres."
+                      },
+
+    "pass_long":     {
+                        "en": "How do you even remember a password this long? One between " + min_password + " and " + max_password + " characters will do fine!",
+                        "fr": "Votre mot de passe est trop long! Choisissez-en un entre " + min_password + " et " + max_password + " characteres."
                       },
 
     "audio":          {

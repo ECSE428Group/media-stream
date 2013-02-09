@@ -1,15 +1,22 @@
 // === Main Client Initialization File ==============================
-// This file takes care of all initialization of variables that are
-// needed by the client.
+// This file takes care of initializing stuff for use in the client.
 
-// Session Variable Definition --------------------------------------
-Session.set("errors",[]);
-Session.set("video-contents",[]);
-Session.set("audio-contents",[]);
-Session.set("picture-contents",[]);
-Session.set("audioview360",{show:false,type:"Inline View"});
+// Session Constant Definition --------------------------------------
+// Setting global variables outside templates is a royal pain.
+// If these need to be changed, edit client/lang.js too.
+Session.set("min_username", 3);
+Session.set("max_username", 15);
+Session.set("min_password", 5);
+Session.set("max_password", 15);
 
-// Global Variable Definition ---------------------------------------
+// Session Global Variables -----------------------------------------
+Session.set("errors", []);
+Session.set("video-contents", []);
+Session.set("audio-contents", []);
+Session.set("picture-contents", []);
+Session.set("audioview360", {show:false,type:"Inline View"});
+
+// Local Variables --------------------------------------------------
 var defined = false;
 var mediaPath = "public/";
 

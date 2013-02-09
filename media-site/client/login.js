@@ -84,11 +84,37 @@ function prepare_register()
 	var user_id = $('#reg-user').val();
 	var pass = $('#reg-pass').val();
 	var confirm = $('#reg-confirm').val();
+	var settings = Session.get("config");
 
 	// Are all fields filled
 	if (user_id == "" || pass == "" || confirm == "")
 	{
 		show_error(get_lang("errors.fill_fields"));
+		return;
+	}
+
+	// Length checks
+	if (user_id.length < Session.get("min_username"))
+	{
+		show_error(get_lang("errors.name_short"));
+		return;
+	}
+
+	if (user_id.length > Session.get("max_username"))
+	{
+		show_error(get_lang("errors.name_long"));
+		return;
+	}
+
+	if (pass.length < Session.get("min_password"))
+	{
+		show_error(get_lang("errors.pass_short"));
+		return;
+	}
+
+	if (pass.length > Session.get("max_password"))
+	{
+		show_error(get_lang("errors.pass_long"));
 		return;
 	}
 
@@ -148,23 +174,34 @@ function process_login_more()
 	$('#tab-audio').show();
 	$('#tab-video').show();
 	$('#tab-picture').show();
-	$('#tab-login a').text(get_lang("buttons.logout"));
+	$('#tab-logout').show();
+	$('#tab-login').hide();
 
 	// Clear any error message
 	clear_error();
+
+	// Load the Home Tab
+	$('#tab-home a').tab('show');
 }
 
 // This handles both a logout and the ensuing ui changes.
 function process_logout()
 {
+	// Tell Meteor
 	Meteor.logout();
 
 	// Update Tabs
 	$('#tab-audio').hide();
 	$('#tab-video').hide();
 	$('#tab-picture').hide();
-	$('#tab-login a').text(get_lang("buttons.login"));
+	$('#tab-logout').hide();
+	$('#tab-login').show();
 
 	// Clear any error message
 	clear_error();
+
+	// Load the Home Tab
+	// This one might be overriden by the template href call
+	// since we logout by clicking a link
+	$('#tab-home a').tab('show');
 }

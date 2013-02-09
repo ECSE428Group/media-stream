@@ -7,6 +7,7 @@ Meteor.startup(function ()
 {
 	Meteor.methods(
 	{
+		// Load the media files into the session
 		getMedia : function (mediaPath)
 		{
 			//var path = require('path');

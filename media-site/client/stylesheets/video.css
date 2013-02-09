@@ -51,7 +51,7 @@ input {
     pointer-events: auto;
 }
 
-.close {
+.videoClose {
     background: #606061;
     color: #FFFFFF;
     line-height: 25px;
@@ -70,4 +70,4 @@ input {
     box-shadow: 1px 1px 3px #000;
 }
 
-.close:hover { background: #00d9ff; }
+.videoClose:hover { background: #00d9ff; }

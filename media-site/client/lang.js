@@ -40,7 +40,7 @@ var language_array =
     // Text boxes
     "username":  { "en": "username",   "fr": "pseudo" },
     "password":  { "en": "password",   "fr": "mot de passe" },
-    "confirm":   { "en": "pass again", "fr": "confirmation" }
+    "confirm":   { "en": "confirm", "fr": "confirmation" }
   },
 
   "headings":
@@ -51,6 +51,11 @@ var language_array =
 
   "errors":
   {
+    "title":          {
+                        "en": "Hey, listen!",
+                        "fr": "Attention!"
+                      },
+
     "bad_login":      {
                         "en": "Couldn't log you in! Bad username/password combination.",
                         "fr": "Votre combinaison pseudo/mot de passe ne fonctionne pas."

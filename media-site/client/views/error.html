@@ -1,5 +1,9 @@
 <template name="error">
   {{#each errorStatement}}
-    <div class="alert alert-error error-message">{{this}}</div>
+    <div class="alert alert-error error-message fade in">
+      <button type="button" class="close">&times;</button>
+      <h4 class="alert-heading">{{string "errors.title"}}</h4>
+      {{this}}
+    </div>
  {{/each}}
 </template>

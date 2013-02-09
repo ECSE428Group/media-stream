@@ -118,7 +118,12 @@ var language_array =
     "audio":          {
                         "en": "There was an error with the audio playback: ",
                         "fr": "Il y a eu un probleme avec l'audio: "
-                      }
+                      },
+											
+		"picture":				{
+												"en": "There was an error while loading the pictures - ",
+												"fr": "Il y a eu un problem lors du chargement des images - "
+											},
   }
 };
 

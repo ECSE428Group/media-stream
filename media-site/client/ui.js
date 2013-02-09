@@ -25,6 +25,12 @@ Template.navigation.events(
 	'click #tab-logout': function()
 	{
 		process_logout();
+	},
+	
+	//For displaying picture specific errors
+	'click #tab-picture':function()
+	{
+		displayPictureErrors();
 	}
 });
 

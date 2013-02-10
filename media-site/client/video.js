@@ -57,23 +57,23 @@ function videoPlayerInit(file)
 		{
 			$('#select-modal').addClass("show");
 			sxsw.init();
-			$(".video-modal .videoClose").click(function()
-			{
+			$(".video-modal .videoClose").click(function(){
 				$(this).closest(".video-modal").removeClass("show");
 				$(this).next('video').get(0).pause();
 			});
 		}
-
 	}
 
 	else
 	{
-		if(!isHTMLSupported(file))
-			show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
-        $('#select-modal').addClass("show");
-        $('video').get(0).load();
-        $('video').get(0).play();
-        $('video').get(0).requestFullScreen();
+		if(isHTMLSupported(file)){
+            $('#select-modal').addClass("show");
+            $('video').get(0).load();
+            $('video').get(0).play();
+            $('video').get(0).requestFullScreen();
+        } else
+            show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
+
 	}
 }
 

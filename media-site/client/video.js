@@ -12,15 +12,26 @@ Template.videogrid.events(
 	'click': function (data)
 	{
 		$('#player-content').empty();
+		
 		var file = data.currentTarget.innerText;
-		videoPlayerInit(file);
+		try{
+			videoPlayerInit(file);
+		} catch (err)
+		{
+			show_error(get_lang("errors.video") + err);
+		}
 	},
 
 	'touchstart': function (data)
 	{
 		$('#player-content').empty();
 		var file = data.currentTarget.innerText;
-		videoPlayerInit(file);
+		try{
+			videoPlayerInit(file);
+		} catch (err)
+		{
+			show_error(get_lang("errors.video") + err);
+		}
 	}
 });
 
@@ -38,6 +49,8 @@ function videoPlayerInit(file)
 			{
 				addDivx(file);
 			}
+			else
+				show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
 		}
 
 		else
@@ -54,10 +67,12 @@ function videoPlayerInit(file)
 
 	else
 	{
+		if(!isHTMLSupported(file))
+			show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
         $('#select-modal').addClass("show");
         $('video').get(0).load();
         $('video').get(0).play();
-        $('video').get(0).webkitEnterFullScreen();
+        $('video').get(0).requestFullScreen();
 	}
 }
 

@@ -124,6 +124,10 @@ var language_array =
 												"en": "There was an error while loading the pictures - ",
 												"fr": "Il y a eu un problem lors du chargement des images - "
 											},
+    "video":        {
+                        "en": "There was an error while loading the video - ",
+                        "fr": "Il y a eu un problem lors du chargement des video - "
+                      }
   }
 };
 

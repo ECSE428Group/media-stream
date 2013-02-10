@@ -12,7 +12,7 @@ Template.videogrid.events(
 	'click': function (data)
 	{
 		$('#player-content').empty();
-		
+		clear_error();
 		var file = data.currentTarget.innerText;
 		try{
 			videoPlayerInit(file);
@@ -25,6 +25,7 @@ Template.videogrid.events(
 	'touchstart': function (data)
 	{
 		$('#player-content').empty();
+		clear_error();
 		var file = data.currentTarget.innerText;
 		try{
 			videoPlayerInit(file);
@@ -45,11 +46,10 @@ function videoPlayerInit(file)
 	{
 		if(!isHTMLSupported(file))
 		{
-			if(isDIVXSupported)
+			if(isDIVXSupported(file))
 			{
 				addDivx(file);
-			}
-			else
+			} else
 				show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
 		}
 

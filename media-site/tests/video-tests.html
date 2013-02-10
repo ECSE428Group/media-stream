@@ -20,6 +20,24 @@
     equal(isDIVXSupported(".mkv"), true);
     equal(isDIVXSupported(".flv"), false);
   });
+  test("Add DIVX", function() {
+    var $fixture = $( "#qunit-fixture" );
+    $fixture.append( "<div id='player-content'>hello!</div>" );
+    addDivx("test-file.avi");
+    equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
+  });
+  test("Add DIVX if not .mp4", function() {
+    var $fixture = $( "#qunit-fixture" );
+    $fixture.append( "<div id='player-content'>hello!</div>" );
+    videoPlayerInit("test-file.avi");
+    equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
+});
+//   test("Add source to HTML5 tags if mp4", function() {
+//     var $fixture = $( "#qunit-fixture" );
+//     $fixture.append( "<div id='player-content'>hello!</div>" );
+//     videoPlayerInit("test-file.mp4");
+//     equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
+// });
   </script>
 </head>
 <body>

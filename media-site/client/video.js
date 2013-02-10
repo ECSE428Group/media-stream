@@ -28,7 +28,7 @@ Template.videogrid.events(
 // Function Definition ----------------------------------------------
 function videoPlayerInit(file)
 {
-	var mobile = ( navigator.userAgent.match(/(android|iPad|iPhone|iPod)/i) ? true : false );
+	var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
 	getSelectedFile(file);
 	if (!mobile)
 	{
@@ -54,9 +54,10 @@ function videoPlayerInit(file)
 
 	else
 	{
-		$('video').get(0).load();
-		$('#select-modal').addClass("show");
-		$('video').get(0).play();
+        $('#select-modal').addClass("show");
+        $('video').get(0).load();
+        $('video').get(0).play();
+        $('video').get(0).webkitEnterFullScreen();
 	}
 }
 

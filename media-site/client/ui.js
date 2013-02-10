@@ -1,7 +1,7 @@
 // === UI Template File =============================================
 // This file handles common UI operations like the navigation
 // and error handling templates.
-
+try{
 // Template Definition ----------------------------------------------
 Template.navigation.rendered = function ()
 {
@@ -39,7 +39,9 @@ Template.error.errorStatement = function ()
 	// Get the current error message
 	return Session.get("errors");
 };
-
+} catch(err){
+	console.log(err);
+}
 
 // Function Definition ----------------------------------------------
 
@@ -50,9 +52,14 @@ function show_error(err_string)
 {
 	var errors = [];
 	errors.push(err_string);
+	try{
 	Session.set("errors", errors);
-
+	}catch(err){
+		console.log(err);
+	}
 	$('.alert').show();
+
+	return errors;
 }
 
 // Clears the error message

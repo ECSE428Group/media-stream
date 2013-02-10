@@ -158,9 +158,12 @@ function get_lang(string_id)
 	// Return the localized string
 	return str;
 }
-
+try{
 // Register the string template call
 Handlebars.registerHelper("string", function(string_id)
 {
 	return get_lang(string_id);
 });
+} catch(err){
+  console.log(err);
+}

@@ -2,6 +2,7 @@
 // This files handles video playing logic and templating.
 
 // Template Definition ----------------------------------------------
+try{
 Template.videogrid.contents = function ()
 {
 	return Session.get("video-contents");
@@ -15,7 +16,8 @@ Template.videogrid.events(
 		clear_error();
 		var file = data.currentTarget.innerText;
 		try{
-			videoPlayerInit(file);
+			var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
+			videoPlayerInit(file, mobile);
 		} catch (err)
 		{
 			show_error(get_lang("errors.video") + err);
@@ -28,20 +30,21 @@ Template.videogrid.events(
 		clear_error();
 		var file = data.currentTarget.innerText;
 		try{
-			videoPlayerInit(file);
+			var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
+			videoPlayerInit(file, mobile);
 		} catch (err)
 		{
 			show_error(get_lang("errors.video") + err);
 		}
 	}
 });
-
+} catch(err){
+	console.log(err);
+}
 
 // Function Definition ----------------------------------------------
-function videoPlayerInit(file)
+function videoPlayerInit(file, mobile)
 {
-	var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
-	getSelectedFile(file);
 	if (!mobile)
 	{
 		if(!isHTMLSupported(file))
@@ -50,13 +53,14 @@ function videoPlayerInit(file)
 			{
 				addDivx(file);
 			} else
-				show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
+				return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
 		}
 
 		else
 		{
+			getSelectedFile(file);
 			$('#select-modal').addClass("show");
-			sxsw.init();
+			sxswinit();
 			$(".video-modal .videoClose").click(function(){
 				$(this).closest(".video-modal").removeClass("show");
 				$(this).next('video').get(0).pause();
@@ -67,12 +71,16 @@ function videoPlayerInit(file)
 	else
 	{
 		if(isHTMLSupported(file)){
+			getSelectedFile(file);
             $('#select-modal').addClass("show");
             $('video').get(0).load();
             $('video').get(0).play();
-            $('video').get(0).requestFullScreen();
+            $(".video-modal .videoClose").click(function(){
+				$(this).closest(".video-modal").removeClass("show");
+				$(this).next('video').get(0).pause();
+			});
         } else
-            show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
+            return show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
 
 	}
 }
@@ -139,9 +147,7 @@ function isDIVXSupported(path)
 
 //Borrowed and Modified courtesy of Drew Baker:
 //http://stackoverflow.com/questions/4380105/html5-video-scale-modes
-var sxsw = {
-
-    full_bleed: function(boxWidth, boxHeight, imgWidth, imgHeight) {
+function sxswfullbleed(boxWidth, boxHeight, imgWidth, imgHeight) {
 
         // Calculate new height and width...
         var initW = imgWidth;
@@ -151,39 +157,41 @@ var sxsw = {
         if (imgHeight > boxHeight || imgWidth > boxWidth){
             imgWidth = boxWidth/2;
             imgHeight = boxWidth/2 * ratio;
+            //change size too big
         }
         if(imgHeight < boxHeight/2){
             imgHeight = boxHeight/2;
             imgWidth = imgHeight / ratio;
+            //change size too small
         }
         //  Return new size for video
         return {
             width: imgWidth,
             height: imgHeight
         };
+    }
 
-    },
-
-    init: function() {
+function sxswinit(){
         var browserHeight = Math.round(jQuery(window).height());
         var browserWidth = Math.round(jQuery(window).width());
         var videoHeight = jQuery('video').height();
         var videoWidth = jQuery('video').width();
         if (videoHeight > browserHeight || videoWidth > browserWidth){
             var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
-            jQuery('video')
+            $('video')
                 .width(new_size.width)
                 .height(new_size.height);
         }
 }
-};
+
 
 jQuery(document).ready(function($) {
 
     /*
      * Full bleed background
      */
-
+var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
+if (!mobile){
     $(window).resize(function() {
 
         var browserHeight = Math.round($(window).height());
@@ -191,14 +199,27 @@ jQuery(document).ready(function($) {
         var videoHeight = jQuery('video').height();
         var videoWidth = jQuery('video').width();
 
-        var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
-        console.log(browserHeight);
-        console.log(browserWidth);
-        console.log(new_size.height);
-        console.log(new_size.width);
+        var new_size = sxswfullbleed(browserWidth, browserHeight, videoWidth, videoHeight);
+
         $('video')
             .width(new_size.width)
             .height(new_size.height);
     });
-
+}
 });
+
+//Borrowed from http://stackoverflow.com/questions/3505320/div-get-css-attributes-from-java-script
+//Used for tests
+function getStyle(el,styleProp) {
+    el = document.getElementById(el);
+    var result;
+    if(el.currentStyle) {
+        result = el.currentStyle[styleProp];
+    } else if (window.getComputedStyle) {
+        result = document.defaultView.getComputedStyle(el,null)
+                                    .getPropertyValue(styleProp);
+    } else {
+        result = 'unknown';
+    }
+    return result;
+}

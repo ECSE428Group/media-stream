@@ -3,46 +3,93 @@
 <head>
   <meta charset="utf-8">
   <title>Refactored date examples</title>
- 
   <link rel="stylesheet" href="../client/stylesheets/qunit-1.11.0.css">
-  <script src="../client/lib/QUnit/qunit-1.11.0.js"></script>
-  <script src="../client/main.js"></script>
- 
-  <script>
-  test("IsHTMLVideoSupported", function() {
-    equal(isHTMLSupported(".mp4"), true);
-    equal(isHTMLSupported(".avi"), false);
-    equal(isHTMLSupported(".mkv"), false);
-  });
-  test("IsDIVXVideoSupported", function() {
-    equal(isDIVXSupported(".mp4"), false);
-    equal(isDIVXSupported(".avi"), true);
-    equal(isDIVXSupported(".mkv"), true);
-    equal(isDIVXSupported(".flv"), false);
-  });
-  test("Add DIVX", function() {
-    var $fixture = $( "#qunit-fixture" );
-    $fixture.append( "<div id='player-content'>hello!</div>" );
-    addDivx("test-file.avi");
-    equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
-  });
-  test("Add DIVX if not .mp4", function() {
-    var $fixture = $( "#qunit-fixture" );
-    $fixture.append( "<div id='player-content'>hello!</div>" );
-    videoPlayerInit("test-file.avi");
-    equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
-});
-//   test("Add source to HTML5 tags if mp4", function() {
-//     var $fixture = $( "#qunit-fixture" );
-//     $fixture.append( "<div id='player-content'>hello!</div>" );
-//     videoPlayerInit("test-file.mp4");
-//     equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
-// });
-  </script>
+  <link rel="stylesheet" href="../client/stylesheets/video.css">
 </head>
+
 <body>
- 
 <div id="qunit"></div>
- 
+<div id="qunit-fixture"></div>
+  <script src="../client/lib/QUnit/qunit-1.11.0.js"></script>
+  <script src="jquery-1.9.0.js"></script>
+  <script src="../client/lib/videojs/video.min.js"></script>
+  <script src="../client/video.js"></script>
+  <script src="../client/ui.js"></script>
+  <script src="../client/lang.js"></script>
+  <script>
+    test("IsHTMLVideoSupported", function() {
+      equal(isHTMLSupported(".mp4"), true);
+      equal(isHTMLSupported(".avi"), false);
+      equal(isHTMLSupported(".mkv"), false);
+    });
+    test("IsDIVXVideoSupported", function() {
+      equal(isDIVXSupported(".mp4"), false);
+      equal(isDIVXSupported(".avi"), true);
+      equal(isDIVXSupported(".mkv"), true);
+      equal(isDIVXSupported(".flv"), false);
+    });
+    test("Add DIVX", function() {
+      var $fixture = $( "#qunit-fixture" );
+      $fixture.append( '<div id="player-content">hello!</div>' );
+      addDivx("test-file.avi");
+      equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
+    });
+    test("Add DIVX if not .mp4 and compatible (NOT MOBILE)", function() {
+      var $fixture = $( "#qunit-fixture" );
+      $fixture.append( '<div id="player-content">hello!</div>' );
+      videoPlayerInit("test-file.avi", false);
+      equal( $( "object", $fixture ).length, 1, "Divx Object added successfully!" );
+    });
+    test("Add source to HTML5 tags if mp4 (NOT MOBILE)", function() {
+      var $fixture = $( "#qunit-fixture" );
+      $fixture.append( '<div id="player-content">hello!</div>' );
+      $fixture.append(' <div id="select-modal" class="video-modal center">');
+      $fixture.append(' <a href="#close" title="Close" class="videoClose">&times;</a>');
+      $fixture.append(' <video id="player-video" class="video-js" controls autoplay></video>');
+      $fixture.append(' </div></div>');
+      videoPlayerInit("test-file.mp4", false);
+      var videoNode = document.querySelector('video');
+      var loc = window.location.pathname;
+      var dir = loc.substring(0, loc.lastIndexOf('/'));
+      equal( videoNode.src,"file://localhost"+dir +"/test-file.mp4", "Video src has been added successfully!" );
+      var opacity = getStyle('select-modal','opacity');
+      equal( opacity, 1, "The modal is showing properly");
+    });
+    test("Add source to HTML5 tags if mp4 (MOBILE)", function() {
+      var $fixture = $( "#qunit-fixture" );
+      $fixture.append( '<div id="player-content">hello!</div>' );
+      $fixture.append(' <div id="select-modal" class="video-modal center">');
+      $fixture.append(' <a href="#close" title="Close" class="videoClose">&times;</a>');
+      $fixture.append(' <video id="player-video" class="video-js" controls autoplay></video>');
+      $fixture.append(' </div></div>');
+      videoPlayerInit("test-file.mp4", true);
+      var videoNode = document.querySelector('video');
+      var loc = window.location.pathname;
+      var dir = loc.substring(0, loc.lastIndexOf('/'));
+      equal( videoNode.src,"file://localhost"+dir +"/test-file.mp4", "Video src has been added successfully!" );
+      var opacity = getStyle('select-modal','opacity');
+      equal( opacity, 1, "The modal is showing properly");
+    });
+    test("Give error if not .mp4 (MOBILE)", function() {
+      var $fixture = $( "#qunit-fixture" );
+      $fixture.append( '<div id="player-content">hello!</div>' );
+      $fixture.append( '<div class="alert alert-error error-message fade in" id="alert"></div>' );
+      var error = videoPlayerInit("test-file.avi", true);
+      var opacity = getStyle('alert','opacity');
+      var hasError = (error[0].indexOf("not supported") >= 0);
+      equal(opacity, 1, "Error alert displayed successfully!" );
+      equal(hasError, true, "The proper error message is displayed!" );
+    });
+    test("Give error if not supportable video (NOT MOBILE)", function() {
+      var $fixture = $( "#qunit-fixture" );
+      $fixture.append( '<div id="player-content">hello!</div>' );
+      $fixture.append( '<div class="alert alert-error error-message fade in" id="alert"></div>' );
+      var error = videoPlayerInit("test-file.mov", false);
+      var opacity = getStyle('alert','opacity');
+      var hasError = (error[0].indexOf("not supported") >= 0);
+      equal(opacity, 1, "Error alert displayed successfully!" );
+      equal(hasError, true, "The proper error message is displayed!" );
+    });
+  </script>
 </body>
 </html>

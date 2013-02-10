@@ -8,6 +8,16 @@ Template.videogrid.contents = function ()
 	return Session.get("video-contents");
 };
 
+Template.videogrid.rendered = function(){
+	// Find all tile elements
+	var tileElements = document.getElementsByClassName( 'metro-tile' );
+	var i;
+	// Apply tile functions
+	for ( i = 0; i < tileElements.length; i++ ) {
+		Tile( tileElements[i] );
+	}
+};
+
 Template.videogrid.events(
 {
 	'click': function (data)

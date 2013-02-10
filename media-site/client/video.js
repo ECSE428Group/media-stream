@@ -56,6 +56,7 @@ function videoPlayerInit(file)
 		else
 		{
 			$('#select-modal').addClass("show");
+			sxsw.init();
 			$(".video-modal .videoClose").click(function()
 			{
 				$(this).closest(".video-modal").removeClass("show");
@@ -135,3 +136,69 @@ function isDIVXSupported(path)
 	}
 	return false;
 }
+
+//Borrowed and Modified courtesy of Drew Baker:
+//http://stackoverflow.com/questions/4380105/html5-video-scale-modes
+var sxsw = {
+
+    full_bleed: function(boxWidth, boxHeight, imgWidth, imgHeight) {
+
+        // Calculate new height and width...
+        var initW = imgWidth;
+        var initH = imgHeight;
+        var ratio = initH / initW;
+
+        if (imgHeight > boxHeight || imgWidth > boxWidth){
+            imgWidth = boxWidth/2;
+            imgHeight = boxWidth/2 * ratio;
+        }
+        if(imgHeight < boxHeight/2){
+            imgHeight = boxHeight/2;
+            imgWidth = imgHeight / ratio;
+        }
+        //  Return new size for video
+        return {
+            width: imgWidth,
+            height: imgHeight
+        };
+
+    },
+
+    init: function() {
+        var browserHeight = Math.round(jQuery(window).height());
+        var browserWidth = Math.round(jQuery(window).width());
+        var videoHeight = jQuery('video').height();
+        var videoWidth = jQuery('video').width();
+        if (videoHeight > browserHeight || videoWidth > browserWidth){
+            var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
+            jQuery('video')
+                .width(new_size.width)
+                .height(new_size.height);
+        }
+}
+};
+
+jQuery(document).ready(function($) {
+
+    /*
+     * Full bleed background
+     */
+
+    $(window).resize(function() {
+
+        var browserHeight = Math.round($(window).height());
+        var browserWidth = Math.round($(window).width());
+        var videoHeight = jQuery('video').height();
+        var videoWidth = jQuery('video').width();
+
+        var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
+        console.log(browserHeight);
+        console.log(browserWidth);
+        console.log(new_size.height);
+        console.log(new_size.width);
+        $('video')
+            .width(new_size.width)
+            .height(new_size.height);
+    });
+
+});

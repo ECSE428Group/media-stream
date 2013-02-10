@@ -1,7 +1,7 @@
 // === Picture Page File ============================================
 // This page handles the logic and templating for the picture page.
 
-var picture_errors = [];
+var pictureErrors = [];
 
 // Template Definition ----------------------------------------------
 Template.picturegrid.contents = function()
@@ -13,20 +13,22 @@ Template.picturegrid.rendered = function()
 {
 	try{
 		window.Code.PhotoSwipe.attach(window.document.querySelectorAll('#Gallery a'), {});
-		picture_errors.photoswipe = "";
+		pictureErrors.photoswipe = "";
 	}catch(err){
-		picture_errors.photoswipe = err;
+		pictureErrors.photoswipe = err;
 	}
 };
 
+//Error handling
 function displayPictureErrors(){
 	if($('#tab-picture .active')){
 		var message = "";
-		for(var key in picture_errors){
-			message = picture_errors[key];
+		for(var key in pictureErrors){
+			message = pictureErrors[key];
 			if(message){
-				show_error(get_lang("errors.picture")+"\n"+picture_errors[key]);
+				show_error(get_lang("errors.picture")+"\n"+pictureErrors[key]);
 			}
 		}
 	}
 };
+

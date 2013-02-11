@@ -3,6 +3,14 @@
 // needed by the server. It also handles Meteor's startup.
 
 // Startup ----------------------------------------------------------
+
+// Global Server Variables
+// Setting global variables between client and server is a royal pain.
+// If these need to change, edit client/main.js and client/lang.js too.
+var min_username = 3;
+var max_username = 15;
+
+// Startup Function
 Meteor.startup(function ()
 {
 	Meteor.methods(
@@ -49,10 +57,29 @@ Meteor.startup(function ()
 			return media;
 		}
 	});
+
+	// Run Server Functions
+	set_create_user_restrictions();
 });
 
 
-// Function Definition ----------------------------------------------
+// Server Functions -------------------------------------------------
+
+// Used to add more security to username fields.
+// We don't mind about passwords here due to the way passwords
+// are managed by Meteor (never sent in plaintext, we only get
+// the hash, and thus don't know the length).
+function set_create_user_restrictions()
+{
+	Accounts.validateNewUser(function (user)
+	{
+		return (user.username &&
+			user.username.length >= min_username &&
+			user.username.length <= max_username);
+	});
+}
+
+// Helper Functions -------------------------------------------------
 function isVideo(path)
 {
 	var supportedFiletypes = [ ".mp4", ".avi", ".mov", ".mkv" ];

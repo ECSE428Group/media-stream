@@ -2,8 +2,8 @@
 // This file takes care of initializing stuff for use in the client.
 
 // Session Constant Definition --------------------------------------
-// Setting global variables outside templates is a royal pain.
-// If these need to be changed, edit client/lang.js too.
+// Setting global variables between client and server is a royal pain.
+// If these need to change, edit server/main.js and client/lang.js too.
 Session.set("min_username", 3);
 Session.set("max_username", 15);
 Session.set("min_password", 5);

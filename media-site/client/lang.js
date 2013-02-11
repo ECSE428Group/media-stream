@@ -10,8 +10,8 @@
 // Meteor does not support dynamic <head> tags yet apparently.
 // (see https://github.com/meteor/meteor/issues/266)
 
-// Setting global variables outside templates is a royal pain.
-// If these need to be changed, edit client/main.js too.
+// Setting global variables between client and server is a royal pain.
+// If these need to change, edit client/main.js and server/main.js too.
 var min_username = "3";
 var max_username = "15";
 var min_password = "5";

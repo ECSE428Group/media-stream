@@ -30,34 +30,50 @@ var language_array =
   "buttons":
   {
     // Menu Items
-    "home":      { "en": "Home",     "fr": "Accueil" },
-    "video":     { "en": "Video",    "fr": "Video" },
-    "audio":     { "en": "Audio",    "fr": "Audio" },
-    "picture":   { "en": "Image",    "fr": "Image" },
-    "login":     { "en": "Sign In",  "fr": "Connexion" },
-    "register":  { "en": "Sign Up",  "fr": "Enregistrez-vous" },
-    "logout":    { "en": "Sign Out", "fr": "Deconnexion" }
+    "home":    { "en": "Home",     "fr": "Accueil" },
+    "video":   { "en": "Video",    "fr": "Video" },
+    "audio":   { "en": "Audio",    "fr": "Audio" },
+    "picture": { "en": "Image",    "fr": "Image" },
+    "login":   { "en": "Sign In",  "fr": "Connexion" },
+    "logout":  { "en": "Sign Out", "fr": "Deconnexion" },
 
-    // Submit Buttons
+    // UI Buttons
+    "help":       { "en": "Help!",                   "fr": "A l'aide!" },
+    "help-close": { "en": "I'm fine",                "fr": "Fermer" },
+    "send-me":    { "en": "Just send it already...", "fr": "Envoyez-le moi!" },
+    "register":   { "en": "Sign Up",                 "fr": "Enregistrez-vous" }
   },
 
   // === Captions and Labels and stuff ===
   "labels":
   {
     // Text boxes
-    "username":  { "en": "username",   "fr": "pseudo" },
-    "password":  { "en": "password",   "fr": "mot de passe" },
-    "confirm":   { "en": "confirm", "fr": "confirmation" }
+    "username": { "en": "username", "fr": "pseudo" },
+    "password": { "en": "password", "fr": "mot de passe" },
+    "confirm":  { "en": "confirm",  "fr": "confirmation" },
+    "email":    { "en": "e-mail",   "fr": "courriel" },
+    
+    // Dialog text
+    "help-login": {
+                    "en": "Did you <b>really</b> just forget your password?<br /><br />Guess that's what you get for picking such a difficult one to remember.<br />Serves you right.<br /><br />Suppose we <i>could</i> send you a link to reset it by e-mail.<br />Promise you won't forget it this time?",
+                    "fr": "Nous pouvons vous envoyer votre mot de passe par courriel."
+                  }
   },
 
   "headings":
   {
+    // Headings
     "home":       { "en": "Media Site", "fr": "Media Site" },
     "video":      { "en": "My Videos",  "fr": "Mes Videos" },
     "audio":      { "en": "My Audio",   "fr": "Ma Musique" },
     "picture":    { "en": "My Images",  "fr": "Mes Photos" },
     "login":      { "en": "LOGIN",      "fr": "CONNEXION" },
     "register":   { "en": "REGISTER",   "fr": "NOUVEAU COMPTE" },
+
+    // Dialog Titles
+    "help-login": { "en": "Help! I can't login!", "fr": "A l'aide!" },
+
+    // Sub Headings
     "home_sub":   {
                     "en": "Welcome to my Media Site!",
                     "fr": "Bienvenue sur mon Media Site!"

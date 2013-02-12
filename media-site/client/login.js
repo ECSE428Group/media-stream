@@ -37,6 +37,13 @@ Template.loginpage.events({
 			prepare_register();
 	},
 
+	'keypress #reg-email': function(key)
+	{
+		// Enter Key
+		if(key.which === 13)
+			prepare_register();
+	},
+
 	'keypress #reg-pass': function(key)
 	{
 		// Enter Key
@@ -49,6 +56,12 @@ Template.loginpage.events({
 		// Enter Key
 		if(key.which === 13)
 			prepare_register();
+	},
+
+	// FORGOT PASSWORD =========================================
+	'click #login-forgot': function()
+	{
+		send_forgot_pass_email();
 	}
 });
 
@@ -82,11 +95,12 @@ function prepare_register()
 {
 	// Grab Values
 	var user_id = $('#reg-user').val();
+	var email = $('#reg-email').val();
 	var pass = $('#reg-pass').val();
 	var confirm = $('#reg-confirm').val();
 
 	// Are all fields filled
-	if (user_id == "" || pass == "" || confirm == "")
+	if (user_id == "" || pass == "" || confirm == "" || email == "")
 	{
 		show_error(get_lang("errors.fill_fields"));
 		return;
@@ -125,20 +139,21 @@ function prepare_register()
 	}
 
 	// Finally, try to add the user
-	process_login(user_id, pass, true);
+	process_login(user_id, pass, true, email);
 
 	// Clear the user and pass fields
 	$('#reg-user').val("");
+	$('#reg-email').val("");
 	$('#reg-pass').val("");
 	$('#reg-confirm').val("");
 }
 
 // Process a login request.
 // This also handles new registration requests via the new_user optional parameter.
-function process_login(user_id, pass, new_user)
+function process_login(user_id, pass, new_user, email)
 {
 	// Logging in normally
-	if (typeof(new_user) === 'undefined' || !new_user)
+	if (typeof new_user === 'undefined' || !new_user)
 	{
 		Meteor.loginWithPassword(user_id, pass, function(error)
 		{
@@ -153,7 +168,7 @@ function process_login(user_id, pass, new_user)
 	// Creating an account
 	else
 	{
-		Accounts.createUser({username: user_id, password: pass});
+		Accounts.createUser({username: user_id, password: pass, email: email});
 		Meteor.loginWithPassword(user_id, pass, function(error)
 		{
 			if (error)
@@ -203,4 +218,10 @@ function process_logout()
 	// This one might be overriden by the template href call
 	// since we logout by clicking a link
 	$('#tab-home a').tab('show');
+}
+
+// Send forgot password e-mail
+function send_forgot_pass_email()
+{
+	Meteor.call('send_reset_email', $('#help-forgot-email').val());
 }

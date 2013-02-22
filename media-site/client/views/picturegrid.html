@@ -1,7 +1,7 @@
 <template name="picturegrid">
 	<ul id="Gallery" class="gallery">
 		{{#each contents}}
-			<li><a href={{this}} rel="external"><img src={{this}} alt={{this}} /></a></li>	
+			<li><a href="{{encode this}}" rel="external"><img src="{{encode this}}" alt="{{encode this}}" /></a></li>
 		{{/each}}
 	</ul>
 </template>

@@ -1,12 +1,12 @@
 //THIS IS AN INTIAL COMMIT AND INTEGRATION OF LIVE TRANSCODING/COMMENTED OUT CODE, ETC, WILL BE REMOVED
 Meteor.methods(
-	{
-		livestream: function(){
-var childProcess = require('child_process');
-var http = require('http');
-var url = require('url');
-var fs = require('fs');
-var path = require('path');
+{
+	livestream: function(){
+		var childProcess = require('child_process');
+		var http = require('http');
+		var url = require('url');
+		var fs = require('fs');
+		var path = require('path');
 
 // 3rd party
 // var sanitize = require('validator').sanitize;
@@ -61,19 +61,7 @@ var getMimeType = function(file) {
 
 var spawnNewProcess = function(file, playlistPath) {
 	var outputUrlPrefix = '/segment/';
-
-	
-	// if (transcoderType === 'ffmpeg') {
-		//var args = ['-i', file, '-async', '1', '-b:a', 64 + 'k', '-vf', 'scale=min(' + targetWidth + '\\, iw):-1', '-b:v', videoBitrate + 'k', '-ar', '44100', '-ac', '2', '-vcodec', 'libx264', '-x264opts', 'level=3.0', '-profile:v', 'baseline', '-preset:v' ,'superfast', '-acodec', 'libaacplus', '-threads', '0', '-flags', '-global_header', '-map', '0', '-f', 'segment', '-segment_time', '10', '-segment_list', 'stream.m3u8', '-segment_format', 'mpegts', '-segment_list_flags', 'live', 'stream%05d.ts'];
-		var args = ['-i', file, '-async', '1', '-acodec', 'libmp3lame', '-b:a', 128 + 'k', '-vf', 'scale=min(' + targetWidth + '\\, iw):-1', '-b:v', videoBitrate + 'k', '-ar', '44100', '-ac', '2', '-vcodec', 'libx264', '-x264opts', 'level=3.0', '-profile:v', 'baseline', '-preset:v' ,'superfast', '-threads', '0', '-flags', '-global_header', '-map', '0', '-f', 'segment', '-segment_time', '10', '-segment_list', 'stream.m3u8', '-segment_format', 'mpegts', '-segment_list_flags', 'live', 'stream%05d.ts'];
-	// }
-	//only supporting ffmpeg
-	// else {
-	// 	var playlistPath = 'stream.m3u8';
-	// 	var outputUrl = 'stream-#####.ts';
-	// 	var tsOutputPath = 'stream-#####.ts';
-	// 	var args = ['-I', 'dummy', file, 'vlc://quit', '--sout=#transcode{width=' + targetWidth + ',vcodec=h264,vb=' + videoBitrate + ',venc=x264{aud,profile=baseline,level=30,preset=superfast},acodec=mp3,ab=128,channels=2,audio-sync}:std{access=livehttp{seglen=10,delsegs=false,numsegs=0,index=' + playlistPath + ',index-url=' + outputUrl + '},mux=ts{use-key-frames},dst=' + tsOutputPath + '}'];
-	// }
+	var args = ['-i', file, '-async', '1', '-acodec', 'libmp3lame', '-b:a', 128 + 'k', '-vf', 'scale=min(' + targetWidth + '\\, iw):-1', '-b:v', videoBitrate + 'k', '-ar', '44100', '-ac', '2', '-vcodec', 'libx264', '-x264opts', 'level=3.0', '-profile:v', 'baseline', '-preset:v' ,'superfast', '-threads', '0', '-flags', '-global_header', '-map', '0', '-f', 'segment', '-segment_time', '10', '-segment_list', 'stream.m3u8', '-segment_format', 'mpegts', '-segment_list_flags', 'live', 'stream%05d.ts'];
 
 	var encoderChild = childProcess.spawn(transcoderPath, args, {cwd: outputPath});
 
@@ -194,122 +182,6 @@ var handlePlaylistRequest = function(file, response) {
 	}
 };
 
-//Don't need
-
-// var listFiles = function(response) {
-// 	var searchRegex = '(' + videoExtensions.join('|') + ')$';
-
-// 	searchPaths.forEach(function(searchPath) {
-// 		wrench.readdirRecursive(searchPath, function(err, curFiles) {
-// 			if (err) {
-// 				console.log(err);
-// 				return;
-// 			}
-// 			if (curFiles == null) {
-// 				response.end(); // No more files
-// 				return;
-// 			}
-
-// 			curFiles.forEach(function(filePath) {
-// 				filePath = path.join(path.relative(rootPath, searchPath), filePath);
-// 				if (filePath.match(searchRegex)) {
-// 					var friendlyName = filePath;
-// 					var matches = friendlyName.match(/\/?([^/]+)\.[a-z0-9]+$/);
-// 					if (matches && matches.length == 2) {
-// 						friendlyName = matches[1];
-// 					}
-
-// 					response.write(
-// 						'<a href="/hls/?file=' + encodeURIComponent(filePath) + '" title="' + sanitize(filePath).entityEncode() + '">'
-// 						+ sanitize(friendlyName).entityEncode() + '</a>'
-// 						+ ' (' + sanitize(path.extname(filePath)).entityEncode() + ')'
-// 						+ ' (<a href="' + sanitize(path.join('/raw', filePath)).entityEncode() + '">Raw</a>)<br />');
-// 				}
-// 			});
-// 		});
-// 	});
-// };
-
-// var browseDir = function(browsePath, response) {
-// 	browsePath = path.join('/', browsePath); // Remove ".." etc
-// 	fsBrowsePath = path.join(rootPath, browsePath);
-
-// 	var fileList = [];
-
-// 	fs.readdir(fsBrowsePath, function(err, files) {
-// 		if (err) {
-// 			response.writeHead(500);
-// 			response.end();
-// 			console.log('Failed to read directory, ' + err);
-// 			return;
-// 		}
-
-// 		var filesDone = 0;
-// 		var fileDone = function() {
-// 			filesDone++;
-
-// 			if (filesDone == files.length) {
-// 				fileList.sort(function(a, b) {
-// 					return a.name.localeCompare(b.name);
-// 				});
-// 				response.json({
-// 					cwd: browsePath,
-// 					files: fileList
-// 				});
-// 				response.end();
-// 			}
-// 		}
-
-// 		if (files.length === 0) {
-// 			filesDone--;
-// 			fileDone();
-// 		}
-// 		else {
-// 			files.forEach(function(file) {
-// 				var fsPath = path.join(fsBrowsePath, file);
-// 				fs.lstat(fsPath, function(err, stats) {
-// 					var fileObj = {};
-
-// 					fileObj.name = file;
-
-// 					if (err) {
-// 						fileObj.error = true;
-// 						fileObj.errorMsg = err;
-// 					}
-// 					else if (stats.isFile()) {
-// 						var relPath = path.join(browsePath, file);
-// 						var extName = path.extname(file);
-
-// 						if (videoExtensions.indexOf(extName) != -1) {
-// 							fileObj.type = 'video';
-// 							fileObj.path = '/hls/?file=' + encodeURIComponent(relPath);
-// 						}
-// 						else if (audioExtensions.indexOf(extName) != -1) {
-// 							fileObj.type = 'audio';
-// 							fileObj.path = path.join('/audio/' + relPath);
-// 						}
-// 						else {
-// 							fileObj.path = path.join('/audio/' + relPath);
-// 						}
-
-// 						fileObj.relPath = path.join('/', relPath);
-
-// 					}
-// 					else if (stats.isDirectory()) {
-// 						var relPath = path.join(browsePath, file);
-
-// 						fileObj.type = 'directory';
-// 						fileObj.path = path.join('/browse' + relPath);
-// 					}
-
-// 					fileList.push(fileObj);
-
-// 					fileDone();
-// 				});
-// 			});
-// 		}
-// 	});
-// };
 
 var handleThumbnailRequest = function(file, response) {
 	if (!enableThumbnails) {
@@ -360,117 +232,10 @@ var handleStaticFileRequest = function(insidePath, file, response) {
 	fileStream.pipe(response);
 };
 
-// // Problem: some clients interrupt the HTTP request and send a new one, causing the song to restart...
-// var handleAudioRequest = function(relPath, request, response) {
-// 	var file = path.join('/', relPath);
-// 	var filePath = path.join(rootPath, file);
-// 	var headerSent = false;
-
-// 	// TODO: Child management
-// 	//var encoderChild = childProcess.spawn(transcoderPath, ['-i', filePath, '-b:a', 64 + 'k', '-ac', '2', '-acodec', 'libaacplus', '-threads', '0', '-f', 'adts', '-']);
-// 	var encoderChild = childProcess.spawn(transcoderPath, ['-i', filePath, '-b:a', 192 + 'k', '-ac', '2', '-acodec', 'libmp3lame', '-threads', '0', '-f', 'mp3', '-']);
-
-// 	/*encoderChild.stderr.on('data', function(data) {
-// 		console.log(data.toString());
-// 	});*/
-
-// 	encoderChild.stdout.on('data', function() {
-// 		if (!headerSent) {
-// 			response.writeHead(200, {'Content-Type': 'audio/mpeg'});
-// 			headerSent = true;
-// 		}
-// 	});
-
-// 	request.on('close', function() {
-// 		encoderChild.kill();
-// 		setTimeout(function() {
-// 			encoderChild.kill('SIGKILL');
-// 		}, 5000);
-// 	});
-
-// 	encoderChild.stdout.pipe(response);
-// }
-
-
-// var exitWithUsage = function(argv) {
-// 	console.log('Usage: ' + argv[0] + ' ' + argv[1]
-// 		+ ' --root-path PATH'
-// 		+ ' [--search-path PATH1 [--search-path PATH2 [...]]]'
-// 		+ ' [--port PORT]'
-// 		+ ' [--cache-dir PATH]'
-// 		+ ' [--transcoder-path PATH]');
-// 	process.exit();
-// }
-
-// for (var i=2; i<process.argv.length; i++) {
-// 	switch (process.argv[i]) {
-// 		case '--transcoder-path':
-// 		if (process.argv.length <= i+1) {
-// 			exitWithUsage(process.argv);
-// 		}
-// 		transcoderPath = process.argv[++i];
-// 		break;
-
-// 		case '--root-path':
-// 		if (process.argv.length <= i+1) {
-// 			exitWithUsage(process.argv);
-// 		}
-// 		rootPath = process.argv[++i];
-// 		break;
-
-// 		case '--search-path':
-// 		if (process.argv.length <= i+1) {
-// 			exitWithUsage(process.argv);
-// 		}
-// 		searchPaths.push(process.argv[++i]);
-// 		break;
-
-// 		case '--cache-dir':
-// 		if (process.argv.length <= i+1) {
-// 			exitWithUsage(process.argv);
-// 		}
-// 		outputPath = process.argv[++i];
-// 		break;
-
-// 		case '--port':
-// 		if (process.argv.length <= i+1) {
-// 			exitWithUsage(process.argv);
-// 		}
-// 		listenPort = parseInt(process.argv[++i]);
-// 		break;
-
-// 		case '--transcoder-type':
-// 		if (process.argv.length <= i+1) {
-// 			exitWithUsage(process.argv);
-// 		}
-// 		transcoderType = process.argv[++i];
-// 		if (['vlc', 'ffmpeg'].indexOf(transcoderType) == -1) exitWithUsage(process.argv);
-// 		break;
-
-// 		default:
-// 		console.log(process.argv[i]);
-// 		exitWithUsage(process.argv);
-// 		break;
-// 	}
-//}
-
-// console.log(rootPath + ' ' + searchPaths);
-
-// if (!rootPath) {
-// 	exitWithUsage(process.argv);
-// }
-
 //NOT USING EXPRESS
 // var app = express();
 // app.use(express.bodyParser());
 
-// app.all('*', function(request, response, next) {
-// 	console.log(request.url);
-// 	next();
-// });
-
-// app.get('^/static$', function(req, res) { res.redirect('/static/'); });
-// app.use('/static/', express.static(__dirname + '/static'));
 
 // app.get(/^\/hls\/$/, function(request, response) {
 // 	var urlParsed = url.parse(request.url, true);
@@ -490,26 +255,6 @@ var handleStaticFileRequest = function(insidePath, file, response) {
 // 	handleThumbnailRequest(file, response);
 // });
 
-// app.get('/list', function(request, response) {
-// 	listFiles(response);
-// });
-
-// app.get(/^\/browse/, function(request, response) {
-// 	var browsePath = path.relative('/browse', decodeURIComponent(request.path));
-// 	browseDir(browsePath, response);
-// });
-
-// app.get(/^\/raw\//, function(request, response) {
-// 	var urlParsed = url.parse(request.url, true);
-// 	var file = path.relative('/raw/', decodeURIComponent(urlParsed.pathname));
-// 	handleStaticFileRequest(rootPath, file, response);
-// });
-
-// app.get(/^\/audio\//, function(request, response) {
-// 	var urlParsed = url.parse(request.url, true);
-// 	var relPath = path.relative('/audio/', decodeURIComponent(urlParsed.pathname));
-// 	handleAudioRequest(relPath, request, response);
-// });
 
 // app.post(/^\/settings/, function(request, response) {
 // 	console.log(request.body);

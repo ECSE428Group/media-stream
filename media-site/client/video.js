@@ -1,6 +1,9 @@
 // === Video Page File ==============================================
 // This files handles video playing logic and templating.
 
+//Variables
+useLiveStreaming = false;
+
 // Template Definition ----------------------------------------------
 try{
 Template.videogrid.contents = function ()
@@ -59,10 +62,14 @@ function videoPlayerInit(file, mobile)
 	{
 		if(!isHTMLSupported(file))
 		{
-			if(isDIVXSupported(file))
+			if(isDIVXSupported(file) && !useLiveStreaming)
 			{
 				addDivx(file);
-			} else
+			}
+            else if(useLiveStreaming){
+                getSelectedFileLiveStream(file);
+            }
+            else
 				return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
 		}
 
@@ -99,6 +106,11 @@ function getSelectedFile(file)
 {
 	var videoNode = document.querySelector('video');
 	videoNode.src = file;
+}
+
+function getSelectedFileLiveStream(file){
+    var videoNode = document.querySelector('video');
+    //videoNode.src = need to figure out how to do HTTP requests with meteor
 }
 
 function addDivx(file)

@@ -3,3 +3,4 @@ media-site/public/*
 !media-site/public/resources
 !media-site/public/resources/*
 .DS_Store
+*~

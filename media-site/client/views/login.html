@@ -5,33 +5,53 @@
 	
 	<h2>{{string "headings.login"}}</h2>
 	<form class="form-inline">
-		<input id="login-user" type="text" class="input-small" placeholder={{string "labels.username"}}>
-		<br>
-		<br>
-		<input id="login-pass" type="password" class="input-small" placeholder={{string "labels.password"}}>
-		<br>
-		<br>
-		<button id="login-submit" type="button" class="btn">{{string "buttons.login"}}</button>
-		<a href="#panel-help" role="button" class="btn" data-toggle="modal">{{string "buttons.help"}}</a>
+    <div class="control-group">
+      <div class="controls">
+        <input id="login-user" type="text" class="input-medium" placeholder={{string "labels.username"}}>
+		  </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <input id="login-pass" type="password" class="input-medium" placeholder={{string "labels.password"}}>
+		  </div>
+		</div>
+    <div class="control-group">
+      <div class="controls">
+        <button id="login-submit" type="button" class="btn">{{string "buttons.login"}}</button>
+        <a href="#panel-help" role="button" class="btn" data-toggle="modal">{{string "buttons.help"}}</a>
+      </div>
+    </div>
 	</form>
 
 	<br>
 	
 	<h2>{{string "headings.register"}}</h2>
 	<form class="form-inline">
-		<input id="reg-user" type="text" class="input-small" placeholder={{string "labels.username"}}>
-		<br>
-		<br>
-		<input id="reg-email" type="text" class="input-small" placeholder={{string "labels.email"}}>
-		<br>
-		<br>
-		<input id="reg-pass" type="password" class="input-small" placeholder={{string "labels.password"}}>
-		<br>
-		<br>
-		<input id="reg-confirm" type="password" class="input-small" placeholder={{string "labels.confirm"}}>
-		<br>
-		<br>
-		<button id="reg-submit" type="button" class="btn">{{string "buttons.register"}}</button>
+    <div class="control-group">
+      <div class="controls">
+        <input id="reg-user" type="text" class="input-medium" placeholder={{string "labels.username"}}>
+		  </div>
+		</div>
+    <div class="control-group">
+      <div class="controls">
+        <input id="reg-email" type="text" class="input-medium" placeholder={{string "labels.email"}}>
+		  </div>
+		</div>
+    <div class="control-group">
+      <div class="controls">
+        <input id="reg-pass" type="password" class="input-medium" placeholder={{string "labels.password"}}>
+		  </div>
+		</div>
+    <div class="control-group">
+      <div class="controls">
+        <input id="reg-confirm" type="password" class="input-medium" placeholder={{string "labels.confirm"}}>
+		  </div>
+		</div>
+    <div class="control-group">
+      <div class="controls">
+        <button id="reg-submit" type="button" class="btn">{{string "buttons.register"}}</button>
+		  </div>
+		</div>
 	</form>
 
 </div>

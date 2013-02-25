@@ -38,7 +38,7 @@ var language_array =
     "logout":  { "en": "Sign Out", "fr": "Deconnexion" },
 
     // UI Buttons
-    "help":       { "en": "Help!",                   "fr": "A l'aide!" },
+    "help":       { "en": "Help",                    "fr": "A l'aide" },
     "help-close": { "en": "I'm fine",                "fr": "Fermer" },
     "send-me":    { "en": "Just send it already...", "fr": "Envoyez-le moi!" },
     "register":   { "en": "Sign Up",                 "fr": "Enregistrez-vous" }
@@ -48,10 +48,10 @@ var language_array =
   "labels":
   {
     // Text boxes
-    "username": { "en": "username", "fr": "pseudo" },
-    "password": { "en": "password", "fr": "mot de passe" },
-    "confirm":  { "en": "confirm",  "fr": "confirmation" },
-    "email":    { "en": "e-mail",   "fr": "courriel" },
+    "username": { "en": "Username", "fr": "Pseudo" },
+    "password": { "en": "Password", "fr": "Mot de passe" },
+    "confirm":  { "en": "Confirm",  "fr": "Confirmation" },
+    "email":    { "en": "E-mail",   "fr": "Courriel" },
     
     // Dialog text
     "help-login": {

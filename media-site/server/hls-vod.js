@@ -1,12 +1,24 @@
 //THIS IS AN INTIAL COMMIT AND INTEGRATION OF LIVE TRANSCODING/COMMENTED OUT CODE, ETC, WILL BE REMOVED
-Meteor.methods(
-{
-	livestream: function(){
-		var childProcess = require('child_process');
-		var http = require('http');
-		var url = require('url');
-		var fs = require('fs');
-		var path = require('path');
+
+var fibers = __meteor_bootstrap__.require("fibers");
+var connect = __meteor_bootstrap__.require('connect');
+var app = __meteor_bootstrap__.app;
+var childProcess = __meteor_bootstrap__.require('child_process');
+var http = __meteor_bootstrap__.require('http');
+var url = __meteor_bootstrap__.require('url');
+var fs = __meteor_bootstrap__.require('fs');
+var path = __meteor_bootstrap__.require('path');
+
+var router = connect.middleware.router(function(route) {
+route.get(/^\/hls\/$/, function(request, response) {
+	var urlParsed = url.parse(request.url, true);
+	var file = urlParsed.query['file'];
+	handlePlaylistRequest(file, response);
+});
+});
+app.use(router);
+
+
 
 // 3rd party
 // var sanitize = require('validator').sanitize;
@@ -281,5 +293,4 @@ var handleStaticFileRequest = function(insidePath, file, response) {
 // });
 
 // app.listen(listenPort);
-}
-});
+

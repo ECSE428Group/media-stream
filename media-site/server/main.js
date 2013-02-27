@@ -1,5 +1,5 @@
 // === Main Server Initialization File ==============================
-// This file takes care of all initialization of variables that are 
+// This file takes care of all initialization of variables that are
 // needed by the server. It also handles Meteor's startup.
 
 // Startup ----------------------------------------------------------
@@ -9,6 +9,8 @@
 // If these need to change, edit client/main.js and client/lang.js too.
 var min_username = 3;
 var max_username = 15;
+
+// var hlsvod = __meteor_bootstrap__.require('./hls-vod');
 
 // Startup Function
 Meteor.startup(function ()

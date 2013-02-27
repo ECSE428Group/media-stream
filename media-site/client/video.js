@@ -110,7 +110,7 @@ function getSelectedFile(file)
 
 function getSelectedFileLiveStream(file){
     var videoNode = document.querySelector('video');
-    //videoNode.src = need to figure out how to do HTTP requests with meteor
+    videoNode.src = "hls/?file=" + file;
 }
 
 function addDivx(file)

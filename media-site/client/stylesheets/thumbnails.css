@@ -1,0 +1,28 @@
+.btnHolder
+{
+	padding:0;
+	display:table;
+	width:100%
+}
+
+.btnHolder span
+{	
+	display:table-cell;
+	text-align:center;
+}
+
+.sm2-inline-list .ui360, .sm2-inline-block .ui360
+{
+	float:none;
+	display:block;
+}
+
+.sm2-inline-list .ui360-vis .sm2-360ui
+{
+	border:none;
+}
+
+.sm2-inline-list .ui360-vis
+{
+	margin:0 auto;
+}

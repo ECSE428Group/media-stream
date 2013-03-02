@@ -34,6 +34,12 @@ Template.navigation.events(
 	}
 });
 
+Template.buttonmenu.events({
+	'click .createPlaylist':function(){
+		$('#myModal').modal('show');
+	}
+});
+
 Template.error.errorStatement = function ()
 {
 	// Get the current error message

@@ -18,9 +18,9 @@ Template.picturegrid.rendered = function()
 {
   try
   {
-    if ($('#Gallery a').length)
+    if ($('.thumbnails .imgContainer a').length)
     {
-      window.Code.PhotoSwipe.attach($('#Gallery a'), {});
+      window.Code.PhotoSwipe.attach($('.thumbnails .imgContainer a'), {});
       pictureErrors.photoswipe = "";
     }
   }
@@ -45,5 +45,4 @@ function displayPictureErrors()
       }
     }
   }
-};
-
+}

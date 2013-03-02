@@ -1,7 +1,14 @@
 <template name ="videogrid">
   <div id="grid">
-    {{#each contents}}
-      <div class="metro-tile" style="cursor: pointer; width: 230px; height: 110px; display: inline-block; background-color: deepSkyBlue; color: #fff; margin-bottom: 10px; margin-left: 10px;"> {{this}}</div>
-    {{/each}}
+		<ul class="thumbnails">
+			{{#each contents}}
+				<li class="span4">
+					<div class="thumbnail">
+						<div class="metro-tile" style="cursor: pointer; width: 230px; height: 110px; display: inline-block; background-color: deepSkyBlue; color: #fff; margin-bottom: 10px; margin-left: 10px;">{{this}}</div>
+						{{>buttonSymbols}}
+					</div>
+				</li>
+			{{/each}}
+		</ul>
   </div>
 </template>

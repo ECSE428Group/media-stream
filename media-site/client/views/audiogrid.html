@@ -10,11 +10,18 @@
       {{/each}}
     </ul>
    {{else}}
+	 <ul class="thumbnails">
     <div class="sm2-inline-list">
       {{#each contents}}
-       <div class="ui360 ui360-vis"><a href="{{this}}">{{this}}</a></div>
+				<li class="span4">
+					<div class="thumbnail">
+						<div class="ui360 ui360-vis"><a href="{{this}}">{{this}}</a></div>
+						{{>buttonSymbols}}
+					</div>
+				</li>
       {{/each}}
     </div>
+		</ul>
   {{/if}}
   </div>
 </template>

@@ -110,6 +110,7 @@ Meteor.startup(function ()
 			//Otherwise, return create the playlist and return true.
 			var userId = Meteor.userId();
 			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+			
 			if(usersPlaylist.length == 0){
 				playlistCollection.insert({"id":userId,"playlists":[]});
 			}else{

@@ -36,9 +36,9 @@ Template.picturepage.events({
 		if(name){
 			Meteor.call('createPlaylist',name,function(error,result){
 				if(!result)
-					alert("Successfully created.");
+					show_error("Successfully created."); //Need show_message
 				else
-					alert("Playlist exists.");
+					show_error("Playlist with the same name already exists.");
 			});
 		}else{
 			show_error("You need to specify a name for the playlist.\n");

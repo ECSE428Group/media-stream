@@ -50,12 +50,6 @@ Meteor.startup(function ()
 		getMedia : function (mediaPath)
 		{
 			
-			
-			// Check if the path was set
-			/*if (typeof mediaPath === 'undefined')
-				mediaPath = "public/";
-			*/
-
 			var media = { "audio" : [] , "video" : [], "picture" : []};
 			
 			var audioList = audioCollection.find().fetch();
@@ -73,34 +67,7 @@ Meteor.startup(function ()
 				media.picture.push(pictureList[i].file);
 			}
 
-			/*
-			var require = __meteor_bootstrap__.require;
-			var path = require('path');
-			var fs = require('fs');
-			var basepath = (path.resolve('.'));
-
-			var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
-
-			for (var i = 0; i < contents.length; i++)
-			{
-				var file = contents[i];
-
-				if (isMusic(file))
-				{
-					media.audio.push(file);
-				}
-
-				else if (isVideo(file))
-				{
-					media.video.push(file);
-				}
-
-				else if (isPicture(file))
-				{
-					media.picture.push(file);
-				}
-			}
-			*/
+			
 			return media;
 		},
 		

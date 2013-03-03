@@ -44,7 +44,7 @@ Meteor.startup(function ()
 				return true;
 			}
 		},
-
+		
 		// Load the media files into the session
 		getMedia : function (mediaPath)
 		{
@@ -101,9 +101,28 @@ Meteor.startup(function ()
 			}
 			*/
 			return media;
+		},
+		
+		//Playlist server side methods
+		createPlaylist: function(playlistName){
+			//If the name of the playlist already exists for this user, return false.
+			//Otherwise, return create the playlist and return true.
+			var userId = Meteor.userId();
+			Playlists = new Meteor.Collection("playlists");
+			var usersPlaylists = Playlists.find({"userId":userId}).fetch();
+			var exists = 0;
+			usersPlaylists.forEach(function(playlist){
+				if(playlist.name === playlistName){
+					exists = 1;
+				}
+			});
+			if(!exists){
+				var groceriesId = Lists.insert({"name": "Groceries"});
+			}
+			return exists;
 		}
-	});
-
+	}),
+	
 	// Run Server Functions
 	set_create_user_restrictions();
 	set_email_templates();

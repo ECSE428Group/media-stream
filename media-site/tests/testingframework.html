@@ -1,0 +1,105 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>testing framework</title>
+  <link rel="stylesheet" href="../client/stylesheets/qunit-1.11.0.css">
+  <link rel="stylesheet" href="../client/stylesheets/video.css">
+	<script src="../client/lib/QUnit/qunit-1.11.0.js"></script>
+  <script src="jquery-1.9.0.js"></script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+
+	<script src="/resources/qunit.js"></script>
+	<script>
+	
+	<!--assertions-->
+
+	test( "ok test", function() {
+
+		ok(true, "true succeeds");
+
+	});
+
+	test( "equal test", function() {
+
+		equal(0, 0, "Zero, equal succeeds" );
+
+	});
+
+	test( "deepEqual test", function() {
+
+		var obj = { foo: "bar" };
+
+		deepEqual(obj, { foo: "bar"}, "Two objects can be the same value");
+
+	});
+
+
+	<!--synchronous callbacks-->
+
+		<!--test needs to pass with the correct number of assertions-->
+	
+	test( "a test", function() {
+
+		expect(2);
+
+		function calc(x, operation) {
+			return operation(x);
+		}
+
+		var result = calc(2, function(x){
+			ok(true, "calc() calls operation function");
+			return x*x;
+		});
+
+		equal(result, 4, "2 square equals 4");
+
+	});
+
+	<!--asynchronous callbacks-->
+
+		<!--when code starts a timeout, waits for the result of the asynchornous operation-->
+
+	asyncTest( "asynchronous test: one second later", function() {
+
+		expect(1);
+
+		setTimeout(function() {
+			ok(true, "Passed and ready to resume");
+			start();
+		}, 1000);
+	});
+
+
+	<!--user actions-->
+
+		<!--code that relies on actions initiated by user-->
+
+	test( "user action api behaviour", function() {
+
+	var event,
+		$doc = $( document ),
+		keys = KeyLogger( $doc );
+
+	//trigger event
+	event = $.Event("keydown");
+	event.keyCode = 9;
+	$doc.trigger(event);
+
+	//verify expected behaviour
+	equal(keys.log.lenth, 1, "a key was logged");
+	equal(keys.log[0], 9, "correct key was logged");
+
+	});
+
+
+	</script>
+</body>
+</html>
+
+
+
+
+

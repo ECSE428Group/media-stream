@@ -15,6 +15,11 @@ var max_username = 15;
 // Startup Function
 Meteor.startup(function ()
 {
+	var audioCollection = new Meteor.Collection("audiofiles");
+	var videoCollection = new Meteor.Collection("videofiles");
+	var pictureCollection = new Meteor.Collection("picturefiles");
+	load_media(audioCollection,videoCollection,pictureCollection);
+
 	Meteor.methods(
 	{
 		// Send Validation Email
@@ -43,15 +48,31 @@ Meteor.startup(function ()
 		// Load the media files into the session
 		getMedia : function (mediaPath)
 		{
-			//var path = require('path');
-			//console.log(path);
-
+			
+			
 			// Check if the path was set
-			if (typeof mediaPath === 'undefined')
+			/*if (typeof mediaPath === 'undefined')
 				mediaPath = "public/";
+			*/
 
 			var media = { "audio" : [] , "video" : [], "picture" : []};
+			
+			var audioList = audioCollection.find().fetch();
+			for( var i = 0; i < audioList.length; i++ ){
+				media.audio.push(audioList[i].file);
+			}
+			
+			var videoList = videoCollection.find().fetch();
+			for( var i = 0; i < videoList.length; i++ ){
+				media.video.push(videoList[i].file);
+			}
+			
+			var pictureList = pictureCollection.find().fetch();
+			for( var i = 0; i < pictureList.length; i++ ){
+				media.picture.push(pictureList[i].file);
+			}
 
+			/*
 			var require = __meteor_bootstrap__.require;
 			var path = require('path');
 			var fs = require('fs');
@@ -78,7 +99,7 @@ Meteor.startup(function ()
 					media.picture.push(file);
 				}
 			}
-
+			*/
 			return media;
 		}
 	});
@@ -90,6 +111,48 @@ Meteor.startup(function ()
 
 
 // Server Functions -------------------------------------------------
+
+function load_media( audioCollection , videoCollection , pictureCollection)
+{
+	if (typeof mediaPath === 'undefined')
+		mediaPath = "public/";
+
+	var require = __meteor_bootstrap__.require;
+	var path = require('path');
+	var fs = require('fs');
+	var basepath = (path.resolve('.'));
+
+	var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
+
+	for (var i = 0; i < contents.length; i++)
+	{
+		var file = contents[i];
+
+		if (isMusic(file))
+		{
+			if( audioCollection.find({"file":file}).fetch().length == 0 ){
+				audioCollection.insert({"file":file});
+			}
+
+		}
+
+		else if (isVideo(file))
+		{
+			if( videoCollection.find({"file":file}).fetch().length == 0 ){
+				videoCollection.insert({"file":file});
+			}
+		}
+
+		else if (isPicture(file))
+		{
+			if( pictureCollection.find({"file":file}).fetch().length == 0 ){
+				pictureCollection.insert({"file":file});
+			}
+		}
+	}
+
+}
+
 
 // Used to add more security to username fields.
 // We don't mind about passwords here due to the way passwords

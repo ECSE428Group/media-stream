@@ -18,6 +18,7 @@ Meteor.startup(function ()
 	var audioCollection = new Meteor.Collection("audiofiles");
 	var videoCollection = new Meteor.Collection("videofiles");
 	var pictureCollection = new Meteor.Collection("picturefiles");
+	var playlistCollection = new Meteor.Collection("playlist");
 	load_media(audioCollection,videoCollection,pictureCollection);
 
 	Meteor.methods(
@@ -108,18 +109,23 @@ Meteor.startup(function ()
 			//If the name of the playlist already exists for this user, return false.
 			//Otherwise, return create the playlist and return true.
 			var userId = Meteor.userId();
-			Playlists = new Meteor.Collection("playlists");
-			var usersPlaylists = Playlists.find({"userId":userId}).fetch();
-			var exists = 0;
-			usersPlaylists.forEach(function(playlist){
-				if(playlist.name === playlistName){
-					exists = 1;
+			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+			if(usersPlaylist.length == 0){
+				playlistCollection.insert({"id":userId,"playlists":[]});
+			}else{
+				var lists = usersPlaylist[0].playlists;
+				var found = false;
+				for(var i=0;i<lists.length;i++){
+					if(lists[i].name == playlistName){
+						found = true;
+					}
 				}
-			});
-			if(!exists){
-				var groceriesId = Lists.insert({"name": "Groceries"});
+				if(!found){
+					lists.push({"name":playlistName,"files":[]});
+					playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+				}
 			}
-			return exists;
+			return found;
 		}
 	}),
 	

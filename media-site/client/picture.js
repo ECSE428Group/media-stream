@@ -35,7 +35,7 @@ Template.picturepage.events({
 		var name = $('.playlistNameImg').val();
 		if(name){
 			Meteor.call('createPlaylist',name,function(error,result){
-				if(result)
+				if(!result)
 					alert("Successfully created.");
 				else
 					alert("Playlist exists.");

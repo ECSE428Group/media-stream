@@ -30,6 +30,22 @@ Template.picturegrid.rendered = function()
   }
 };
 
+Template.picturepage.events({
+	'click .createPlaylistButtonImg':function(){
+		var name = $('.playlistNameImg').val();
+		if(name){
+			Meteor.call('createPlaylist',name,function(error,result){
+				if(result)
+					alert("Successfully created.");
+				else
+					alert("Playlist exists.");
+			});
+		}else{
+			show_error("You need to specify a name for the playlist.\n");
+		}
+	}
+});
+
 //Error handling
 function displayPictureErrors()
 {

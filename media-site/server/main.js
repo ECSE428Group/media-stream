@@ -14,11 +14,10 @@ var media_server = { "audio" : [] , "video" : [], "picture" : []};
 var fileEncoding = "";
 var x = 0;
 
-// var hlsvod = __meteor_bootstrap__.require('./hls-vod');
-
 // Startup Function
 Meteor.startup(function ()
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	var audioCollection = new Meteor.Collection("audiofiles");
 	var videoCollection = new Meteor.Collection("videofiles");
@@ -129,47 +128,73 @@ Meteor.startup(function ()
 			//console.log(path);
 			return initialize_media(mediaPath);
 		},
+=======
+    var audioCollection = new Meteor.Collection("audiofiles");
+    var videoCollection = new Meteor.Collection("videofiles");
+    var pictureCollection = new Meteor.Collection("picturefiles");
+    var playlistCollection = new Meteor.Collection("playlist");
+    console.log("Server Collections Loaded");
 
-        launchLiveTranscode : function(file){
-            handlePlaylistRequest(file, function(){
-                console.log("Finish Playlist Request");
-            });
+    load_media(audioCollection,videoCollection,pictureCollection);
+>>>>>>> More merge changes and slight edits
+
+    Meteor.methods(
+    {
+        // Send Validation Email
+        send_validation_email: function (user)
+        {
+            Meteor.sendVerificationEmail(user._id);
         },
 
-        transcode : function(){
-            silent_transcode();
+        // Send Reset Email
+        send_reset_email: function (name)
+        {
+            // Find the user
+            var user = Meteor.users.findOne({username: name});
+
+            // Can't find them
+            if (typeof user === 'undefined')
+                return false;
+
+            else
+            {
+                Accounts.sendResetPasswordEmail(user._id);
+                return true;
+            }
         },
+
         // Load the media files into the session
         getMedia : function (mediaPath)
         {
-            
+
             var media = { "audio" : [] , "video" : [], "picture" : []};
-            
+
             var audioList = audioCollection.find().fetch();
             for( var i = 0; i < audioList.length; i++ ){
                 media.audio.push(audioList[i].file);
             }
-            
+
             var videoList = videoCollection.find().fetch();
             for( var i = 0; i < videoList.length; i++ ){
                 media.video.push(videoList[i].file);
             }
-            
+
             var pictureList = pictureCollection.find().fetch();
             for( var i = 0; i < pictureList.length; i++ ){
                 media.picture.push(pictureList[i].file);
             }
 
+
             return media;
         },
-        
+
         //Playlist server side methods
         createPlaylist: function(playlistName){
             //If the name of the playlist already exists for this user, return false.
             //Otherwise, return create the playlist and return true.
             var userId = Meteor.userId();
             var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-            
+
             if(usersPlaylist.length == 0){
                 playlistCollection.insert({"id":userId,"playlists":[]});
             }else{
@@ -187,7 +212,7 @@ Meteor.startup(function ()
             }
             return found;
         },
-        
+
         getPlaylists: function(){
             var userId = Meteor.userId();
             var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
@@ -201,19 +226,34 @@ Meteor.startup(function ()
                 }
                 return listOfPlaylists;
             }
+        },
+
+        launchLiveTranscode : function(file){
+            handlePlaylistRequest(file, function(){
+                console.log("Finish Playlist Request");
+            });
+        },
+
+        transcode : function(){
+            silent_transcode();
         }
-    })
+    }),
 
-	});
-
+<<<<<<< HEAD
 >>>>>>> Transcoding Push
 	// Run Server Functions
 	set_create_user_restrictions();
 	set_email_templates();
+=======
+    // Run Server Functions
+    set_create_user_restrictions();
+    set_email_templates();
+>>>>>>> More merge changes and slight edits
 });
 
 
 // Server Functions -------------------------------------------------
+
 function load_media( audioCollection , videoCollection , pictureCollection)
 {
     if (typeof mediaPath === 'undefined')
@@ -234,7 +274,6 @@ function load_media( audioCollection , videoCollection , pictureCollection)
         {
             if( audioCollection.find({"file":file}).fetch().length == 0 ){
                 audioCollection.insert({"file":file});
-                media_server.audio.push(file);
             }
 
         }
@@ -243,15 +282,14 @@ function load_media( audioCollection , videoCollection , pictureCollection)
         {
             if( videoCollection.find({"file":file}).fetch().length == 0 ){
                 videoCollection.insert({"file":file});
-                media_server.video.push(file);
             }
+            media_server.video.push(file);
         }
 
         else if (isPicture(file))
         {
             if( pictureCollection.find({"file":file}).fetch().length == 0 ){
                 pictureCollection.insert({"file":file});
-                media_server.picture.push(file);
             }
         }
     }
@@ -259,6 +297,7 @@ function load_media( audioCollection , videoCollection , pictureCollection)
 
 }
 
+<<<<<<< HEAD
 function load_media( audioCollection , videoCollection , pictureCollection)
 {
 	if (typeof mediaPath === 'undefined')
@@ -301,6 +340,8 @@ function load_media( audioCollection , videoCollection , pictureCollection)
 
 }
 
+=======
+>>>>>>> More merge changes and slight edits
 
 // Used to add more security to username fields.
 // We don't mind about passwords here due to the way passwords
@@ -395,7 +436,7 @@ function silent_transcode() {
                 console.log("NEEDS WEBM TRANSCODING", needTranscodingToWebm);
                  transcodeAllToMp4(needTranscodingToMp4, function(){
                  });
-                 transcodeAllToWebM(needTranscodingToMp4, function(){
+                 transcodeAllToWebM(needTranscodingToWebm, function(){
                  });
             }
         }

@@ -208,7 +208,9 @@ var handlePlaylistRequest = function(file, callback) {
 	}
 };
 
-var transcodeAllToMp4 = function(files){
+function transcodeAllToMp4(files){
+	if (!files){return;}
+	console.log("Files", files);
 	var file = files.pop();
 	console.log(file);
 	console.log(files);
@@ -218,9 +220,11 @@ var transcodeAllToMp4 = function(files){
 			transcodeAllToMp4(files);
 		}
 	} );
-};
+}
 
-var transcodeAllToWebM = function(files){
+function transcodeAllToWebM(files){
+	if (!files){return;}
+	console.log("WEBM FIELS", files);
 	var file = files.pop();
 	console.log(file);
 	console.log(files);
@@ -230,7 +234,7 @@ var transcodeAllToWebM = function(files){
 			transcodeAllToWebM(files);
 		}
 	} );
-};
+}
 
 function dead_transcode_to_mp4(file, callback){
 	file = path.join('/', file); // Remove ".." etc
@@ -241,6 +245,7 @@ function dead_transcode_to_mp4(file, callback){
 	console.log(newfile);
 
 	lock=true;
+	try{
 	var proc = new ffmpeg({ source: rootfile, priority: 10 })
 	.toFormat('mp4')
 	//.withVideoBitrate('1500k')
@@ -255,6 +260,9 @@ function dead_transcode_to_mp4(file, callback){
 		console.log(stderr);
 		callback();
 	});
+}catch(err){
+	console.log(err);
+}
 }
 
 function dead_transcode_to_webm(file, callback){
@@ -266,6 +274,7 @@ function dead_transcode_to_webm(file, callback){
 	console.log(newfile);
 
 	lock=true;
+	try{
 	var proc = new ffmpeg({ source: rootfile, priority: 10 })
 	.toFormat('webm')
 	//.withVideoBitrate('1500k')
@@ -279,7 +288,10 @@ function dead_transcode_to_webm(file, callback){
 		console.log(stdout);
 		console.log(stderr);
 		callback();
-	});
+	});}
+	catch(err){
+		console.log(err);
+	}
 }
 
 var handleStaticFileRequest = function(insidePath, file, response) {

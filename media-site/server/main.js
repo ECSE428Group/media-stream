@@ -19,6 +19,8 @@ Meteor.startup(function ()
 	var videoCollection = new Meteor.Collection("videofiles");
 	var pictureCollection = new Meteor.Collection("picturefiles");
 	var playlistCollection = new Meteor.Collection("playlist");
+	console.log("Server Collections Loaded");
+
 	load_media(audioCollection,videoCollection,pictureCollection);
 
 	Meteor.methods(
@@ -143,6 +145,7 @@ function load_media( audioCollection , videoCollection , pictureCollection)
 			}
 		}
 	}
+	console.log("Media Collections Updated");
 
 }
 

@@ -209,7 +209,7 @@ var handlePlaylistRequest = function(file, callback) {
 };
 
 function transcodeAllToMp4(files){
-	if (!files){return;}
+	if (files.length === 0){return;}
 	console.log("Files", files);
 	var file = files.pop();
 	console.log(file);
@@ -223,8 +223,7 @@ function transcodeAllToMp4(files){
 }
 
 function transcodeAllToWebM(files){
-	if (!files){return;}
-	console.log("WEBM FIELS", files);
+	if (files.length === 0){return;}
 	var file = files.pop();
 	console.log(file);
 	console.log(files);
@@ -238,15 +237,15 @@ function transcodeAllToWebM(files){
 
 function dead_transcode_to_mp4(file, callback){
 	file = path.join('/', file); // Remove ".." etc
-	var rootfile = path.join(rootPath, file);
+	var rootfile_old = path.join(rootPath, file);
 	var output = file.substr(0, file.lastIndexOf('.')) || file;
 	newfile = path.join(rootPath, "/transcoded"+output +".mp4");
-	console.log(rootfile);
+	console.log(rootfile_old);
 	console.log(newfile);
 
 	lock=true;
 	try{
-	var proc = new ffmpeg({ source: rootfile, priority: 10 })
+	var proc = new ffmpeg({ source: rootfile_old, priority: 10 })
 	.toFormat('mp4')
 	//.withVideoBitrate('1500k')
 	.withVideoCodec('libx264')
@@ -267,21 +266,21 @@ function dead_transcode_to_mp4(file, callback){
 
 function dead_transcode_to_webm(file, callback){
 	file = path.join('/', file); // Remove ".." etc
-	var rootfile = path.join(rootPath, file);
+	var rootfile_old = path.join(rootPath, file);
 	var output = file.substr(0, file.lastIndexOf('.')) || file;
 	newfile = path.join(rootPath, "/transcoded"+output +".webm");
-	console.log(rootfile);
+	console.log(rootfile_old);
 	console.log(newfile);
 
 	lock=true;
 	try{
-	var proc = new ffmpeg({ source: rootfile, priority: 10 })
+	var proc = new ffmpeg({ source: rootfile_old, priority: 10 })
 	.toFormat('webm')
 	//.withVideoBitrate('1500k')
-	.withVideoCodec('libvpx')
+	//.withVideoCodec('libvpx')
 	//.withSize('720x?')
 	//.withAudioBitrate('128k')
-	.withAudioCodec('libvorbis')
+	//.withAudioCodec('libvorbis')
 	.saveToFile(newfile, function(stdout, stderr) {
 		console.log('file has been converted succesfully');
 		lock = false;

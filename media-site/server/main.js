@@ -17,118 +17,6 @@ var x = 0;
 // Startup Function
 Meteor.startup(function ()
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-	var audioCollection = new Meteor.Collection("audiofiles");
-	var videoCollection = new Meteor.Collection("videofiles");
-	var pictureCollection = new Meteor.Collection("picturefiles");
-	var playlistCollection = new Meteor.Collection("playlist");
-	console.log("Server Collections Loaded");
-
-	load_media(audioCollection,videoCollection,pictureCollection);
-
-=======
-    var require = __meteor_bootstrap__.require;
-    var Future = require('fibers/future');
->>>>>>> Transcoding Push
-	Meteor.methods(
-	{
-		// Send Validation Email
-		send_validation_email: function (user)
-		{
-			Meteor.sendVerificationEmail(user._id);
-		},
-
-		// Send Reset Email
-		send_reset_email: function (name)
-		{
-			// Find the user
-			var user = Meteor.users.findOne({username: name});
-
-			// Can't find them
-			if (typeof user === 'undefined')
-				return false;
-
-			else
-			{
-				Accounts.sendResetPasswordEmail(user._id);
-				return true;
-			}
-		},
-		
-		// Load the media files into the session
-		getMedia : function (mediaPath)
-		{
-<<<<<<< HEAD
-			
-			var media = { "audio" : [] , "video" : [], "picture" : []};
-			
-			var audioList = audioCollection.find().fetch();
-			for( var i = 0; i < audioList.length; i++ ){
-				media.audio.push(audioList[i].file);
-			}
-			
-			var videoList = videoCollection.find().fetch();
-			for( var i = 0; i < videoList.length; i++ ){
-				media.video.push(videoList[i].file);
-			}
-			
-			var pictureList = pictureCollection.find().fetch();
-			for( var i = 0; i < pictureList.length; i++ ){
-				media.picture.push(pictureList[i].file);
-			}
-
-			
-			return media;
-		},
-		
-		//Playlist server side methods
-		createPlaylist: function(playlistName){
-			//If the name of the playlist already exists for this user, return false.
-			//Otherwise, return create the playlist and return true.
-			var userId = Meteor.userId();
-			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-			
-			if(usersPlaylist.length == 0){
-				playlistCollection.insert({"id":userId,"playlists":[]});
-			}else{
-				var lists = usersPlaylist[0].playlists;
-				var found = false;
-				for(var i=0;i<lists.length;i++){
-					if(lists[i].name == playlistName){
-						found = true;
-					}
-				}
-				if(!found){
-					lists.push({"name":playlistName,"files":[]});
-					playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
-				}
-			}
-			return found;
-		},
-		
-		getPlaylists: function(){
-			var userId = Meteor.userId();
-			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-			var listOfPlaylists = [];
-			if(usersPlaylist.length == 0){
-				return listOfPlaylists;
-			}else{
-				var lists = usersPlaylist[0].playlists;
-				for(var i=0;i<lists.length;i++){
-					listOfPlaylists.push(lists[i].name);
-				}
-				return listOfPlaylists;
-			}
-		}
-	}),
-	
-=======
-			//var path = require('path');
-			//console.log(path);
-			return initialize_media(mediaPath);
-		},
-=======
     var audioCollection = new Meteor.Collection("audiofiles");
     var videoCollection = new Meteor.Collection("videofiles");
     var pictureCollection = new Meteor.Collection("picturefiles");
@@ -136,7 +24,6 @@ Meteor.startup(function ()
     console.log("Server Collections Loaded");
 
     load_media(audioCollection,videoCollection,pictureCollection);
->>>>>>> More merge changes and slight edits
 
     Meteor.methods(
     {
@@ -239,16 +126,9 @@ Meteor.startup(function ()
         }
     }),
 
-<<<<<<< HEAD
->>>>>>> Transcoding Push
-	// Run Server Functions
-	set_create_user_restrictions();
-	set_email_templates();
-=======
     // Run Server Functions
     set_create_user_restrictions();
     set_email_templates();
->>>>>>> More merge changes and slight edits
 });
 
 
@@ -296,52 +176,6 @@ function load_media( audioCollection , videoCollection , pictureCollection)
     console.log("Media Collections Updated");
 
 }
-
-<<<<<<< HEAD
-function load_media( audioCollection , videoCollection , pictureCollection)
-{
-	if (typeof mediaPath === 'undefined')
-		mediaPath = "public/";
-
-	var require = __meteor_bootstrap__.require;
-	var path = require('path');
-	var fs = require('fs');
-	var basepath = (path.resolve('.'));
-
-	var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
-
-	for (var i = 0; i < contents.length; i++)
-	{
-		var file = contents[i];
-
-		if (isMusic(file))
-		{
-			if( audioCollection.find({"file":file}).fetch().length == 0 ){
-				audioCollection.insert({"file":file});
-			}
-
-		}
-
-		else if (isVideo(file))
-		{
-			if( videoCollection.find({"file":file}).fetch().length == 0 ){
-				videoCollection.insert({"file":file});
-			}
-		}
-
-		else if (isPicture(file))
-		{
-			if( pictureCollection.find({"file":file}).fetch().length == 0 ){
-				pictureCollection.insert({"file":file});
-			}
-		}
-	}
-	console.log("Media Collections Updated");
-
-}
-
-=======
->>>>>>> More merge changes and slight edits
 
 // Used to add more security to username fields.
 // We don't mind about passwords here due to the way passwords

@@ -44,21 +44,7 @@ Template.videopage.events(
             Meteor.call('transcode', function(){
             });
         }
-    },
-
-	'click .createPlaylistButtonVid':function(){
-		var name = $('.playlistNameVid').val();
-		if(name){
-			Meteor.call('createPlaylist',name,function(error,result){
-				if(!result)
-					show_error("Successfully created."); //Need show_message
-				else
-					show_error("Playlist with the same name already exists.");
-			});
-		}else{
-			show_error("You need to specify a name for the playlist.\n");
-		}
-	}
+    }
 });
 
 Template.videogrid.events(

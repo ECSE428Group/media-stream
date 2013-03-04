@@ -8,3 +8,5 @@ bootstrap
 accounts-password
 accounts-ui
 jquery
+
+autopublish

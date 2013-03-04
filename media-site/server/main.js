@@ -4,6 +4,10 @@
 
 // Startup ----------------------------------------------------------
 
+// Publish and Subsbribe calls go here
+// Meteor.Publish(things);
+// Meteor.Subscribe(things_in_client);
+
 // Global Server Variables
 // Setting global variables between client and server is a royal pain.
 // If these need to change, edit client/main.js and client/lang.js too.

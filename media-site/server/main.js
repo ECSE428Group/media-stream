@@ -9,12 +9,17 @@
 // If these need to change, edit client/main.js and client/lang.js too.
 var min_username = 3;
 var max_username = 15;
+var silent_transcoding = true;
+var media_server = { "audio" : [] , "video" : [], "picture" : []};
+var fileEncoding = "";
+var x = 0;
 
 // var hlsvod = __meteor_bootstrap__.require('./hls-vod');
 
 // Startup Function
 Meteor.startup(function ()
 {
+<<<<<<< HEAD
 	var audioCollection = new Meteor.Collection("audiofiles");
 	var videoCollection = new Meteor.Collection("videofiles");
 	var pictureCollection = new Meteor.Collection("picturefiles");
@@ -23,6 +28,10 @@ Meteor.startup(function ()
 
 	load_media(audioCollection,videoCollection,pictureCollection);
 
+=======
+    var require = __meteor_bootstrap__.require;
+    var Future = require('fibers/future');
+>>>>>>> Transcoding Push
 	Meteor.methods(
 	{
 		// Send Validation Email
@@ -51,6 +60,7 @@ Meteor.startup(function ()
 		// Load the media files into the session
 		getMedia : function (mediaPath)
 		{
+<<<<<<< HEAD
 			
 			var media = { "audio" : [] , "video" : [], "picture" : []};
 			
@@ -114,13 +124,71 @@ Meteor.startup(function ()
 		}
 	}),
 	
+=======
+			//var path = require('path');
+			//console.log(path);
+			return initialize_media(mediaPath);
+		},
+
+        launchLiveTranscode : function(file){
+            handlePlaylistRequest(file, function(){
+                console.log("Finish Playlist Request");
+            });
+        },
+
+        transcode : function(){
+            silent_transcode();
+        }
+
+	});
+
+>>>>>>> Transcoding Push
 	// Run Server Functions
 	set_create_user_restrictions();
 	set_email_templates();
+    initialize_media();
 });
 
 
 // Server Functions -------------------------------------------------
+function initialize_media(mediaPath){
+    // Check if the path was set
+    if (typeof mediaPath === 'undefined')
+                mediaPath = "public/";
+
+            var media = { "audio" : [] , "video" : [], "picture" : []};
+
+            var require = __meteor_bootstrap__.require;
+            var path = require('path');
+            var fs = require('fs');
+            var basepath = (path.resolve('.'));
+
+            var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
+
+            for (var i = 0; i < contents.length; i++)
+            {
+                var file = contents[i];
+
+                if (isMusic(file))
+                {
+                    media.audio.push(file);
+                    media_server.audio.push(file);
+                }
+
+                else if (isVideo(file))
+                {
+                    media.video.push(file);
+                    media_server.video.push(file);
+                }
+
+                else if (isPicture(file))
+                {
+                    media.picture.push(file);
+                    media_server.picture.push(file);
+                }
+            }
+    return media;
+}
 
 function load_media( audioCollection , videoCollection , pictureCollection)
 {
@@ -218,6 +286,54 @@ function set_email_templates()
         {
                 return "";
         };
+}
+
+function silent_transcode() {
+
+            var mediaPath = "public/";
+            var require = __meteor_bootstrap__.require;
+            var path = require('path');
+            var basepath = (path.resolve('.'));
+            var fs = require('fs');
+            var needTranscodingToMp4 = [];
+            var needTranscodingToWebm = [];
+
+            if(silent_transcoding){
+                for(var i = 0; i < media_server.video.length; i++){
+                    var output = media_server.video[i].substr(0, media_server.video[i].lastIndexOf('.')) || media_server.video[i];
+                    var mp4file = path.join(rootPath, "/transcoded/"+output +".mp4");
+                    var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");
+                    if(fs.existsSync(mp4file)){
+                        console.log(media_server.video[i] + "has a transcoded version already");
+                    }
+                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".mp4"){
+                        console.log(media_server.video[i] + "doesn't need mp4 transcoding");
+                    }
+                    else{
+                        needTranscodingToMp4.push(media_server.video[i]);
+                    }
+                    if(fs.existsSync(webmfile)){
+                        console.log(media_server.video[i] + "has a webm transcoded version already");
+                    }
+                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".webm"){
+                        console.log(media_server.video[i] + "doesn't need webm transcoding");
+                    }
+                    else{
+                        needTranscodingToWebm.push(media_server.video[i]);
+                    }
+                }
+                console.log("NEEDS MP4 TRANSCODING", needTranscodingToMp4);
+                console.log("NEEDS WEBM TRANSCODING", needTranscodingToWebm);
+                 transcodeAllToMp4(needTranscodingToMp4, function(){
+                 });
+                 transcodeAllToWebM(needTranscodingToMp4, function(){
+                 });
+            }
+        }
+
+function cb (err, data){
+    console.log("In thread callback");
+    this.destroy();
 }
 
 // Helper Functions -------------------------------------------------

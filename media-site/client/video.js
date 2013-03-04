@@ -24,6 +24,20 @@ try{
 
 Template.videopage.events(
 {
+    'click .createPlaylistButtonVid':function(){
+        var name = $('.playlistNameVid').val();
+        if(name){
+            Meteor.call('createPlaylist',name,function(error,result){
+                if(!result)
+                    show_error("Successfully created."); //Need show_message
+                else
+                    show_error("Playlist with the same name already exists.");
+            });
+        }else{
+            show_error("You need to specify a name for the playlist.\n");
+        }
+    },
+
     'click #transcode': function(){
         // console.log("clicked" + data);
         if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {

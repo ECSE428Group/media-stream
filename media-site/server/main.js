@@ -96,6 +96,21 @@ Meteor.startup(function ()
 				}
 			}
 			return found;
+		},
+		
+		getPlaylists: function(){
+			var userId = Meteor.userId();
+			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+			var listOfPlaylists = [];
+			if(usersPlaylist.length == 0){
+				return listOfPlaylists;
+			}else{
+				var lists = usersPlaylist[0].playlists;
+				for(var i=0;i<lists.length;i++){
+					listOfPlaylists.push(lists[i].name);
+				}
+				return listOfPlaylists;
+			}
 		}
 	}),
 	

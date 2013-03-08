@@ -52,8 +52,9 @@ Template.audiogrid.events(
 
 		catch (err)
 		{
-			show_error(get_lang("errors.audio") + err);
+			return false;
 		}
+		return true;
 	}
 });
 
@@ -70,5 +71,6 @@ Template.audiopage.events({
 		}else{
 			show_error("You need to specify a name for the playlist.\n");
 		}
+	 
 	}
 });

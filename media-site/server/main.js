@@ -79,10 +79,9 @@ Meteor.startup(function ()
             return media;
         },
 
-        //Playlist server side methods
-        createPlaylist: function(playlistName){
-            //If the name of the playlist already exists for this user, return false.
-            //Otherwise, return create the playlist and return true.
+        //If the name of the playlist already exists for this user, return false.
+        //Otherwise, return create the playlist and return true.
+        createPlaylist: function(playlistName,playlistType){
             var userId = Meteor.userId();
             var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
 
@@ -97,28 +96,76 @@ Meteor.startup(function ()
                     }
                 }
                 if(!found){
-                    lists.push({"name":playlistName,"files":[]});
+                    lists.push({"name":playlistName,"type":playlistType,"files":[]});
                     playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
                 }
             }
             return found;
         },
 
+        //Return all the playlists for the given user organized by type.
         getPlaylists: function(){
             var userId = Meteor.userId();
             var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-            var listOfPlaylists = [];
+            var allPlaylists = {"audio" : [] , "video" : [], "picture" : []};
+
             if(usersPlaylist.length == 0){
-                return listOfPlaylists;
+                return allPlaylists;
             }else{
                 var lists = usersPlaylist[0].playlists;
+                
                 for(var i=0;i<lists.length;i++){
-                    listOfPlaylists.push(lists[i].name);
+                    switch(lists[i].type){
+                        case "video": 
+                            allPlaylists.video.push(lists[i].name);
+                            break;
+                        case "audio": 
+                            allPlaylists.audio.push(lists[i].name);
+                            break;
+                        case "picture":
+                            allPlaylists.picture.push(lists[i].name);
+                            break;
+                    }
                 }
-                return listOfPlaylists;
+                return allPlaylists;
             }
         },
-
+        
+        //Return specific playlist.
+        getSpecificPlaylist: function(playlistName){
+            var userId = Meteor.userId();
+            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+            var lists = usersPlaylist[0].playlists;
+                
+            for(var i=0;i<lists.length;i++){
+                if(lists[i].name == playlistName){
+                    return lists[i].files;
+                }
+            }
+        },
+        
+         //Adds the given file to the given playlist.
+        addToPlaylist: function(playlistName,fileName){
+            var userId = Meteor.userId();
+            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+            var lists = usersPlaylist[0].playlists;
+            var added = false;
+            
+            for(var i=0;i<lists.length;i++){
+                if(lists[i].name == playlistName){
+                    for(var j=0;j<lists[i].files.length;j++){
+                        if(lists[i].files[j] == fileName){
+                            return false;;
+                        }
+                    }
+                    lists[i].files.push(fileName);
+                    playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+                    return true;
+                }
+            }
+        },
+        
+        
         launchLiveTranscode : function(file){
             handlePlaylistRequest(file, function(){
                 console.log("Finish Playlist Request");

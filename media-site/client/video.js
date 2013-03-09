@@ -12,32 +12,67 @@ try{
        return Session.get("video-contents");
    };
 
+    Template.videogridOptions.contents = function(){
+        return Session.get("video-playlists");
+    };
+   
+    Template.videoMenu.contents = function(){
+        return Session.get("video-playlists");
+    };
+    
    Template.videogrid.rendered = function(){
 	// Find all tile elements
 	var tileElements = document.getElementsByClassName( 'metro-tile' );
 	var i;
 	// Apply tile functions
-	for ( i = 0; i < tileElements.length; i++ ) {
+	/*for ( i = 0; i < tileElements.length; i++ ) {
 		Tile( tileElements[i] );
-	}
+	}*/
 };
 
 Template.videopage.events(
 {
-    'click .createPlaylistButtonVid':function(){
-        var name = $('.playlistNameVid').val();
+    'click #buttonMenuVid .createPlaylistButton':function(){
+        var name = $('#buttonMenuVid .playlistName').val();
         if(name){
-            Meteor.call('createPlaylist',name,function(error,result){
-                if(!result)
-                    show_error("Successfully created."); //Need show_message
-                else
+            Meteor.call('createPlaylist',name,"video",function(error,result){
+                if(!result){
+                    //TODO show_message instead of show_error
+                    $('#buttonMenuVid .playlistName').val("");
+                }else{
                     show_error("Playlist with the same name already exists.");
+                }
             });
         }else{
             show_error("You need to specify a name for the playlist.\n");
         }
     },
-
+    
+    'click #videogrid .addToPlaylist':function(event,template){
+        var stringToRemove = "Add to ";
+        var playlistName = event.target.innerHTML.substr(stringToRemove.length);
+        var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
+        Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
+            if(result){
+                //TODO show_message instead of show_error
+            }else{
+                show_error("This file already exists in the playlist.");
+            }
+        });
+    },
+    
+    'click #buttonMenuVid .viewPlaylist':function(event,template){
+        var playlistName = event.target.innerHTML;
+        Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
+            if(result){
+                //TODO show_message instead of show_error
+                Session.set("video-contents",result);
+            }else{
+                show_error("An error occured while retrieving the results");
+            }
+        });
+    },
+    
     'click #transcode': function(){
         // console.log("clicked" + data);
         if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
@@ -49,7 +84,7 @@ Template.videopage.events(
 
 Template.videogrid.events(
 {
-	'click': function (data)
+	'click .metro-tile': function (data)
 	{
 		$('#player-content').empty();
 		clear_error();
@@ -63,7 +98,7 @@ Template.videogrid.events(
 		}
 	},
 
-	'touchstart': function (data)
+	'touchstart .metro-tile': function (data)
 	{
 		$('#player-content').empty();
 		clear_error();

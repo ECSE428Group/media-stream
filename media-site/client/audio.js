@@ -60,8 +60,9 @@ Template.audiogrid.events(
 
 		catch (err)
 		{
-			show_error(get_lang("errors.audio") + err);
+			return false;
 		}
+		return true;
 	}
 });
 

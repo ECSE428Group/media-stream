@@ -10,7 +10,7 @@ var http = __meteor_bootstrap__.require('http');
 var url = __meteor_bootstrap__.require('url');
 var fs = require('fs');
 var path = __meteor_bootstrap__.require('path');
-var ffmpeg = require('fluent-ffmpeg');
+//var ffmpeg = require('fluent-ffmpeg');
 
 
 // 3rd party

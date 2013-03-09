@@ -79,15 +79,19 @@ function prepare_login()
 	if (user_id == "" || pass == "")
 	{
 		show_error(get_lang("errors.fill_fields"));
-		return;
+		return false;
 	}
-
 	// Log-in
-	process_login(user_id, pass);
-
+	//TEST
+	if(!thisIsTesting){
+  	process_login(user_id, pass);
+  }
 	// Clear the user and pass fields
 	$('#login-user').val("");
 	$('#login-pass').val("");
+  
+  //Credentials are valid
+  return true;
 }
 
 // Called to validate the registration form.
@@ -103,49 +107,53 @@ function prepare_register()
 	if (user_id == "" || pass == "" || confirm == "" || email == "")
 	{
 		show_error(get_lang("errors.fill_fields"));
-		return;
+		return false;
 	}
 
 	// Length checks
 	if (user_id.length < Session.get("min_username"))
 	{
 		show_error(get_lang("errors.name_short"));
-		return;
+		return false;
 	}
 
 	if (user_id.length > Session.get("max_username"))
 	{
 		show_error(get_lang("errors.name_long"));
-		return;
+		return false;
 	}
 
 	if (pass.length < Session.get("min_password"))
 	{
 		show_error(get_lang("errors.pass_short"));
-		return;
+		return false;
 	}
 
 	if (pass.length > Session.get("max_password"))
 	{
 		show_error(get_lang("errors.pass_long"));
-		return;
+		return false;
 	}
 
 	// Check if passwords are the same
 	if (pass != confirm)
 	{
 		show_error(get_lang("errors.pass_mismatch"));
-		return;
+		return false;
 	}
 
 	// Finally, try to add the user
-	process_login(user_id, pass, true, email);
+	//TEST
+	if(thisIsTesting){
+	  process_login(user_id, pass, true, email);
+  }
 
 	// Clear the user and pass fields
 	$('#reg-user').val("");
 	$('#reg-email').val("");
 	$('#reg-pass').val("");
 	$('#reg-confirm').val("");
+  return true;
 }
 
 // Process a login request.
@@ -157,11 +165,15 @@ function process_login(user_id, pass, new_user, email)
 	{
 		Meteor.loginWithPassword(user_id, pass, function(error)
 		{
-			if (error)
+			if (error){
 				show_error(get_lang("errors.bad_login"));
-
-			else
+        //TEST
+        loginCredentialsFailCallback(false);
+			}else{
+        //TEST
+        loginCredentialsPassCallback(true);
 				process_login_more();
+		  }
 		});
 	}
 
@@ -169,11 +181,12 @@ function process_login(user_id, pass, new_user, email)
 	else
 	{
 		Accounts.createUser({username: user_id, password: pass, email: email});
+    //TEST
+    registerPassCallback(true);
 		Meteor.loginWithPassword(user_id, pass, function(error)
 		{
 			if (error)
 				show_error(get_lang("errors.user_exists"));
-
 			else
 				process_login_more();
 		});

@@ -19,6 +19,7 @@ Template.navigation.events(
 	'click': function()
 	{
 		clear_error();
+    clear_success();
 	},
 
 	// Hook the logout button
@@ -34,6 +35,20 @@ Template.navigation.events(
 	}
 });
 
+Template.error.events({
+  'click .alert-error .close':function(event, template){
+    var errorMessage = $(event.target).siblings('.message').text();
+    removeSpecificError(errorMessage);
+  }
+});
+
+Template.success.events({
+  'click .alert-success .close':function(event, template){
+    var successMessage = $(event.target).siblings('.message').text();
+    removeSpecificSuccessMessage(successMessage);
+  }
+});
+
 Template.error.errorStatement = function ()
 {
 	// Get the current error message
@@ -43,7 +58,7 @@ Template.error.errorStatement = function ()
 Template.success.successStatement = function()
 {
   //Get the current success message
-  return Session.get("success");
+  return Session.get("successMessages");
 };
 } catch(err){
 	console.log(err);
@@ -79,18 +94,18 @@ function clear_error()
 	Session.set("errors", []);
 }
 
-function show_success(success_string)
+function show_success(successMessage_string)
 {
-	var success = [];
-	success.push(success_string);
+	var successMessages = [];
+	successMessages.push(successMessage_string);
 	try{
-	Session.set("success", success);
+	Session.set("successMessages", successMessages);
 	}catch(err){
 		console.log(err);
 	}
 	$('.alert').show();
 
-	return success;
+	return successMessages;
 }
 
 // Clears the error message
@@ -101,5 +116,21 @@ function clear_success()
 		$(this).parent().hide();
 	});
 
-	Session.set("success", []);
+	Session.set("successMessages", []);
+}
+
+function removeSpecificError(error)
+{
+  var errors = Session.get("errors");
+  var index = errors.indexOf(error);
+  errors.splice(index,1);
+  Session.set("errors",errors);
+}
+
+function removeSpecificSuccessMessage(successMessage)
+{
+  var successMessages = Session.get("successMessages");
+  var index = successMessages.indexOf(successMessages);
+  successMessages.splice(index,1);
+  Session.set("successMessages",successMessages);
 }

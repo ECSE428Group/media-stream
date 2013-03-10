@@ -28,7 +28,7 @@ Template.picturegrid.rendered = function()
   {
     if ($('#picturegrid .thumbnails .imgContainer a').length)
     {
-      window.Code.PhotoSwipe.attach($('.thumbnails .imgContainer a'), {});
+      window.Code.PhotoSwipe.attach($('#picturegrid .thumbnails .imgContainer a'), {});
       pictureErrors.photoswipe = "";
     }
   }

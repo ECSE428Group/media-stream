@@ -4,117 +4,182 @@
 
 // Startup ----------------------------------------------------------
 
+// Publish and Subsbribe calls go here
+// Meteor.Publish(things);
+// Meteor.Subscribe(things_in_client);
+
 // Global Server Variables
 // Setting global variables between client and server is a royal pain.
 // If these need to change, edit client/main.js and client/lang.js too.
 var min_username = 3;
 var max_username = 15;
-
-// var hlsvod = __meteor_bootstrap__.require('./hls-vod');
+var silent_transcoding = true;
+var media_server = { "audio" : [] , "video" : [], "picture" : []};
+var fileEncoding = "";
+var x = 0;
 
 // Startup Function
 Meteor.startup(function ()
 {
-	var audioCollection = new Meteor.Collection("audiofiles");
-	var videoCollection = new Meteor.Collection("videofiles");
-	var pictureCollection = new Meteor.Collection("picturefiles");
-	var playlistCollection = new Meteor.Collection("playlist");
-	load_media(audioCollection,videoCollection,pictureCollection);
+    var audioCollection = new Meteor.Collection("audiofiles");
+    var videoCollection = new Meteor.Collection("videofiles");
+    var pictureCollection = new Meteor.Collection("picturefiles");
+    var playlistCollection = new Meteor.Collection("playlist");
+    console.log("Server Collections Loaded");
 
-	Meteor.methods(
-	{
-		// Send Validation Email
-		send_validation_email: function (user)
-		{
-			Meteor.sendVerificationEmail(user._id);
-		},
+    load_media(audioCollection,videoCollection,pictureCollection);
 
-		// Send Reset Email
-		send_reset_email: function (name)
-		{
-			// Find the user
-			var user = Meteor.users.findOne({username: name});
+    Meteor.methods(
+    {
+        // Send Validation Email
+        send_validation_email: function (user)
+        {
+            Meteor.sendVerificationEmail(user._id);
+        },
 
-			// Can't find them
-			if (typeof user === 'undefined')
-				return false;
+        // Send Reset Email
+        send_reset_email: function (name)
+        {
+            // Find the user
+            var user = Meteor.users.findOne({username: name});
 
-			else
-			{
-				Accounts.sendResetPasswordEmail(user._id);
-				return true;
-			}
-		},
-		
-		// Load the media files into the session
-		getMedia : function (mediaPath)
-		{
-			
-			var media = { "audio" : [] , "video" : [], "picture" : []};
-			
-			var audioList = audioCollection.find().fetch();
-			for( var i = 0; i < audioList.length; i++ ){
-				media.audio.push(audioList[i].file);
-			}
-			
-			var videoList = videoCollection.find().fetch();
-			for( var i = 0; i < videoList.length; i++ ){
-				media.video.push(videoList[i].file);
-			}
-			
-			var pictureList = pictureCollection.find().fetch();
-			for( var i = 0; i < pictureList.length; i++ ){
-				media.picture.push(pictureList[i].file);
-			}
+            // Can't find them
+            if (typeof user === 'undefined')
+                return false;
 
-			
-			return media;
-		},
-		
-		//Playlist server side methods
-		createPlaylist: function(playlistName){
-			//If the name of the playlist already exists for this user, return false.
-			//Otherwise, return create the playlist and return true.
-			var userId = Meteor.userId();
-			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-			
-			if(usersPlaylist.length == 0){
-				playlistCollection.insert({"id":userId,"playlists":[]});
-			}else{
-				var lists = usersPlaylist[0].playlists;
-				var found = false;
-				for(var i=0;i<lists.length;i++){
-					if(lists[i].name == playlistName){
-						found = true;
-					}
-				}
-				if(!found){
-					lists.push({"name":playlistName,"files":[]});
-					playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
-				}
-			}
-			return found;
-		},
-		
-		getPlaylists: function(){
-			var userId = Meteor.userId();
-			var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-			var listOfPlaylists = [];
-			if(usersPlaylist.length == 0){
-				return listOfPlaylists;
-			}else{
-				var lists = usersPlaylist[0].playlists;
-				for(var i=0;i<lists.length;i++){
-					listOfPlaylists.push(lists[i].name);
-				}
-				return listOfPlaylists;
-			}
-		}
-	}),
-	
-	// Run Server Functions
-	set_create_user_restrictions();
-	set_email_templates();
+            else
+            {
+                Accounts.sendResetPasswordEmail(user._id);
+                return true;
+            }
+        },
+
+        // Load the media files into the session
+        getMedia : function (mediaPath)
+        {
+
+            var media = { "audio" : [] , "video" : [], "picture" : []};
+
+            var audioList = audioCollection.find().fetch();
+            for( var i = 0; i < audioList.length; i++ ){
+                media.audio.push(audioList[i].file);
+            }
+
+            var videoList = videoCollection.find().fetch();
+            for( var i = 0; i < videoList.length; i++ ){
+                media.video.push(videoList[i].file);
+            }
+
+            var pictureList = pictureCollection.find().fetch();
+            for( var i = 0; i < pictureList.length; i++ ){
+                media.picture.push(pictureList[i].file);
+            }
+
+
+            return media;
+        },
+
+        //If the name of the playlist already exists for this user, return false.
+        //Otherwise, return create the playlist and return true.
+        createPlaylist: function(playlistName,playlistType){
+            var userId = Meteor.userId();
+            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+
+            if(usersPlaylist.length == 0){
+                playlistCollection.insert({"id":userId,"playlists":[]});
+            }else{
+                var lists = usersPlaylist[0].playlists;
+                var found = false;
+                for(var i=0;i<lists.length;i++){
+                    if(lists[i].name == playlistName){
+                        found = true;
+                    }
+                }
+                if(!found){
+                    lists.push({"name":playlistName,"type":playlistType,"files":[]});
+                    playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+                }
+            }
+            return found;
+        },
+
+        //Return all the playlists for the given user organized by type.
+        getPlaylists: function(){
+            var userId = Meteor.userId();
+            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+            var allPlaylists = {"audio" : [] , "video" : [], "picture" : []};
+
+            if(usersPlaylist.length == 0){
+                return allPlaylists;
+            }else{
+                var lists = usersPlaylist[0].playlists;
+                
+                for(var i=0;i<lists.length;i++){
+                    switch(lists[i].type){
+                        case "video": 
+                            allPlaylists.video.push(lists[i].name);
+                            break;
+                        case "audio": 
+                            allPlaylists.audio.push(lists[i].name);
+                            break;
+                        case "picture":
+                            allPlaylists.picture.push(lists[i].name);
+                            break;
+                    }
+                }
+                return allPlaylists;
+            }
+        },
+        
+        //Return specific playlist.
+        getSpecificPlaylist: function(playlistName){
+            var userId = Meteor.userId();
+            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+            var lists = usersPlaylist[0].playlists;
+                
+            for(var i=0;i<lists.length;i++){
+                if(lists[i].name == playlistName){
+                    return lists[i].files;
+                }
+            }
+        },
+        
+         //Adds the given file to the given playlist.
+        addToPlaylist: function(playlistName,fileName){
+            var userId = Meteor.userId();
+            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+            var lists = usersPlaylist[0].playlists;
+            var added = false;
+            
+            for(var i=0;i<lists.length;i++){
+                if(lists[i].name == playlistName){
+                    for(var j=0;j<lists[i].files.length;j++){
+                        if(lists[i].files[j] == fileName){
+                            return false;;
+                        }
+                    }
+                    lists[i].files.push(fileName);
+                    playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+                    return true;
+                }
+            }
+        },
+        
+        
+        launchLiveTranscode : function(file){
+            handlePlaylistRequest(file, function(){
+                console.log("Finish Playlist Request");
+            });
+        },
+
+        transcode : function(){
+            silent_transcode();
+        }
+    }),
+
+    // Run Server Functions
+    set_create_user_restrictions();
+    set_email_templates();
 });
 
 
@@ -122,45 +187,46 @@ Meteor.startup(function ()
 
 function load_media( audioCollection , videoCollection , pictureCollection)
 {
-	if (typeof mediaPath === 'undefined')
-		mediaPath = "public/";
+    if (typeof mediaPath === 'undefined')
+        mediaPath = "public/";
 
-	var require = __meteor_bootstrap__.require;
-	var path = require('path');
-	var fs = require('fs');
-	var basepath = (path.resolve('.'));
+    var require = __meteor_bootstrap__.require;
+    var path = require('path');
+    var fs = require('fs');
+    var basepath = (path.resolve('.'));
 
-	var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
+    var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
 
-	for (var i = 0; i < contents.length; i++)
-	{
-		var file = contents[i];
+    for (var i = 0; i < contents.length; i++)
+    {
+        var file = contents[i];
 
-		if (isMusic(file))
-		{
-			if( audioCollection.find({"file":file}).fetch().length == 0 ){
-				audioCollection.insert({"file":file});
-			}
+        if (isMusic(file))
+        {
+            if( audioCollection.find({"file":file}).fetch().length == 0 ){
+                audioCollection.insert({"file":file});
+            }
 
-		}
+        }
 
-		else if (isVideo(file))
-		{
-			if( videoCollection.find({"file":file}).fetch().length == 0 ){
-				videoCollection.insert({"file":file});
-			}
-		}
+        else if (isVideo(file))
+        {
+            if( videoCollection.find({"file":file}).fetch().length == 0 ){
+                videoCollection.insert({"file":file});
+            }
+            media_server.video.push(file);
+        }
 
-		else if (isPicture(file))
-		{
-			if( pictureCollection.find({"file":file}).fetch().length == 0 ){
-				pictureCollection.insert({"file":file});
-			}
-		}
-	}
+        else if (isPicture(file))
+        {
+            if( pictureCollection.find({"file":file}).fetch().length == 0 ){
+                pictureCollection.insert({"file":file});
+            }
+        }
+    }
+    console.log("Media Collections Updated");
 
 }
-
 
 // Used to add more security to username fields.
 // We don't mind about passwords here due to the way passwords
@@ -216,6 +282,49 @@ function set_email_templates()
                 return "";
         };
 }
+
+function silent_transcode() {
+
+            var mediaPath = "public/";
+            var require = __meteor_bootstrap__.require;
+            var path = require('path');
+            var basepath = (path.resolve('.'));
+            var fs = require('fs');
+            var needTranscodingToMp4 = [];
+            var needTranscodingToWebm = [];
+
+            if(silent_transcoding){
+                for(var i = 0; i < media_server.video.length; i++){
+                    var output = media_server.video[i].substr(0, media_server.video[i].lastIndexOf('.')) || media_server.video[i];
+                    var mp4file = path.join(rootPath, "/transcoded/"+output +".mp4");
+                    var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");
+                    if(fs.existsSync(mp4file)){
+                        console.log(media_server.video[i] + "has a transcoded version already");
+                    }
+                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".mp4"){
+                        console.log(media_server.video[i] + "doesn't need mp4 transcoding");
+                    }
+                    else{
+                        needTranscodingToMp4.push(media_server.video[i]);
+                    }
+                    if(fs.existsSync(webmfile)){
+                        console.log(media_server.video[i] + "has a webm transcoded version already");
+                    }
+                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".webm"){
+                        console.log(media_server.video[i] + "doesn't need webm transcoding");
+                    }
+                    else{
+                        needTranscodingToWebm.push(media_server.video[i]);
+                    }
+                }
+                console.log("NEEDS MP4 TRANSCODING", needTranscodingToMp4);
+                console.log("NEEDS WEBM TRANSCODING", needTranscodingToWebm);
+                 transcodeAllToMp4(needTranscodingToMp4, function(){
+                 });
+                 transcodeAllToWebM(needTranscodingToWebm, function(){
+                 });
+            }
+        }
 
 // Helper Functions -------------------------------------------------
 function isVideo(path)

@@ -72,7 +72,3 @@ function clear_error()
 
 	Session.set("errors", []);
 }
-
-Template.buttonOptions.contents = function(){
-	return Session.get("playlist-contents");
-};

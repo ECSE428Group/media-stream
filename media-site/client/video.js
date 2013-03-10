@@ -2,44 +2,89 @@
 // This files handles video playing logic and templating.
 
 //Variables
+useTranscodedStreaming = false;
 useLiveStreaming = false;
 
 // Template Definition ----------------------------------------------
 try{
-Template.videogrid.contents = function ()
-{
-	return Session.get("video-contents");
-};
+    Template.videogrid.contents = function ()
+    {
+       return Session.get("video-contents");
+   };
 
-Template.videogrid.rendered = function(){
+    Template.videogridOptions.contents = function(){
+        return Session.get("video-playlists");
+    };
+   
+    Template.videoMenu.contents = function(){
+        return Session.get("video-playlists");
+    };
+    
+   Template.videogrid.rendered = function(){
 	// Find all tile elements
 	var tileElements = document.getElementsByClassName( 'metro-tile' );
 	var i;
 	// Apply tile functions
-	for ( i = 0; i < tileElements.length; i++ ) {
+	/*for ( i = 0; i < tileElements.length; i++ ) {
 		Tile( tileElements[i] );
-	}
+	}*/
 };
 
-Template.videopage.events({
-	'click .createPlaylistButtonVid':function(){
-		var name = $('.playlistNameVid').val();
-		if(name){
-			Meteor.call('createPlaylist',name,function(error,result){
-				if(!result)
-					show_error("Successfully created."); //Need show_message
-				else
-					show_error("Playlist with the same name already exists.");
-			});
-		}else{
-			show_error("You need to specify a name for the playlist.\n");
-		}
-	}
+Template.videopage.events(
+{
+    'click #buttonMenuVid .createPlaylistButton':function(){
+        var name = $('#buttonMenuVid .playlistName').val();
+        if(name){
+            Meteor.call('createPlaylist',name,"video",function(error,result){
+                if(!result){
+                    //TODO show_message instead of show_error
+                    $('#buttonMenuVid .playlistName').val("");
+                }else{
+                    show_error("Playlist with the same name already exists.");
+                }
+            });
+        }else{
+            show_error("You need to specify a name for the playlist.\n");
+        }
+    },
+    
+    'click #videogrid .addToPlaylist':function(event,template){
+        var stringToRemove = "Add to ";
+        var playlistName = event.target.innerHTML.substr(stringToRemove.length);
+        var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
+        Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
+            if(result){
+                //TODO show_message instead of show_error
+            }else{
+                show_error("This file already exists in the playlist.");
+            }
+        });
+    },
+    
+    'click #buttonMenuVid .viewPlaylist':function(event,template){
+        var playlistName = event.target.innerHTML;
+        Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
+            if(result){
+                //TODO show_message instead of show_error
+                Session.set("video-contents",result);
+            }else{
+                show_error("An error occured while retrieving the results");
+            }
+        });
+    },
+    
+    'click #transcode': function(){
+        // console.log("clicked" + data);
+        if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
+            Meteor.call('transcode', function(){
+            });
+        }
+    }
 });
 
 Template.videogrid.events(
 {
-	'click': function (data)
+	'click .metro-tile': function (data)
 	{
 		$('#player-content').empty();
 		clear_error();
@@ -53,7 +98,7 @@ Template.videogrid.events(
 		}
 	},
 
-	'touchstart': function (data)
+	'touchstart .metro-tile': function (data)
 	{
 		$('#player-content').empty();
 		clear_error();
@@ -78,44 +123,62 @@ function videoPlayerInit(file, mobile)
 	{
 		if(!isHTMLSupported(file))
 		{
-			if(isDIVXSupported(file) && !useLiveStreaming)
+			if(isDIVXSupported(file) && !useTranscodedStreaming && !useLiveStreaming)
 			{
 				addDivx(file);
 			}
+            else if(useTranscodedStreaming){
+                getSelectedFileTranscodedStream(file);
+                $('#select-modal').addClass("show");
+                //sxswinit();
+                $('video').get(0).load();
+                $('video').get(0).play();
+                $(".video-modal .videoClose").click(function(){
+                    $(this).closest(".video-modal").removeClass("show");
+                    $(this).next('video').get(0).pause();
+                });
+            }
             else if(useLiveStreaming){
-                getSelectedFileLiveStream(file);
+                getLiveStream(file);
+                $('#select-modal').addClass("show");
+               // sxswinit();
+                $('video').get(0).load();
+                $('video').get(0).play();
+                $(".video-modal .videoClose").click(function(){
+                    $(this).closest(".video-modal").removeClass("show");
+                    $(this).next('video').get(0).pause();
+                });
             }
             else
-				return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
-		}
+                return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
+        }
+        else
+        {
+         getSelectedFile(file);
+         $('#select-modal').addClass("show");
+         sxswinit();
+         $(".video-modal .videoClose").click(function(){
+            $(this).closest(".video-modal").removeClass("show");
+            $(this).next('video').get(0).pause();
+        });
+     }
+ }
 
-		else
-		{
-			getSelectedFile(file);
-			$('#select-modal').addClass("show");
-			sxswinit();
-			$(".video-modal .videoClose").click(function(){
-				$(this).closest(".video-modal").removeClass("show");
-				$(this).next('video').get(0).pause();
-			});
-		}
-	}
+ else
+ {
+  if(isHTMLSupported(file)){
+     getSelectedFile(file);
+     $('#select-modal').addClass("show");
+     $('video').get(0).load();
+     $('video').get(0).play();
+     $(".video-modal .videoClose").click(function(){
+        $(this).closest(".video-modal").removeClass("show");
+        $(this).next('video').get(0).pause();
+    });
+ } else
+ return show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
 
-	else
-	{
-		if(isHTMLSupported(file)){
-			getSelectedFile(file);
-            $('#select-modal').addClass("show");
-            $('video').get(0).load();
-            $('video').get(0).play();
-            $(".video-modal .videoClose").click(function(){
-				$(this).closest(".video-modal").removeClass("show");
-				$(this).next('video').get(0).pause();
-			});
-        } else
-            return show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
-
-	}
+}
 }
 
 function getSelectedFile(file)
@@ -124,9 +187,29 @@ function getSelectedFile(file)
 	videoNode.src = file;
 }
 
-function getSelectedFileLiveStream(file){
+function getSelectedFileTranscodedStream(file){
     var videoNode = document.querySelector('video');
-    videoNode.src = "hls/?file=" + file;
+    var output = file.substr(0, file.lastIndexOf('.')) || file;
+    if ($.browser.mozilla){
+        videoNode.src = "/transcoded/"+output +".webm";
+    }else{
+        videoNode.src = "/transcoded/"+output +".mp4";
+    }
+}
+
+function getLiveStream(file){
+    var videoNode = document.querySelector('video');
+    var output = file.substr(0, file.lastIndexOf('.')) || file;
+    //var newfile = "/transcoded/"+output +".mp4";
+    Meteor.call("launchLiveTranscode", file, function(){
+        console.log("Finished transcode");
+            setTimeout(function(){
+             videoNode.src = '/cache/stream.m3u8';
+            }, 1100);
+    });
+
+   // videoNode.src = 'hls/?file='+file;
+    videoNode.setAttribute("type", "video/mp4");
 }
 
 function addDivx(file)
@@ -209,7 +292,7 @@ function sxswfullbleed(boxWidth, boxHeight, imgWidth, imgHeight) {
         };
     }
 
-function sxswinit(){
+    function sxswinit(){
         var browserHeight = Math.round(jQuery(window).height());
         var browserWidth = Math.round(jQuery(window).width());
         var videoHeight = jQuery('video').height();
@@ -217,10 +300,10 @@ function sxswinit(){
         if (videoHeight > browserHeight || videoWidth > browserWidth){
             var new_size = sxsw.full_bleed(browserWidth, browserHeight, videoWidth, videoHeight);
             $('video')
-                .width(new_size.width)
-                .height(new_size.height);
+            .width(new_size.width)
+            .height(new_size.height);
         }
-}
+    }
 
 
 jQuery(document).ready(function($) {
@@ -228,23 +311,24 @@ jQuery(document).ready(function($) {
     /*
      * Full bleed background
      */
-var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
-if (!mobile){
-    $(window).resize(function() {
+     var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
+     if (!mobile){
+        $(window).resize(function() {
 
-        var browserHeight = Math.round($(window).height());
-        var browserWidth = Math.round($(window).width());
-        var videoHeight = jQuery('video').height();
-        var videoWidth = jQuery('video').width();
+            var browserHeight = Math.round($(window).height());
+            var browserWidth = Math.round($(window).width());
+            var videoHeight = jQuery('video').height();
+            var videoWidth = jQuery('video').width();
 
-        var new_size = sxswfullbleed(browserWidth, browserHeight, videoWidth, videoHeight);
+            var new_size = sxswfullbleed(browserWidth, browserHeight, videoWidth, videoHeight);
 
-        $('video')
+            $('video')
             .width(new_size.width)
             .height(new_size.height);
-    });
-}
+        });
+    }
 });
+
 
 //Borrowed from http://stackoverflow.com/questions/3505320/div-get-css-attributes-from-java-script
 //Used for tests
@@ -255,7 +339,7 @@ function getStyle(el,styleProp) {
         result = el.currentStyle[styleProp];
     } else if (window.getComputedStyle) {
         result = document.defaultView.getComputedStyle(el,null)
-                                    .getPropertyValue(styleProp);
+        .getPropertyValue(styleProp);
     } else {
         result = 'unknown';
     }

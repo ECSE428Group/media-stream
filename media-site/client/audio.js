@@ -12,6 +12,14 @@ Template.audiogrid.contents = function ()
 	return Session.get("audio-contents");
 };
 
+Template.audiogridOptions.contents = function(){
+    return Session.get("audio-playlists");
+};
+
+Template.audioMenu.contents = function(){
+    return Session.get("audio-playlists");
+};
+
 Template.audiogrid.events(
 {  
 	'click #audioButton': function ()
@@ -52,23 +60,51 @@ Template.audiogrid.events(
 
 		catch (err)
 		{
-			show_error(get_lang("errors.audio") + err);
+			return false;
 		}
+		return true;
 	}
 });
 
 Template.audiopage.events({
-	'click .createPlaylistButtonAudio':function(){
-		var name = $('.playlistNameAudio').val();
-		if(name){
-			Meteor.call('createPlaylist',name,function(error,result){
-				if(!result)
-					show_error("Successfully created."); //Need show_message
-				else
-					show_error("Playlist with the same name already exists.");
-			});
-		}else{
-			show_error("You need to specify a name for the playlist.\n");
-		}
-	}
+    'click #buttonMenuAudio .createPlaylistButton':function(){
+        var name = $('#buttonMenuAudio .playlistName').val();
+        if(name){
+            Meteor.call('createPlaylist',name,"audio",function(error,result){
+                if(!result){
+                    //TODO show_message instead of show_error
+                    $('#buttonMenuAudio .playlistName').val("");
+                }else{
+                    show_error("Playlist with the same name already exists.");
+                }
+            });
+        }else{
+            show_error("You need to specify a name for the playlist.\n");
+        }
+    },
+      
+    'click #audiogrid .addToPlaylist':function(event,template){
+        var stringToRemove = "Add to ";
+        var playlistName = event.target.innerHTML.substr(stringToRemove.length);
+        var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+        Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
+            if(result){
+                //TODO show_message instead of show_error
+            }else{
+                show_error("This file already exists in the playlist.");
+            }
+        });
+    },
+    
+    'click #buttonMenuAudio .viewPlaylist':function(event,template){
+        var playlistName = event.target.innerHTML;
+        Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
+            if(result){
+                //TODO show_message instead of show_error
+                Session.set("audio-contents",result);
+            }else{
+                show_error("An error occured while retrieving the results");
+            }
+        });
+    }
 });

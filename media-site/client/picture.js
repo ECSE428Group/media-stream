@@ -44,7 +44,7 @@ Template.picturepage.events({
 		if(name){
 			Meteor.call('createPlaylist',name,"picture",function(error,result){
 				if(!result){
-                    //TODO show_message instead of show_error
+                    show_success("Successfully created playlist");
                     $('#buttonMenuPic .playlistName').val("");
 				}else{
 					show_error("Playlist with the same name already exists.");
@@ -61,7 +61,7 @@ Template.picturepage.events({
         var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
         Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
             if(result){
-                //TODO show_message instead of show_error
+                show_success("Successfully added to playlist");
             }else{
                 show_error("This file already exists in the playlist.");
             }

@@ -39,6 +39,12 @@ Template.error.errorStatement = function ()
 	// Get the current error message
 	return Session.get("errors");
 };
+
+Template.success.successStatement = function()
+{
+  //Get the current success message
+  return Session.get("success");
+};
 } catch(err){
 	console.log(err);
 }
@@ -71,4 +77,29 @@ function clear_error()
 	});
 
 	Session.set("errors", []);
+}
+
+function show_success(success_string)
+{
+	var success = [];
+	success.push(success_string);
+	try{
+	Session.set("success", success);
+	}catch(err){
+		console.log(err);
+	}
+	$('.alert').show();
+
+	return success;
+}
+
+// Clears the error message
+function clear_success()
+{
+	$('.alert .close').live("click", function()
+	{
+		$(this).parent().hide();
+	});
+
+	Session.set("success", []);
 }

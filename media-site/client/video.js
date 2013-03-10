@@ -37,7 +37,7 @@ Template.videopage.events(
         if(name){
             Meteor.call('createPlaylist',name,"video",function(error,result){
                 if(!result){
-                    //TODO show_message instead of show_error
+                    show_success("Successfully created playlist");
                     $('#buttonMenuVid .playlistName').val("");
                 }else{
                     show_error("Playlist with the same name already exists.");
@@ -54,7 +54,7 @@ Template.videopage.events(
         var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
         Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
             if(result){
-                //TODO show_message instead of show_error
+                show_success("Successfully added to playlist");
             }else{
                 show_error("This file already exists in the playlist.");
             }
@@ -65,7 +65,6 @@ Template.videopage.events(
         var playlistName = event.target.innerHTML;
         Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
             if(result){
-                //TODO show_message instead of show_error
                 Session.set("video-contents",result);
             }else{
                 show_error("An error occured while retrieving the results");

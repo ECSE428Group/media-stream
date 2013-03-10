@@ -32,53 +32,37 @@ try{
 
 Template.videopage.events(
 {
-    'click #buttonMenuVid .createPlaylistButton':function(){
-        var name = $('#buttonMenuVid .playlistName').val();
-        if(name){
-            Meteor.call('createPlaylist',name,"video",function(error,result){
-                if(!result){
-                    show_success("Successfully created playlist");
-                    $('#buttonMenuVid .playlistName').val("");
-                }else{
-                    show_error("Playlist with the same name already exists.");
-                }
-            });
-        }else{
-            show_error("You need to specify a name for the playlist.\n");
-        }
-    },
-    
-    'click #videogrid .addToPlaylist':function(event,template){
-        var stringToRemove = "Add to ";
-        var playlistName = event.target.innerHTML.substr(stringToRemove.length);
-        var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
-        Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
-            if(result){
-                show_success("Successfully added to playlist");
-            }else{
-                show_error("This file already exists in the playlist.");
-            }
-        });
-    },
-    
-    'click #buttonMenuVid .viewPlaylist':function(event,template){
-        var playlistName = event.target.innerHTML;
-        Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
-            if(result){
-                Session.set("video-contents",result);
-            }else{
-                show_error("An error occured while retrieving the results");
-            }
-        });
-    },
-    
-    'click #transcode': function(){
-        // console.log("clicked" + data);
-        if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
-            Meteor.call('transcode', function(){
-            });
-        }
-    }
+  'click #buttonMenuVid .createPlaylistButton':function(event,template){
+    createPlaylist(event,template,"video");
+  },
+  
+  'touchstart #buttonMenuVid .createPlaylistButton':function(event,template){
+    createPlaylist(event,template,"video");
+  },
+  
+  'click #videogrid .addToPlaylist':function(event,template){
+    addToPlaylist(event,template,"video");
+  },
+  
+  'touchstart #videogrid .addToPlaylist':function(event,template){
+    addToPlaylist(event,template,"video");
+  },
+  
+  'click #buttonMenuVid .viewPlaylist':function(event,template){
+    viewPlaylist(event,template,"video");   
+  },
+  
+  'touchstart #buttonMenuVid .viewPlaylist':function(event,template){
+    viewPlaylist(event,template,"video");   
+  },
+  
+  'click #transcode': function(){
+      // console.log("clicked" + data);
+      if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
+          Meteor.call('transcode', function(){
+          });
+      }
+  }
 });
 
 Template.videogrid.events(

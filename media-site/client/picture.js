@@ -39,45 +39,29 @@ Template.picturegrid.rendered = function()
 };
 
 Template.picturepage.events({
-	'click #buttonMenuPic .createPlaylistButton':function(){
-		var name = $('#buttonMenuPic .playlistName').val();
-		if(name){
-			Meteor.call('createPlaylist',name,"picture",function(error,result){
-				if(!result){
-                    show_success("Successfully created playlist");
-                    $('#buttonMenuPic .playlistName').val("");
-				}else{
-					show_error("Playlist with the same name already exists.");
-                }
-			});
-		}else{
-			show_error("You need to specify a name for the playlist.\n");
-		}
+	'click #buttonMenuPic .createPlaylistButton':function(event, template){
+		createPlaylist(event,template,"picture");
 	},
     
-    'click #picturegrid .addToPlaylist':function(event,template){
-        var stringToRemove = "Add to ";
-        var playlistName = event.target.innerHTML.substr(stringToRemove.length);
-        var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
-        Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
-            if(result){
-                show_success("Successfully added to playlist");
-            }else{
-                show_error("This file already exists in the playlist.");
-            }
-        });
-    },
-    
-    'click #buttonMenuPic .viewPlaylist':function(event,template){
-        var playlistName = event.target.innerHTML;
-        Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
-            if(result){
-                Session.set("picture-contents",result);
-            }else{
-                show_error("An error occured while retrieving the results");
-            }
-        });
-    }
+  'touchstart #buttonMenuPic .createPlaylistButton':function(event, template){
+		createPlaylist(event,template,"picture");
+	},
+  
+  'click #picturegrid .addToPlaylist':function(event,template){
+    addToPlaylist(event,template,"picture");
+  },
+  
+  'touchstart #picturegrid .addToPlaylist':function(event,template){
+    addToPlaylist(event,template,"picture");
+  },
+  
+  'click #buttonMenuPic .viewPlaylist':function(event,template){
+    viewPlaylist(event,template,"picture");   
+  },
+  
+  'touchstart #buttonMenuPic .viewPlaylist':function(event,template){
+    viewPlaylist(event,template,"picture");   
+  }
 });
 
 //Error handling
@@ -96,3 +80,4 @@ function displayPictureErrors()
     }
   }
 }
+

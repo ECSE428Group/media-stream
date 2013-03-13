@@ -144,7 +144,7 @@ function prepare_register()
 
 	// Finally, try to add the user
 	//TEST
-	if(thisIsTesting){
+	if(!thisIsTesting){
 	  process_login(user_id, pass, true, email);
   }
 

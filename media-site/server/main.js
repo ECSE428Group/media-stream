@@ -165,16 +165,23 @@ Meteor.startup(function ()
             }
         },
         
-        
         launchLiveTranscode : function(file){
             handlePlaylistRequest(file, function(){
                 console.log("Finish Playlist Request");
             });
+
+        isFileTranscodedToWebM: function(file){
+            var output = file.substr(0, file.lastIndexOf('.')) || file;
+            var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");
+            return fs.existsSync(webmfile);
         },
 
-        transcode : function(){
-            silent_transcode();
+        isFileTranscodedToMp4: function(file){
+            var output = file.substr(0, file.lastIndexOf('.')) || file;
+            var mp4file = path.join(rootPath, "/transcoded/"+output +".mp4");
+            return fs.existsSync(mp4file);
         }
+
     }),
 
     // Run Server Functions
@@ -282,49 +289,6 @@ function set_email_templates()
                 return "";
         };
 }
-
-function silent_transcode() {
-
-            var mediaPath = "public/";
-            var require = __meteor_bootstrap__.require;
-            var path = require('path');
-            var basepath = (path.resolve('.'));
-            var fs = require('fs');
-            var needTranscodingToMp4 = [];
-            var needTranscodingToWebm = [];
-
-            if(silent_transcoding){
-                for(var i = 0; i < media_server.video.length; i++){
-                    var output = media_server.video[i].substr(0, media_server.video[i].lastIndexOf('.')) || media_server.video[i];
-                    var mp4file = path.join(rootPath, "/transcoded/"+output +".mp4");
-                    var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");
-                    if(fs.existsSync(mp4file)){
-                        console.log(media_server.video[i] + "has a transcoded version already");
-                    }
-                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".mp4"){
-                        console.log(media_server.video[i] + "doesn't need mp4 transcoding");
-                    }
-                    else{
-                        needTranscodingToMp4.push(media_server.video[i]);
-                    }
-                    if(fs.existsSync(webmfile)){
-                        console.log(media_server.video[i] + "has a webm transcoded version already");
-                    }
-                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".webm"){
-                        console.log(media_server.video[i] + "doesn't need webm transcoding");
-                    }
-                    else{
-                        needTranscodingToWebm.push(media_server.video[i]);
-                    }
-                }
-                console.log("NEEDS MP4 TRANSCODING", needTranscodingToMp4);
-                console.log("NEEDS WEBM TRANSCODING", needTranscodingToWebm);
-                 transcodeAllToMp4(needTranscodingToMp4, function(){
-                 });
-                 transcodeAllToWebM(needTranscodingToWebm, function(){
-                 });
-            }
-        }
 
 // Helper Functions -------------------------------------------------
 function isVideo(path)

@@ -2,8 +2,9 @@
 // This files handles video playing logic and templating.
 
 //Variables
-useTranscodedStreaming = false;
-useLiveStreaming = false;
+var useLiveStreaming = false;
+var lastClick = "";
+var lastDivx = false;
 
 // Template Definition ----------------------------------------------
 try{
@@ -32,7 +33,7 @@ try{
 
 Template.videopage.events(
 {
-  'click #buttonMenuVid .createPlaylistButton':function(event,template){
+    'click #buttonMenuVid .createPlaylistButton':function(event,template){
     createPlaylist(event,template,"video");
   },
   
@@ -55,24 +56,47 @@ Template.videopage.events(
   'touchstart #buttonMenuVid .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"video");   
   },
-  
-  'click #transcode': function(){
-      // console.log("clicked" + data);
-      if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
-          Meteor.call('transcode', function(){
-          });
-      }
-  }
+
+    'click #transcode': function(){
+        // console.log("clicked" + data);
+        if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
+            $.post('http://localhost:4040/transcode/', function(){
+                alert("Finished Transcoding all your files!");
+            });
+        }
+    }
 });
 
 Template.videogrid.events(
 {
-	'click .metro-tile': function (data)
-	{
-		$('#player-content').empty();
+	'click': function (data)
+	{  //console.log(data.currentTarget);
+        //alert(data.currentTarget.innerText);
 		clear_error();
-		var file = data.currentTarget.innerText;
+		var file = data.currentTarget.innerHTML;
+        if (file.indexOf("Options") >= 0 || file === ""){
+            return;
+        }
+        else if(lastClick == file){
+            if(lastDivx){
+              $('#divxmodal').modal('show');
+              return;
+            }
+            $('#select-modal').addClass("show");
+            $(".video-modal .videoClose").click(function(){
+                    $(this).closest(".video-modal").removeClass("show");
+                    $(this).next('video').get(0).pause();
+                });
+            return;
+        }
 		try{
+            lastClick = file;
+            // document.querySelector('video').removeAttr('src');
+            while(document.querySelector('source') !== null){
+                console.log(document.querySelector('source'));
+                document.querySelector('source').remove();
+            }
+            lastDivx = false;
 			var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
 			videoPlayerInit(file, mobile);
 		} catch (err)
@@ -85,8 +109,26 @@ Template.videogrid.events(
 	{
 		$('#player-content').empty();
 		clear_error();
-		var file = data.currentTarget.innerText;
+		var file = data.currentTarget.innerHTML;
+        if (file.indexOf("Options") >= 0 || file === ""){
+            return;
+        }
+        else if(lastClick == file){
+            if(lastDivx){
+              $('#divxmodal').modal('show');
+              return;
+            }
+            $('#select-modal').addClass("show");
+            $(".video-modal .videoClose").click(function(){
+                    $(this).closest(".video-modal").removeClass("show");
+                    $(this).next('video').get(0).pause();
+                });
+            return;
+        }
 		try{
+            lastClick = file;
+            lastDivx = false;
+            document.querySelector('video').removeAttr('src');
 			var mobile = ( navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) ? true : false );
 			videoPlayerInit(file, mobile);
 		} catch (err)
@@ -99,69 +141,96 @@ Template.videogrid.events(
 	console.log(err);
 }
 
+function addSourceToVideo( src, type) {
+    var source = document.createElement('source');
+    var videoNode = document.querySelector('video');
+    videoNode.src = src;
+    source.src = src;
+    if(type){
+        source.type = type;
+    }
+    // videoNode.appendChild(source);
+}
+
 // Function Definition ----------------------------------------------
 function videoPlayerInit(file, mobile)
 {
-	if (!mobile)
-	{
-		if(!isHTMLSupported(file))
-		{
-			if(isDIVXSupported(file) && !useTranscodedStreaming && !useLiveStreaming)
-			{
-				addDivx(file);
-			}
-            else if(useTranscodedStreaming){
-                getSelectedFileTranscodedStream(file);
-                $('#select-modal').addClass("show");
-                //sxswinit();
-                $('video').get(0).load();
-                $('video').get(0).play();
-                $(".video-modal .videoClose").click(function(){
-                    $(this).closest(".video-modal").removeClass("show");
-                    $(this).next('video').get(0).pause();
-                });
-            }
-            else if(useLiveStreaming){
-                getLiveStream(file);
-                $('#select-modal').addClass("show");
-               // sxswinit();
-                $('video').get(0).load();
-                $('video').get(0).play();
-                $(".video-modal .videoClose").click(function(){
-                    $(this).closest(".video-modal").removeClass("show");
-                    $(this).next('video').get(0).pause();
-                });
-            }
-            else
-                return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player.");
+    var vid = document.querySelector('video');
+    var webM = false;
+    var mp4 = false;
+    Meteor.call('isFileTranscodedToWebM', file, function(error, data){
+        webM = data;
+        if(data){
+            var output = file.substr(0, file.lastIndexOf('.')) || file;
+            var webMFile = "/transcoded/"+output +".webm";
+            addSourceToVideo(webMFile, 'video/webm');
+        }
+    });
+    Meteor.call('isFileTranscodedToMp4', file, function(error, data){
+        mp4 = data;
+        if(data){
+            var output = file.substr(0, file.lastIndexOf('.')) || file;
+            var mp4file = "/transcoded/"+output +".mp4";
+            addSourceToVideo(mp4file, 'video/mp4');
+        }
+    });
+    if(isHTMLSupported(file)){
+        addSourceToVideo(file, 'video/mp4');
+        mp4 = true;
+    }
+    if(vid.canPlayType('application/vnd.apple.mpegurl') == 'maybe'){
+        console.log("Native browser support for HTML5 live streaming");
+        useLiveStreaming = true;
+    }
+
+    //MOBILE//
+    if(mobile){
+        if(mp4 === true){
+            setUpPlayer();
+            return;
+        }
+        //if not mp4 version use live transcoding
+        else if(useLiveStreaming){
+            getLiveStream(file);
+            setUpPlayer();
+            return;
         }
         else
-        {
-         getSelectedFile(file);
-         $('#select-modal').addClass("show");
-         sxswinit();
-         $(".video-modal .videoClose").click(function(){
-            $(this).closest(".video-modal").removeClass("show");
-            $(this).next('video').get(0).pause();
-        });
-     }
- }
-
- else
- {
-  if(isHTMLSupported(file)){
-     getSelectedFile(file);
-     $('#select-modal').addClass("show");
-     $('video').get(0).load();
-     $('video').get(0).play();
-     $(".video-modal .videoClose").click(function(){
-        $(this).closest(".video-modal").removeClass("show");
-        $(this).next('video').get(0).pause();
-    });
- } else
- return show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
+            return show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
+    }
+    //Browser//
+	else{
+        //If there isn't an HTML5 compatible version, use live transcoding or divx
+		if(!webM && !mp4){
+             if(useLiveStreaming){
+                getLiveStream(file);
+                setUpPlayer();
+                return;
+           }
+            if(isDIVXSupported(file) && !useLiveStreaming)
+            {
+                addDivx(file);
+            }
+            else
+               return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player and your browser doesn't support live streaming so we can't transcode it on the fly.");
+        }
+    }
 
 }
+
+function setUpPlayer(file){
+  //     jwplayer("player-video").setup({
+  //       { type: 'html5' },
+  //       { type: 'flash', src: '/resources/jwplayer/jwplayer.flash.swf' }
+  // });
+$('#select-modal').addClass("show");
+                sxswinit();
+                $('video').get(0).load();
+                $('video').get(0).play();
+                $(".video-modal .videoClose").click(function(){
+                    $(this).closest(".video-modal").removeClass("show");
+                    $(this).next('video').get(0).pause();
+                });
 }
 
 function getSelectedFile(file)
@@ -170,34 +239,25 @@ function getSelectedFile(file)
 	videoNode.src = file;
 }
 
-function getSelectedFileTranscodedStream(file){
-    var videoNode = document.querySelector('video');
-    var output = file.substr(0, file.lastIndexOf('.')) || file;
-    if ($.browser.mozilla){
-        videoNode.src = "/transcoded/"+output +".webm";
-    }else{
-        videoNode.src = "/transcoded/"+output +".mp4";
-    }
-}
-
 function getLiveStream(file){
     var videoNode = document.querySelector('video');
     var output = file.substr(0, file.lastIndexOf('.')) || file;
-    //var newfile = "/transcoded/"+output +".mp4";
-    Meteor.call("launchLiveTranscode", file, function(){
-        console.log("Finished transcode");
-            setTimeout(function(){
-             videoNode.src = '/cache/stream.m3u8';
-            }, 1100);
-    });
-
-   // videoNode.src = 'hls/?file='+file;
-    videoNode.setAttribute("type", "video/mp4");
+    var newfile = "/transcoded/"+output +".mp4";
+    videoNode.src = 'http://localhost:4040/hls/?file='+file;
+    //addSourceToVideo('http://localhost:4040/cache/stream.m3u8');
+    //videoNode.setAttribute("type", "video/mp4");
 }
 
 function addDivx(file)
 {
-	var code = '<center> \
+	var code = '<div id="divxmodal" class="modal hide fade in" style="width: 700px; \
+    height: 400px; ">\
+    <div class="modal-header">\
+        <a class="close" data-dismiss="modal">×</a>\
+        <h3>DivX Modal</h3>\
+    </div>\
+    <div class="modal-body">\
+    <center> \
 	<object id="ie_plugin" classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616" \
 	width="660" \
 	height="300" \
@@ -216,11 +276,17 @@ function addDivx(file)
 	pluginspage="http://go.divx.com/plugin/download/"> \
 	</embed> \
 	</object> \
-	</center>';
+	</center>\
+    </div>\
+    </div> ';
 
 	var divx= document.createElement('div');
 	divx.innerHTML= code;
-	document.getElementById('player-content').appendChild(divx);
+	document.body.appendChild(divx);
+    setTimeout(function(){$('#divxmodal').modal('show');
+$("#divxmodal").css("z-index", "1500");
+},200);
+    lastDivx = true;
 }
 
 function isHTMLSupported(path)
@@ -310,6 +376,11 @@ jQuery(document).ready(function($) {
             .height(new_size.height);
         });
     }
+     $(function() {
+        $('#videodiv').click(function(){
+            alert("hi");
+        });
+    });
 });
 
 

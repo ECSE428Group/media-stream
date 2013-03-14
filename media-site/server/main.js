@@ -169,6 +169,7 @@ Meteor.startup(function ()
             handlePlaylistRequest(file, function(){
                 console.log("Finish Playlist Request");
             });
+        },
 
         isFileTranscodedToWebM: function(file){
             var output = file.substr(0, file.lastIndexOf('.')) || file;

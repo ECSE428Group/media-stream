@@ -17,8 +17,8 @@ Template.profile-page.events(
 			show_error("No empty fields.");
 
 		Accounts.changePassword(old_pass, new_pass);
-	},
-};
+	}
+});
 
 Template.loginpage.events({
 

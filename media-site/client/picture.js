@@ -4,6 +4,15 @@
 var pictureErrors = [];
 
 // Template Definition ----------------------------------------------
+
+// Not really secure, but checks should be done at the
+// server level anyway... this just activates client
+// side buttons.
+Template.picturegridOptions.superUser = function()
+{
+   return (Meteor.user().username == "Admin");
+};
+
 Template.picturegrid.contents = function()
 {
   return Session.get("picture-contents");

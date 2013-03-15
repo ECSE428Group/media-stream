@@ -95,13 +95,40 @@ Meteor.startup(function ()
 	},
 
         // Load the media files into the session based on what the user can see
-        getMedia : function (userid, mediaPath)
+	getMedia : function (userid, mediaPath)
         {
+            // Declarations
+	    var filesLen;
+	    var override = false;
             var media = { "audio" : [] , "video" : [], "picture" : []};
 	    var user = Meteor.users.findOne({_id: userid});
 
-	    if(typeof user === 'undefined' || typeof user.profile === 'undefined' || typeof user.profile.files === 'undefined')
+	    // Does the user exist
+	    if(typeof user === 'undefined')
 		return false;
+
+	    // For Admin override.
+	    // We assume that the Admin is the site owner for now
+	    // and has access to the server, and thus the media files
+	    // and can see them through the site, as well as add
+	    // users to a 'whitelist'.
+	    override = (user.username == "Admin");
+
+	    // If the user does not have a profile field
+	    // don't show any files. They aren't on any whitelist.
+	    if(typeof user.profile === 'undefined' || typeof user.profile.files === 'undefined')
+		filesLen = 0;
+
+	    // A whitelist is likely defined for this user.
+	    // Get its length.
+	    else
+		filesLen = user.profile.files.length;
+
+	    // Special case if we are the owner:
+	    // we need to make sure we loop exactly once through
+	    // all media files.
+	    if (override)
+		filesLen = 1;
 
             var audioList = audioCollection.find().fetch();
             for( var i = 0; i < audioList.length; i++ ){
@@ -115,9 +142,10 @@ Meteor.startup(function ()
 
             var pictureList = pictureCollection.find().fetch();
             for( var i = 0; i < pictureList.length; i++ ){
-		for( var j = 0; j < user.profile.files.length; j++ )
+		for( var j = 0; j < filesLen; j++ )
 		{
-			if (pictureList[i].file == user.profile.files[j])
+			// Do we have access to the media
+			if (override || pictureList[i].file == user.profile.files[j])
                 		media.picture.push(pictureList[i].file);
 		}
             }

@@ -6,9 +6,9 @@ Template.profilepage.events(
 {
 	'click #saveChanges': function()
 	{
-		var old_pass = $('#profile-password').val();
-		var new_pass = $('#profile-newpassword').val();
-		var cnf_pass = $('#profile-confirmpass').val();
+		var old_pass = $('#profilepassword').val();
+		var new_pass = $('#profilenewpassword').val();
+		var cnf_pass = $('#profileconfirmpass').val();
 
 		if (new_pass != cnf_pass)
 			show_error("Bad confirmation.");

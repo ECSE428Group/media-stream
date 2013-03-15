@@ -35,8 +35,25 @@
                                 {{/each}}
                             </ul>
                         </li>
-                        <li>
-                            <a href="#"><i class="icon-user"></i></a>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">	<i class="icon-user"></i>+ <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {{#each userlist}}
+                                    <li>
+                                        <a href="#" class="allowUser">Allow {{this}}</a>
+                                    </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">	<i class="icon-user"></i>- <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {{#each alloweduser}}
+                                    <li>
+                                        <a href="#" class="disallowUser">Disallow {{this}}</a>
+                                    </li>
+                                {{/each}}
+                            </ul>
                         </li>
                     </ul>
                 </div>

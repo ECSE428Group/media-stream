@@ -16,6 +16,30 @@ Template.pictureMenu.contents = function(){
 Template.picturegridOptions.contents = function(){
     return Session.get("picture-playlists");
 };
+
+Template.picturegridOptions.userlist = function(){
+        // Important: Async call!
+        // Must store value in a dynamic session var.
+        Meteor.call('getAllUsers', function(error, result)
+        {
+                Session.set("all_users", result);
+        });
+
+        // Get the dynamic session variable here
+        return Session.get("all_users");
+};
+
+Template.picturegridOptions.alloweduser = function(){
+        // Important: Async call!
+        // Must store value in a dynamic session var.
+        Meteor.call('getAllUsers', function(error, result)
+        {
+                Session.set("all_users", result);
+        });
+
+        // Get the dynamic session variable here
+        return Session.get("all_users");
+};
     
 Template.picturegrid.encode = function(url)
 {
@@ -53,6 +77,22 @@ Template.picturepage.events({
   
   'touchstart #picturegrid .addToPlaylist':function(event,template){
     addToPlaylist(event,template,"picture");
+  },
+
+  'click #picturegrid .allowUser': function(event){
+        var s = "Allow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('allowUser', name, file);
+  },
+
+  'click #picturegrid .disallowUser': function(event){
+        var s = "Disallow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('disallowUser', name, file);
   },
   
   'click #buttonMenuPic .viewPlaylist':function(event,template){

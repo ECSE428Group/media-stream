@@ -4,10 +4,6 @@
 
 // Startup ----------------------------------------------------------
 
-// Publish and Subsbribe calls go here
-// Meteor.Publish(things);
-// Meteor.Subscribe(things_in_client);
-
 // Global Server Variables
 // Setting global variables between client and server is a royal pain.
 // If these need to change, edit client/main.js and client/lang.js too.
@@ -54,11 +50,58 @@ Meteor.startup(function ()
             }
         },
 
-        // Load the media files into the session
-        getMedia : function (mediaPath)
-        {
+	// Finds all users by name
+	// TODO: Fix function that filters the names based on the permission
+	// drop-downs.
+	getAllUsers : function()
+	{
+		return _.pluck(Meteor.users.find({}).fetch(), "username");
+	},
 
+	// Lets a user see a particular media file
+	allowUser : function(username, file)
+	{
+		// Add to file names
+            	var user = Meteor.users.findOne({"username": username});
+
+        	// Can't find them
+           	if (typeof user === 'undefined')
+               		return false;
+
+		Meteor.users.update({"username": username}, {$addToSet: {"profile.files": file} });
+	},
+
+	// Disallows a user from being able to see a particular media file
+	disallowUser : function(username, file)
+	{
+		// Remove to file names
+		var i;
+		var file_list;
+		var new_list = [];
+            	var user = Meteor.users.findOne({"username": username});
+
+        	// Can't find them
+           	if (typeof user === 'undefined' || typeof user.profile === 'undefined' || typeof user.profile.files === 'undefined')
+               		return false;
+
+		file_list = user.profile.files;
+		for (i = 0; i < file_list.length; i++)
+		{
+			if (file_list[i] != file)
+				new_list.push(file_list[i]);
+		}
+
+		Meteor.users.update({"username": username}, {$set: {"profile.files": new_list} });
+	},
+
+        // Load the media files into the session based on what the user can see
+        getMedia : function (userid, mediaPath)
+        {
             var media = { "audio" : [] , "video" : [], "picture" : []};
+	    var user = Meteor.users.findOne({_id: userid});
+
+	    if(typeof user === 'undefined' || typeof user.profile === 'undefined' || typeof user.profile.files === 'undefined')
+		return false;
 
             var audioList = audioCollection.find().fetch();
             for( var i = 0; i < audioList.length; i++ ){
@@ -72,7 +115,11 @@ Meteor.startup(function ()
 
             var pictureList = pictureCollection.find().fetch();
             for( var i = 0; i < pictureList.length; i++ ){
-                media.picture.push(pictureList[i].file);
+		for( var j = 0; j < user.profile.files.length; j++ )
+		{
+			if (pictureList[i].file == user.profile.files[j])
+                		media.picture.push(pictureList[i].file);
+		}
             }
 
 

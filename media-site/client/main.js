@@ -21,7 +21,7 @@ var defined = false;
 var mediaPath = "public/";
 
 // Initialization ---------------------------------------------------
-Meteor.call('getMedia', mediaPath, function (error, result)
+Meteor.call('getMedia', Meteor.userId(), mediaPath, function (error, result)
 {
 	// Handle problems
 	if (error != undefined)

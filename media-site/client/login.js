@@ -6,18 +6,18 @@ Template.profilepage.events(
 {
 	'click #saveChanges': function()
 	{
-		var old_pass = $('#profilepassword').val();
-		var new_pass = $('#profilenewpassword').val();
-		var cnf_pass = $('#profileconfirmpass').val();
+		//var old_pass = $('#profilepassword').val();
+		//var new_pass = $('#profilenewpassword').val();
+		//var cnf_pass = $('#profileconfirmpass').val();
 
-		if (new_pass != cnf_pass)
-			show_error("Bad confirmation.");
+		//if (new_pass != cnf_pass)
+		//	show_error("Bad confirmation.");
 
-		if (old_pass == "" || new_pass == "" || cnf_pass == "")
-			show_error("No empty fields.");
+		//if (old_pass == "" || new_pass == "" || cnf_pass == "")
+		//	show_error("No empty fields.");
 
-		Accounts.changePassword(old_pass, new_pass);
-	}
+		Accounts.changePassword("test", "test2");
+	},
 });
 
 Template.loginpage.events({

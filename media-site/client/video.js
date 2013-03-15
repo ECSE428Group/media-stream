@@ -84,7 +84,7 @@ Template.videopage.events(
   'click #videogrid .allowUser': function(event){
         var s = "Allow ";
         var name = event.target.innerHTML.substr(s.length);
-        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+        var file = $(event.target).closest('.thumbnail').find('.videobox').first().text();
 
         Meteor.call('allowUser', name, file);
   },
@@ -92,7 +92,7 @@ Template.videopage.events(
   'click #videogrid .disallowUser': function(event){
         var s = "Disallow ";
         var name = event.target.innerHTML.substr(s.length);
-        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+        var file = $(event.target).closest('.thumbnail').find('.videobox').first().text();
 
         Meteor.call('disallowUser', name, file);
   },
@@ -117,7 +117,7 @@ Template.videopage.events(
 
 Template.videogrid.events(
 {
-	'click': function (data)
+	'click .videobox': function (data)
 	{  //console.log(data.currentTarget);
         //alert(data.currentTarget.innerText);
 		clear_error();
@@ -157,7 +157,7 @@ Template.videogrid.events(
 		}
 	},
 
-	'touchstart': function (data)
+	'touchstart .videobox': function (data)
 	{
 		clear_error();
 		var file = data.currentTarget.innerHTML;

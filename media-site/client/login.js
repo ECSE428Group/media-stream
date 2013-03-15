@@ -2,7 +2,7 @@
 // All logon procedures and template events are stored here.
 
 // Template Definition ----------------------------------------------
-Template.profile-page.events(
+Template.profilepage.events(
 {
 	'click #saveChanges': function()
 	{

@@ -8,7 +8,7 @@ Run:
   Go in to the media-site directory and type meteor
   For Transcoding:
     cd into the hls-vod directory and enter:
-    node hls-vod.js --port 4040 --transcoder-type ffmpeg --transcoder-path /usr/local/bin/ffmpeg --root-path ../media-site/public
+    node hls-vod.js --port 4040 --transcoder-type ffmpeg --transcoder-path /usr/local/bin/ffmpeg --root-path /Users/Breakend/Documents/media-stream/media-site/public
 
 Dependencies:
   For transcoding you will need FFMpeg. 

@@ -77,21 +77,25 @@ Template.videogrid.events(
         if (file.indexOf("Options") >= 0 || file === ""){
             return;
         }
-        else if(lastClick == file){
+        console.log(lastClick);
+        console.log(file);
+        if(lastClick == file){
             if(lastDivx){
               $('#divxmodal').modal('show');
               return;
             }
-            $('#select-modal').addClass("show");
-            $(".video-modal .videoClose").click(function(){
-                    $(this).closest(".video-modal").removeClass("show");
-                    $(this).next('video').get(0).pause();
-                });
-            return;
+            else{
+                $('#select-modal').addClass("show");
+                $(".video-modal .videoClose").click(function(){
+                        $(this).closest(".video-modal").removeClass("show");
+                        $(this).next('video').get(0).pause();
+                    });
+                return;
+            }
         }
 		try{
             lastClick = file;
-            // document.querySelector('video').removeAttr('src');
+            //document.querySelector('video').removeAttr('src');
             while(document.querySelector('source') !== null){
                 console.log(document.querySelector('source'));
                 document.querySelector('source').remove();
@@ -105,9 +109,8 @@ Template.videogrid.events(
 		}
 	},
 
-	'touchstart .metro-tile': function (data)
+	'touchstart': function (data)
 	{
-		$('#player-content').empty();
 		clear_error();
 		var file = data.currentTarget.innerHTML;
         if (file.indexOf("Options") >= 0 || file === ""){
@@ -126,6 +129,9 @@ Template.videogrid.events(
             return;
         }
 		try{
+            if(lastDivx){
+                removeDivx();
+            }
             lastClick = file;
             lastDivx = false;
             document.querySelector('video').removeAttr('src');
@@ -144,12 +150,11 @@ Template.videogrid.events(
 function addSourceToVideo( src, type) {
     var source = document.createElement('source');
     var videoNode = document.querySelector('video');
-    videoNode.src = src;
     source.src = src;
     if(type){
         source.type = type;
     }
-    // videoNode.appendChild(source);
+     videoNode.appendChild(source);
 }
 
 // Function Definition ----------------------------------------------
@@ -159,7 +164,9 @@ function videoPlayerInit(file, mobile)
     var webM = false;
     var mp4 = false;
     Meteor.call('isFileTranscodedToWebM', file, function(error, data){
-        webM = data;
+        console.log(data);
+        console.log(error);
+        webM = (data == 'true');
         if(data){
             var output = file.substr(0, file.lastIndexOf('.')) || file;
             var webMFile = "/transcoded/"+output +".webm";
@@ -167,24 +174,26 @@ function videoPlayerInit(file, mobile)
         }
     });
     Meteor.call('isFileTranscodedToMp4', file, function(error, data){
-        mp4 = data;
+        console.log(data);
+        console.log(error);
+        mp4 = (data == 'true');
         if(data){
             var output = file.substr(0, file.lastIndexOf('.')) || file;
             var mp4file = "/transcoded/"+output +".mp4";
             addSourceToVideo(mp4file, 'video/mp4');
         }
-    });
-    if(isHTMLSupported(file)){
-        addSourceToVideo(file, 'video/mp4');
+        if(isHTMLSupported(file)){
+        vid.src = file;
         mp4 = true;
     }
     if(vid.canPlayType('application/vnd.apple.mpegurl') == 'maybe'){
         console.log("Native browser support for HTML5 live streaming");
         useLiveStreaming = true;
     }
-
+    console.log(mp4);
     //MOBILE//
     if(mobile){
+        console.log("dont tell me you're here...");
         if(mp4 === true){
             setUpPlayer();
             return;
@@ -199,30 +208,34 @@ function videoPlayerInit(file, mobile)
             return show_error(get_lang("errors.video") + "This filetype is currently not supported for mobile");
     }
     //Browser//
-	else{
+    else{
         //If there isn't an HTML5 compatible version, use live transcoding or divx
-		if(!webM && !mp4){
+        if(!webM && !mp4){
+            console.log("should be in here");
              if(useLiveStreaming){
                 getLiveStream(file);
                 setUpPlayer();
                 return;
            }
-            if(isDIVXSupported(file) && !useLiveStreaming)
+            if(isDIVXSupported(file))
             {
                 addDivx(file);
             }
             else
                return show_error(get_lang("errors.video") + "This filetype is currently not supported by any available player and your browser doesn't support live streaming so we can't transcode it on the fly.");
         }
+        else{
+            console.log("has some sort of html5 version");
+            console.log(vid.src);
+            setUpPlayer();
+        }
     }
+    });
+    
 
 }
 
 function setUpPlayer(file){
-  //     jwplayer("player-video").setup({
-  //       { type: 'html5' },
-  //       { type: 'flash', src: '/resources/jwplayer/jwplayer.flash.swf' }
-  // });
 $('#select-modal').addClass("show");
                 sxswinit();
                 $('video').get(0).load();
@@ -283,10 +296,15 @@ function addDivx(file)
 	var divx= document.createElement('div');
 	divx.innerHTML= code;
 	document.body.appendChild(divx);
-    setTimeout(function(){$('#divxmodal').modal('show');
-$("#divxmodal").css("z-index", "1500");
-},200);
+    setTimeout(function(){
+        $('#divxmodal').modal('show');
+        $("#divxmodal").css("z-index", "1500");
+    },200);
     lastDivx = true;
+}
+
+function removeDivx(){
+    document.getElementById('divxmodal').remove();
 }
 
 function isHTMLSupported(path)

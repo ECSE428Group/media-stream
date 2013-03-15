@@ -155,7 +155,7 @@ Meteor.startup(function ()
                 if(lists[i].name == playlistName){
                     for(var j=0;j<lists[i].files.length;j++){
                         if(lists[i].files[j] == fileName){
-                            return false;;
+                            return false;
                         }
                     }
                     lists[i].files.push(fileName);
@@ -163,12 +163,6 @@ Meteor.startup(function ()
                     return true;
                 }
             }
-        },
-        
-        launchLiveTranscode : function(file){
-            handlePlaylistRequest(file, function(){
-                console.log("Finish Playlist Request");
-            });
         },
 
         isFileTranscodedToWebM: function(file){

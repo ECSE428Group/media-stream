@@ -1,8 +1,11 @@
+//This module is borrowed and modified from mifi/hls-vod on github.com
+
 var childProcess = require('child_process');
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var path = require('path');
+var ffmpeg = require('fluent-ffmpeg');
 
 // 3rd party
 var express = require('express');
@@ -39,6 +42,32 @@ var mimeTypes = {
 	'.ts': 'video/MP2T'
 };
 
+var media_server = { "audio" : [] , "video" : [], "picture" : []};
+
+function getVideoFiles(){
+var contents = fs.readdirSync(rootPath);
+
+    for (var i = 0; i < contents.length; i++){
+        var file = contents[i];
+        if (isVideo(file)){
+            media_server.video.push(file);
+        }
+    }
+}
+
+function isVideo(path)
+{
+	var supportedFiletypes = [ ".mp4", ".avi", ".mov", ".mkv", ".flv" ];
+	for (var i = 0; i < supportedFiletypes.length; i++)
+	{
+		if (path.indexOf(supportedFiletypes[i]) != -1)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 // Program state
 var encoderProcesses = {};
 var currentFile = null;
@@ -46,41 +75,40 @@ var lock = false;
 
 function silent_transcode() {
 
-            var needTranscodingToMp4 = [];
-            var needTranscodingToWebm = [];
+	var needTranscodingToMp4 = [];
+	var needTranscodingToWebm = [];
 
-            if(silent_transcoding){
-                for(var i = 0; i < media_server.video.length; i++){
-                    var output = media_server.video[i].substr(0, media_server.video[i].lastIndexOf('.')) || media_server.video[i];
-                    var mp4file = path.join(rootPath, "/transcoded/"+output +".mp4");
-                    var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");
-                    if(fs.existsSync(mp4file)){
-                        console.log(media_server.video[i] + "has a transcoded version already");
-                    }
-                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".mp4"){
-                        console.log(media_server.video[i] + "doesn't need mp4 transcoding");
-                    }
-                    else{
-                        needTranscodingToMp4.push(media_server.video[i]);
-                    }
-                    if(fs.existsSync(webmfile)){
-                        console.log(media_server.video[i] + "has a webm transcoded version already");
-                    }
-                    else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".webm"){
-                        console.log(media_server.video[i] + "doesn't need webm transcoding");
-                    }
-                    else{
-                        needTranscodingToWebm.push(media_server.video[i]);
-                    }
-                }
-                console.log("NEEDS MP4 TRANSCODING", needTranscodingToMp4);
-                console.log("NEEDS WEBM TRANSCODING", needTranscodingToWebm);
-                 transcodeAllToMp4(needTranscodingToMp4, function(){
-                 });
-                 transcodeAllToWebM(needTranscodingToWebm, function(){
-                 });
-            }
-        }
+	for(var i = 0; i < media_server.video.length; i++){
+		var output = media_server.video[i].substr(0, media_server.video[i].lastIndexOf('.')) || media_server.video[i];
+		var mp4file = path.join(rootPath, "/transcoded/"+output +".mp4");
+		var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");
+		if(fs.existsSync(mp4file)){
+			console.log(media_server.video[i] + "has a transcoded version already");
+		}
+		else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".mp4"){
+			console.log(media_server.video[i] + "doesn't need mp4 transcoding");
+		}
+		else{
+			needTranscodingToMp4.push(media_server.video[i]);
+		}
+		if(fs.existsSync(webmfile)){
+			console.log(media_server.video[i] + "has a webm transcoded version already");
+		}
+		else if(media_server.video[i].substr(media_server.video[i].lastIndexOf('.')) == ".webm"){
+			console.log(media_server.video[i] + "doesn't need webm transcoding");
+		}
+		else{
+			needTranscodingToWebm.push(media_server.video[i]);
+		}
+	}
+	console.log("NEEDS MP4 TRANSCODING", needTranscodingToMp4);
+	console.log("NEEDS WEBM TRANSCODING", needTranscodingToWebm);
+	transcodeAllToMp4(needTranscodingToMp4, function(){
+	});
+	transcodeAllToWebM(needTranscodingToWebm, function(){
+	});
+
+}
 
 function transcodeAllToMp4(files){
 	if (files.length === 0){return;}
@@ -119,7 +147,7 @@ function dead_transcode_to_mp4(file, callback){
 
 	lock=true;
 	try{
-	var proc = new ffmpeg({ source: rootfile_old, priority: 14 })
+	var proc = new ffmpeg({ source: rootfile_old, priority: 14, timeout: 300, })
 	.toFormat('mp4')
 	//.withVideoBitrate('1500k')
 	.withVideoCodec('libx264')
@@ -148,7 +176,7 @@ function dead_transcode_to_webm(file, callback){
 
 	lock=true;
 	try{
-	var proc = new ffmpeg({ source: rootfile_old, priority: 14 })
+	var proc = new ffmpeg({ source: rootfile_old, priority: 14, timeout: 300 })
 	.toFormat('webm')
 	//.withVideoBitrate('1500k')
 	//.withVideoCodec('libvpx')
@@ -427,6 +455,7 @@ app.get(/^\/hls\//, function(request, response) {
 });
 
 app.post(/^\/transcode\//, function(request, response) {
+	getVideoFiles();
 	silent_transcode();
 });
 

@@ -96,6 +96,22 @@ Template.videopage.events(
 
         Meteor.call('disallowUser', name, file);
   },
+
+  'touchstart #videogrid .allowUser': function(event){
+        var s = "Allow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.videobox').first().text();
+
+        Meteor.call('allowUser', name, file);
+  },
+
+  'touchstart #videogrid .disallowUser': function(event){
+        var s = "Disallow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.videobox').first().text();
+
+        Meteor.call('disallowUser', name, file);
+  },
   
   'click #buttonMenuVid .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"video");   

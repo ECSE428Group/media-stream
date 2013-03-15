@@ -103,6 +103,22 @@ Template.picturepage.events({
 
         Meteor.call('disallowUser', name, file);
   },
+
+  'touchstart #picturegrid .allowUser': function(event){
+        var s = "Allow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('allowUser', name, file);
+  },
+
+  'touchstart #picturegrid .disallowUser': function(event){
+        var s = "Disallow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('disallowUser', name, file);
+  },
   
   'click #buttonMenuPic .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"picture");   

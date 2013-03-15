@@ -53,7 +53,7 @@ function addToPlaylist(event,template,type){
     case "video":
       var stringToRemove = "Add to ";
       var playlistName = event.target.innerHTML.substr(stringToRemove.length);
-      var fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
+      var fileName = $(event.target).closest('.thumbnail').find('.videobox').first().text();
       Meteor.call('addToPlaylist',playlistName,fileName,function(error,result){
         if(result){
           show_success("Successfully added to playlist");

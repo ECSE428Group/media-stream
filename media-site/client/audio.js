@@ -131,6 +131,22 @@ Template.audiopage.events({
 
         Meteor.call('disallowUser', name, file);
   },
+
+  'touchstart #audiogrid .allowUser': function(event){
+        var s = "Allow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('allowUser', name, file);
+  },
+
+  'touchstart #audiogrid .disallowUser': function(event){
+        var s = "Disallow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('disallowUser', name, file);
+  },
   
   'click #buttonMenuAudio .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"audio");

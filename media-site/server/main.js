@@ -132,12 +132,22 @@ Meteor.startup(function ()
 
             var audioList = audioCollection.find().fetch();
             for( var i = 0; i < audioList.length; i++ ){
-                media.audio.push(audioList[i].file);
+		for( var j = 0; j < filesLen; j++ )
+		{
+			// Do we have access to the media
+			if (override || audioList[i].file == user.profile.files[j])
+                		media.audio.push(audioList[i].file);
+		}
             }
 
             var videoList = videoCollection.find().fetch();
             for( var i = 0; i < videoList.length; i++ ){
-                media.video.push(videoList[i].file);
+		for( var j = 0; j < filesLen; j++ )
+		{
+			// Do we have access to the media
+			if (override || videoList[i].file == user.profile.files[j])
+				media.video.push(videoList[i].file);
+		}
             }
 
             var pictureList = pictureCollection.find().fetch();

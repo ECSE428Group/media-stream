@@ -8,13 +8,45 @@ var lastDivx = false;
 
 // Template Definition ----------------------------------------------
 try{
+    // Not really secure, but checks should be done at the
+    // server level anyway... this just activates client
+    // side buttons.
+    Template.videogridOptions.superUser = function()
+    {
+       return (Meteor.user().username == "Admin");
+    };
+
     Template.videogrid.contents = function ()
     {
        return Session.get("video-contents");
-   };
+    };
 
     Template.videogridOptions.contents = function(){
         return Session.get("video-playlists");
+    };
+
+    Template.videogridOptions.userlist = function(){
+            // Important: Async call!
+            // Must store value in a dynamic session var.
+            Meteor.call('getAllUsers', function(error, result)
+            {
+                    Session.set("all_users", result);
+            });
+
+            // Get the dynamic session variable here
+            return Session.get("all_users");
+    };
+
+    Template.videogridOptions.alloweduser = function(){
+            // Important: Async call!
+            // Must store value in a dynamic session var.
+            Meteor.call('getAllUsers', function(error, result)
+            {
+                Session.set("all_users", result);
+            });
+
+       	    // Get the dynamic session variable here
+            return Session.get("all_users");
     };
    
     Template.videoMenu.contents = function(){
@@ -47,6 +79,22 @@ Template.videopage.events(
   
   'touchstart #videogrid .addToPlaylist':function(event,template){
     addToPlaylist(event,template,"video");
+  },
+
+  'click #videogrid .allowUser': function(event){
+        var s = "Allow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('allowUser', name, file);
+  },
+
+  'click #videogrid .disallowUser': function(event){
+        var s = "Disallow ";
+        var name = event.target.innerHTML.substr(s.length);
+        var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
+
+        Meteor.call('disallowUser', name, file);
   },
   
   'click #buttonMenuVid .viewPlaylist':function(event,template){

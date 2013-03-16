@@ -17,9 +17,9 @@
     <li id="tab-video"><a href="#tab2" data-toggle="tab">{{string "buttons.video"}}</a></li>
     <li id="tab-audio"><a href="#tab3" data-toggle="tab">{{string "buttons.audio"}}</a></li>
     <li id="tab-picture"><a href="#tab4" data-toggle="tab">{{string "buttons.picture"}}</a><li>
+    <li id="tab-profile"><a href="#tab6" data-toggle="tab">Edit Profile</a><li>
     <li id="tab-login"><a class="btn-primary" href="#tab5" data-toggle="tab">{{string "buttons.login"}}</a></li>
     <li id="tab-logout"><a class="btn-primary" href="#tab1" data-toggle="tab">{{string "buttons.logout"}}</a></li>
-    <li id="tab-editProfile"><a href="#tab6" data-toggle="tab">Edit Profile</a><li>
   </ul>
 </template>
 <template name="content">
@@ -46,7 +46,7 @@
     </div>
 
     <div class="tab-pane" id="tab6">
-      {{> profile-page}}
+      {{> profile}}
     </div>
 
   </div>

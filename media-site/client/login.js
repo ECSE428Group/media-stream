@@ -2,24 +2,6 @@
 // All logon procedures and template events are stored here.
 
 // Template Definition ----------------------------------------------
-Template.profilepage.events(
-{
-	'click #saveChanges': function()
-	{
-		//var old_pass = $('#profilepassword').val();
-		//var new_pass = $('#profilenewpassword').val();
-		//var cnf_pass = $('#profileconfirmpass').val();
-
-		//if (new_pass != cnf_pass)
-		//	show_error("Bad confirmation.");
-
-		//if (old_pass == "" || new_pass == "" || cnf_pass == "")
-		//	show_error("No empty fields.");
-
-		Accounts.changePassword("test", "test2");
-	},
-});
-
 Template.loginpage.events({
 
 	// LOGIN ====================================================
@@ -235,9 +217,9 @@ function process_login_more()
 	$('#tab-audio').show();
 	$('#tab-video').show();
 	$('#tab-picture').show();
+	$('#tab-profile').show();
 	$('#tab-logout').show();
 	$('#tab-login').hide();
-	$('#tab-editProfile').show();
 
 	// Clear any error message
 	clear_error();
@@ -256,9 +238,9 @@ function process_logout()
 	$('#tab-audio').hide();
 	$('#tab-video').hide();
 	$('#tab-picture').hide();
+	$('#tab-profile').hide();
 	$('#tab-logout').hide();
 	$('#tab-login').show();
-	$('#tab-editProfile').hide ();
 
 	// Clear any error message
 	clear_error();

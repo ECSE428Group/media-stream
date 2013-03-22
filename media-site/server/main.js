@@ -20,13 +20,45 @@ Meteor.startup(function ()
     var audioCollection = new Meteor.Collection("audiofiles");
     var videoCollection = new Meteor.Collection("videofiles");
     var pictureCollection = new Meteor.Collection("picturefiles");
+    var documentCollection = new Meteor.Collection("documentfiles");
     var playlistCollection = new Meteor.Collection("playlist");
     console.log("Server Collections Loaded");
 
-    load_media(audioCollection,videoCollection,pictureCollection);
+    load_media(audioCollection,videoCollection,pictureCollection,documentCollection);
 
     Meteor.methods(
     {
+        // Read File contents
+        readFile: function(file)
+        {
+            mediaPath = "public/";
+            var require = __meteor_bootstrap__.require;
+            var path = require('path');
+            var fs = require('fs');
+            var basepath = (path.resolve('.'));
+
+            var contents = fs.readFileSync(path.resolve(basepath + "/" + mediaPath +file),"utf8");
+            return contents;
+
+        },
+        //Update the file that was edited
+        writeFile: function (file , data){
+            mediaPath = "public/";
+            var require = __meteor_bootstrap__.require;
+            var path = require('path');
+            var fs = require('fs');
+            var basepath = (path.resolve('.'));
+
+            fs.writeFile(path.resolve(basepath + "/" + mediaPath +file),data, function (err){
+
+                if(err){
+                    console.log("Save Error");
+
+                }else{
+                    console.log("File Saved");
+                }
+            });
+        },
         // Send Validation Email
         send_validation_email: function (user)
         {
@@ -100,7 +132,7 @@ Meteor.startup(function ()
             // Declarations
 	    var filesLen;
 	    var override = false;
-            var media = { "audio" : [] , "video" : [], "picture" : []};
+            var media = { "audio" : [] , "video" : [], "picture" : [], "documents" : []};
 	    var user = Meteor.users.findOne({_id: userid});
 
 	    // Does the user exist
@@ -160,6 +192,15 @@ Meteor.startup(function ()
 		}
             }
 
+            var documentList = documentCollection.find().fetch();
+            for( var i = 0; i < documentList.length; i++ ){
+		for( var j = 0; j < filesLen; j++ )
+		{
+			// Do we have access to the media
+			//if (override || documentList[i].file == user.profile.files[j])
+                		media.documents.push(documentList[i].file);
+		}
+            }
 
             return media;
         },
@@ -272,7 +313,7 @@ Meteor.startup(function ()
 
 // Server Functions -------------------------------------------------
 
-function load_media( audioCollection , videoCollection , pictureCollection)
+function load_media( audioCollection , videoCollection , pictureCollection , documentCollection)
 {
     if (typeof mediaPath === 'undefined')
         mediaPath = "public/";
@@ -308,6 +349,13 @@ function load_media( audioCollection , videoCollection , pictureCollection)
         {
             if( pictureCollection.find({"file":file}).fetch().length == 0 ){
                 pictureCollection.insert({"file":file});
+            }
+        }
+
+        else if (isDocument(file))
+        {
+            if( documentCollection.find({"file":file}).fetch().length == 0 ){
+                documentCollection.insert({"file":file});
             }
         }
     }
@@ -400,6 +448,20 @@ function isMusic(path)
 function isPicture(path)
 {
 	var supportedFileTypes = [".jpg",".png",".gif",".bmp"];
+	for(var i = 0; i < supportedFileTypes.length; i++)
+	{
+		if(path.indexOf(supportedFileTypes[i]) != -1)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+function isDocument(path)
+{
+
+	var supportedFileTypes = [".txt",".c",".java",".xml"];
 	for(var i = 0; i < supportedFileTypes.length; i++)
 	{
 		if(path.indexOf(supportedFileTypes[i]) != -1)

@@ -81,90 +81,151 @@ Meteor.startup(function ()
 
         //If the name of the playlist already exists for this user, return false.
         //Otherwise, return create the playlist and return true.
+        //TODO - Find more efficient way to do this
         createPlaylist: function(playlistName,playlistType){
-            var userId = Meteor.userId();
-            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+          var userId = Meteor.userId();
+          var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
 
-            if(usersPlaylist.length == 0){
-                playlistCollection.insert({"id":userId,"playlists":[]});
-            }else{
-                var lists = usersPlaylist[0].playlists;
-                var found = false;
-                for(var i=0;i<lists.length;i++){
-                    if(lists[i].name == playlistName){
-                        found = true;
-                    }
-                }
-                if(!found){
-                    lists.push({"name":playlistName,"type":playlistType,"files":[]});
-                    playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
-                }
+          if(usersPlaylist.length == 0){
+            playlistCollection.insert({"id":userId,"playlists":[]});
+          }else{
+            var lists = usersPlaylist[0].playlists;
+            var found = false;
+            for(var i=0;i<lists.length;i++){
+              if(lists[i].name == playlistName){
+                found = true;
+              }
             }
-            return found;
+            if(!found){
+              lists.push({"name":playlistName,"type":playlistType,"files":[]});
+              playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+            }
+          }
+          return found;
         },
 
         //Return all the playlists for the given user organized by type.
+        //TODO - Find more efficient way to do this
         getPlaylists: function(){
-            var userId = Meteor.userId();
-            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-            var allPlaylists = {"audio" : [] , "video" : [], "picture" : []};
+          var userId = Meteor.userId();
+          var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+          var allPlaylists = {"audio" : [] , "video" : [], "picture" : []};
 
-            if(usersPlaylist.length == 0){
-                return allPlaylists;
-            }else{
-                var lists = usersPlaylist[0].playlists;
-                
-                for(var i=0;i<lists.length;i++){
-                    switch(lists[i].type){
-                        case "video": 
-                            allPlaylists.video.push(lists[i].name);
-                            break;
-                        case "audio": 
-                            allPlaylists.audio.push(lists[i].name);
-                            break;
-                        case "picture":
-                            allPlaylists.picture.push(lists[i].name);
-                            break;
-                    }
-                }
-                return allPlaylists;
+          if(usersPlaylist.length == 0){
+            return allPlaylists;
+          }else{
+            var lists = usersPlaylist[0].playlists;
+            
+            for(var i=0;i<lists.length;i++){
+              switch(lists[i].type){
+                case "video": 
+                  allPlaylists.video.push(lists[i].name);
+                  break;
+                case "audio": 
+                  allPlaylists.audio.push(lists[i].name);
+                  break;
+                case "picture":
+                  allPlaylists.picture.push(lists[i].name);
+                  break;
+              }
             }
+            return allPlaylists;
+          }
         },
         
         //Return specific playlist.
+        //TODO - Find more efficient way to do this
         getSpecificPlaylist: function(playlistName){
-            var userId = Meteor.userId();
-            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-            var lists = usersPlaylist[0].playlists;
-                
-            for(var i=0;i<lists.length;i++){
-                if(lists[i].name == playlistName){
-                    return lists[i].files;
-                }
+          var userId = Meteor.userId();
+          var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+          var lists = usersPlaylist[0].playlists;
+              
+          for(var i=0;i<lists.length;i++){
+            if(lists[i].name == playlistName){
+              return lists[i].files;
             }
+          }
         },
         
          //Adds the given file to the given playlist.
+         //TODO - Find more efficient way to do this
         addToPlaylist: function(playlistName,fileName){
-            var userId = Meteor.userId();
-            var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
-            var lists = usersPlaylist[0].playlists;
-            var added = false;
-            
-            for(var i=0;i<lists.length;i++){
-                if(lists[i].name == playlistName){
-                    for(var j=0;j<lists[i].files.length;j++){
-                        if(lists[i].files[j] == fileName){
-                            return false;;
-                        }
-                    }
-                    lists[i].files.push(fileName);
-                    playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
-                    return true;
+          var userId = Meteor.userId();
+          var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+          var lists = usersPlaylist[0].playlists;
+          var added = false;
+          
+          for(var i=0;i<lists.length;i++){
+            if(lists[i].name == playlistName){
+              for(var j=0;j<lists[i].files.length;j++){
+                if(lists[i].files[j] == fileName){
+                  return false;
                 }
+              }
+              lists[i].files.push(fileName);
+              playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+              return true;
             }
+          }
         },
         
+        //Removes the given file from the given playlist.
+        //TODO - Find more efficient way to do this
+        removeFromPlaylist: function(playlistName, fileName){
+          var userId = Meteor.userId();
+          var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
+          var lists = usersPlaylist[0].playlists;
+          var added = false;
+          
+          for(var i=0;i<lists.length;i++){
+            if(lists[i].name == playlistName){
+              for(var j=0;j<lists[i].files.length;j++){
+                if(lists[i].files[j] == fileName){
+                  lists[i].files.splice(j,1);
+                  playlistCollection.update({"id":userId},{"id":userId,"playlists":lists});
+                  return true;
+                }
+              }
+             
+            }
+          }
+          
+          return false;
+        },
+        
+        //Returns the files matching the searchString
+        //TODO - Add more detailed pattern mathcing implementation
+        keywordSearch:function(searchString,type){
+          var matchingItems = [];
+        
+          switch(type){
+            case "video":
+              var videoList = videoCollection.find().fetch();
+              for( var i = 0; i < videoList.length; i++ ){
+                if(videoList[i].file.indexOf(searchString)!== -1){
+                  matchingItems.push(videoList[i].file);
+                }
+              }
+              break;
+            case "audio":
+              var audioList = audioCollection.find().fetch();
+              for( var i = 0; i < audioList.length; i++ ){
+                  if(audioList[i].file.indexOf(searchString)!== -1){
+                    matchingItems.push(audioList[i].file);
+                  }
+              }
+              break;
+            case "picture":
+              var pictureList = pictureCollection.find().fetch();
+              for( var i = 0; i < pictureList.length; i++ ){
+                  if(pictureList[i].file.indexOf(searchString)!== -1){
+                    matchingItems.push(pictureList[i].file);
+                  }
+              }
+              break;
+          }
+          return matchingItems;
+        },
         
         launchLiveTranscode : function(file){
             handlePlaylistRequest(file, function(){

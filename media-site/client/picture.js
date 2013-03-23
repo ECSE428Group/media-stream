@@ -51,6 +51,14 @@ Template.picturepage.events({
     addToPlaylist(event,template,"picture");
   },
   
+  'click #picturegrid .removeFromPlaylist':function(event,template){
+    removeFromPlaylist(event,template,"picture");
+  },
+  
+  'touchstart #picturegrid .removeFromPlaylist':function(event,template){
+    removeFromPlaylist(event,template,"picture");
+  },
+  
   'touchstart #picturegrid .addToPlaylist':function(event,template){
     addToPlaylist(event,template,"picture");
   },
@@ -61,6 +69,14 @@ Template.picturepage.events({
   
   'touchstart #buttonMenuPic .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"picture");   
+  },
+  
+  'click #buttonMenuPic .search.btn':function(event,template){
+    search(event,template,"picture");
+  },
+  
+  'touchstart #buttonMenuPic .search.btn':function(event,template){
+    search(event,template,"picture");
   }
 });
 

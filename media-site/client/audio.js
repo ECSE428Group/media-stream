@@ -83,11 +83,27 @@ Template.audiopage.events({
     addToPlaylist(event,template,"audio");
   },
   
+  'click #audiogrid .removeFromPlaylist':function(event,template){
+    removeFromPlaylist(event,template,"audio");
+  },
+  
+  'touchstart #audiogrid .removeFromPlaylist':function(event,template){
+    removeFromPlaylist(event,template,"audio");
+  },
+  
   'click #buttonMenuAudio .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"audio");
   },
   
    'touchstart #buttonMenuAudio .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"audio");
+  },
+  
+  'click #buttonMenuAudio .search.btn':function(event,template){
+    search(event,template,"audio");
+  },
+  
+  'touchstart #buttonMenuAudio .search.btn':function(event,template){
+    search(event,template,"audio");
   }
 });

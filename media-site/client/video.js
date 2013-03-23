@@ -48,6 +48,14 @@ Template.videopage.events(
     addToPlaylist(event,template,"video");
   },
   
+  'click #videogrid .removeFromPlaylist':function(event,template){
+    removeFromPlaylist(event,template,"video");
+  },
+  
+  'touchstart #videogrid .removeFromPlaylist':function(event,template){
+    removeFromPlaylist(event,template,"video");
+  },
+  
   'click #buttonMenuVid .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"video");   
   },
@@ -56,6 +64,13 @@ Template.videopage.events(
     viewPlaylist(event,template,"video");   
   },
   
+  'click #buttonMenuVid .search.btn':function(event,template){
+    search(event,template,"video");
+  },
+  
+  'touchstart #buttonMenuVid .search.btn':function(event,template){
+    search(event,template,"video");
+  },
   'click #transcode': function(){
       // console.log("clicked" + data);
       if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {

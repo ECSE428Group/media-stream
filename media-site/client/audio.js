@@ -151,6 +151,13 @@ Template.audiopage.events({
   'click #buttonMenuAudio .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"audio");
   },
+
+    'change #upload': function(ev) {
+    alert("Meteor call");
+    _.each(ev.srcElement.files, function(file) {
+      Meteor.saveFile(file, file.name);
+    });
+  },
   
    'touchstart #buttonMenuAudio .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"audio");

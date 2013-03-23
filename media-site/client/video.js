@@ -122,7 +122,6 @@ Template.videopage.events(
   },
 
   'change #upload': function(ev) {
-    alert("Meteor call");
     _.each(ev.srcElement.files, function(file) {
       Meteor.saveFile(file, file.name);
     });

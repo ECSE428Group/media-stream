@@ -127,7 +127,6 @@ Template.videopage.events(
     });
   },
     'click #transcode': function(){
-        // console.log("clicked" + data);
         if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
             $.post('http://localhost:4040/transcode/', function(){
                 alert("Finished Transcoding all your files!");
@@ -139,15 +138,12 @@ Template.videopage.events(
 Template.videogrid.events(
 {
 	'click .videobox': function (data)
-	{  //console.log(data.currentTarget);
-        //alert(data.currentTarget.innerText);
+	{
 		clear_error();
 		var file = data.currentTarget.innerHTML;
         if (file.indexOf("Options") >= 0 || file === ""){
             return;
         }
-        console.log(lastClick);
-        console.log(file);
         if(lastClick == file){
             if(lastDivx){
               $('#divxmodal').modal('show');
@@ -164,9 +160,7 @@ Template.videogrid.events(
         }
 		try{
             lastClick = file;
-            //document.querySelector('video').removeAttr('src');
             while(document.querySelector('source') !== null){
-                console.log(document.querySelector('source'));
                 document.querySelector('source').remove();
             }
             lastDivx = false;
@@ -262,7 +256,6 @@ function videoPlayerInit(file, mobile)
     console.log(mp4);
     //MOBILE//
     if(mobile){
-        console.log("dont tell me you're here...");
         if(mp4 === true){
             setUpPlayer();
             return;
@@ -280,7 +273,6 @@ function videoPlayerInit(file, mobile)
     else{
         //If there isn't an HTML5 compatible version, use live transcoding or divx
         if(!webM && !mp4){
-            console.log("should be in here");
              if(useLiveStreaming){
                 getLiveStream(file);
                 setUpPlayer();
@@ -486,7 +478,6 @@ function getStyle(el,styleProp) {
 }
 
 Meteor.saveFile = function(blob, name, path, type, callback) {
-    console.log("in save file", blob, name, path, type);
   var fileReader = new FileReader(),
     method, encoding = 'binary', type = type || 'binary';
   switch (type) {
@@ -506,7 +497,6 @@ Meteor.saveFile = function(blob, name, path, type, callback) {
   }
 
   fileReader.onload = function(file) {
-    console.log("file reader onload");
     Meteor.call('saveFile', file.srcElement.result, name, path, encoding, callback);
   };
   fileReader[method](blob);

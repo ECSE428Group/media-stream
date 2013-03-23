@@ -5,7 +5,7 @@ Template.documentgrid.contents = function ()
 };
 
 Template.documentpage.events({
-  'click #documentgrid' : function(data)
+  'click #documentgrid .btn' : function(data)
   {
      var result = data.currentTarget.innerText; 
      $('#docuModalLabel').text(result);

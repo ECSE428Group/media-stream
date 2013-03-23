@@ -114,13 +114,19 @@ Template.videopage.events(
   },
   
   'click #buttonMenuVid .viewPlaylist':function(event,template){
-    viewPlaylist(event,template,"video");   
-  },
-  
-  'touchstart #buttonMenuVid .viewPlaylist':function(event,template){
-    viewPlaylist(event,template,"video");   
+    viewPlaylist(event,template,"video");
   },
 
+  'touchstart #buttonMenuVid .viewPlaylist':function(event,template){
+    viewPlaylist(event,template,"video");
+  },
+
+  'change #upload': function(ev) {
+    alert("Meteor call");
+    _.each(ev.srcElement.files, function(file) {
+      Meteor.saveFile(file, file.name);
+    });
+  },
     'click #transcode': function(){
         // console.log("clicked" + data);
         if (confirm('Are you sure you want to transcode? This may make the server hang for several minutes while all your videos are made available.')) {
@@ -321,8 +327,6 @@ function getLiveStream(file){
     var output = file.substr(0, file.lastIndexOf('.')) || file;
     var newfile = "/transcoded/"+output +".mp4";
     videoNode.src = 'http://localhost:4040/hls/?file='+file;
-    //addSourceToVideo('http://localhost:4040/cache/stream.m3u8');
-    //videoNode.setAttribute("type", "video/mp4");
 }
 
 function addDivx(file)
@@ -480,5 +484,36 @@ function getStyle(el,styleProp) {
         result = 'unknown';
     }
     return result;
+}
+
+Meteor.saveFile = function(blob, name, path, type, callback) {
+    console.log("in save file", blob, name, path, type);
+  var fileReader = new FileReader(),
+    method, encoding = 'binary', type = type || 'binary';
+  switch (type) {
+    case 'text':
+      // TODO Is this needed? If we're uploading content from file, yes, but if it's from an input/textarea I think not...
+      method = 'readAsText';
+      encoding = 'utf8';
+      break;
+    case 'binary':
+      method = 'readAsBinaryString';
+      encoding = 'binary';
+      break;
+    default:
+      method = 'readAsBinaryString';
+      encoding = 'binary';
+      break;
+  }
+
+  fileReader.onload = function(file) {
+    console.log("file reader onload");
+    Meteor.call('saveFile', file.srcElement.result, name, path, encoding, callback);
+  };
+  fileReader[method](blob);
+};
+
+function onLoad() {
+    $('#upload').click();
 }
 

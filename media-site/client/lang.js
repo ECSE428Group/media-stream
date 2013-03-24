@@ -143,6 +143,40 @@ var language_array =
     "video":        {
                         "en": "There was an error while loading the video - ",
                         "fr": "Il y a eu un problem lors du chargement des video - "
+                      },
+
+    "enter_info":        {
+                        "en": "You must enter information in order to endit your profile ",
+                        "fr": "Ajouter de l'information pour modifier votre profile. "
+                      },
+
+    "no_old_pass":        {
+                        "en": "The old password you entered was not found in the database ",
+                        "fr": "Le mot de passe que vous avez inscrit n'est pas dans la base de donees."
+                      },
+
+    "fill3fields":        {
+                        "en": "Fill out all the fields relating to password in order to change your password.",
+                        "fr": "Il faut remplir tout les boites qui on a faire avec votre mot de passe pour modifier votre mot de passe."
+                      }
+
+     },
+
+"success":
+  {
+    "password_change": {
+                        "en": "Your password has been changed!",
+                        "fr": "Ton mot de passe a ete change!"
+                      },
+
+    "username_change": {
+                        "en": "Your name has been changed!",
+                        "fr": "Ton nom a ete change!"
+                      },
+
+    "email_change": {
+                        "en": "Your email has been changed!",
+                        "fr": "Ton courriel a ete change!"
                       }
   }
 };

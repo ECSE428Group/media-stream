@@ -390,13 +390,57 @@ Meteor.startup(function ()
 		//sorts files alphabetically
 		sortByName: function(){
 		
-		var pictureSorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
-		return pictureSorted;
+			var sorted = [];
 		
-		},
+		//check whether it's picture, audio, video, or doc
+			switch(type){
+		
+				case "picture":
+					sorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
+				break;
+		
+				case "audio":
+					sorted = audioCollection.find().fetch();
+				break;
+		
+				case "video":
+					sorted = videoCollection.find().fetch();
+				break;
+		
+				case "document":
+					sorted = documentCollection.find().fetch();
+				break;
+			}
+		
+			return sorted;
+		},		
 		
 		//sorts files by file type
 		sortByType: function(){
+		
+		var sorted = [];
+		
+		//check whether it's picture, audio, video, or doc
+		switch(type){
+		
+				case "picture":
+					sorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
+				break;
+		
+				case "audio":
+					sorted = audioCollection.find().fetch();
+				break;
+		
+				case "video":
+					sorted = videoCollection.find().fetch();
+				break;
+		
+				case "document":
+					sorted = documentCollection.find().fetch();
+				break;
+			}
+		
+			return sorted;
 		
 		},
 		

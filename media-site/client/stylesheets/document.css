@@ -1,0 +1,20 @@
+#docuModalBody{
+	width: 98%
+}
+
+@media (max-width: 767px) {
+  .modal { 
+    position: fixed; 
+    top: 3%; 
+    right: 3%; 
+    left: 3%; 
+    width: auto; 
+    margin: 0; 
+  }
+  .modal-body { 
+    height: 60%; 
+    max-height: 350px; 
+    padding: 15px; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; 
+  }

@@ -35,7 +35,7 @@ function addToPlaylist(event,template,type){
   switch(type){
     case "video":
       playlistName = event.target.innerHTML.substr(stringToRemove.length);
-      fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
+      fileName = $(event.target).closest('.thumbnail').find('.videobox').first().text();
       break;
     case "audio":
       playlistName = event.target.innerHTML.substr(stringToRemove.length);
@@ -63,7 +63,7 @@ function removeFromPlaylist(event, template, type){
   switch(type){
     case "video":
       playlistName = event.target.innerHTML.substr(stringToRemove.length);
-      fileName = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().text();
+      fileName = $(event.target).closest('.thumbnail').find('.videobox').first().text();
       break;
     case "audio":
       playlistName = event.target.innerHTML.substr(stringToRemove.length);
@@ -100,6 +100,7 @@ function viewPlaylist(event,template,type){
       contentContainer = "picture-contents";
       break;
   }
+  
   Meteor.call('getSpecificPlaylist',playlistName,function(error,result){
     if(result){
       Session.set(contentContainer,result);

@@ -144,7 +144,7 @@ function prepare_register()
 
 	// Finally, try to add the user
 	//TEST
-	if(thisIsTesting){
+	if(!thisIsTesting){
 	  process_login(user_id, pass, true, email);
   }
 
@@ -197,13 +197,29 @@ function process_login(user_id, pass, new_user, email)
 // This is called after a successful login.
 function process_login_more()
 {
+	// Update the allowed media
+	Meteor.call('getMedia', Meteor.userId(), "/public", function (error, result)
+	{
+	        // Handle problems
+        	if (error != undefined)
+        	{
+                	alert("Fatal: Can't find the media folder.\nMake sure you've created a " + mediaPath + " folder!");
+                	return;
+        	}
+
+        	// Fill the session variables with the media we found
+        	Session.set("video-contents", result.video);
+        	Session.set("audio-contents", result.audio);
+        	Session.set("picture-contents", result.picture);
+	});
+
 	// Update Tabs
 	$('#tab-audio').show();
 	$('#tab-video').show();
 	$('#tab-picture').show();
+	$('#tab-profile').show();
 	$('#tab-logout').show();
 	$('#tab-login').hide();
-	$('#tab-editProfile').show();
 
 	// Clear any error message
 	clear_error();
@@ -222,9 +238,9 @@ function process_logout()
 	$('#tab-audio').hide();
 	$('#tab-video').hide();
 	$('#tab-picture').hide();
+	$('#tab-profile').hide();
 	$('#tab-logout').hide();
 	$('#tab-login').show();
-	$('#tab-editProfile').hide ();
 
 	// Clear any error message
 	clear_error();

@@ -18,7 +18,7 @@
   <div id='select-modal' class='video-modal center'>
     <div>
         <a href="#close" title="Close" class="videoClose">&times;</a>
-        <video id="player-video" class="video-js" controls autoplay></video>
+        <video id="player-video" class="video-js" controls="controls" autoplay="autoplay"></video>
     </div>
   </div>
 	<div id="buttonMenuVid">
@@ -42,9 +42,10 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li>
-                            <a href="#">Upload</a>
+                              <input type="file" id="upload" style="visibility:hidden;position:absolute;top:-50;left:-50"/>
+                        <a href="javascript:onLoad();">Upload</a>
                         </li>
-                        <li class="dropdown">
+                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Playlists<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {{#each contents}}

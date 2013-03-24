@@ -1,0 +1,10 @@
+# We should ignore everything in this folder
+# I'm guessing it's going to contain user-content anyway, right?
+#
+# Edit this rule if we need this to include other files.
+
+# Rule 1: Don't commit anything in this folder to the repo.
+*
+
+# Rule 2: Except this gitignore file.
+!.gitignore

@@ -388,6 +388,7 @@ Meteor.startup(function ()
         },
 		
 		//sorts files alphabetically
+		//TODO: 
 		sortByName: function(){
 		
 			var sorted = [];
@@ -400,15 +401,15 @@ Meteor.startup(function ()
 				break;
 		
 				case "audio":
-					sorted = audioCollection.find().fetch();
+					sorted = audioCollection.find({}, {sort: {$natural:1}}).fetch();
 				break;
 		
 				case "video":
-					sorted = videoCollection.find().fetch();
+					sorted = videoCollection.find({}, {sort: {$natural:1}}).fetch();
 				break;
 		
 				case "document":
-					sorted = documentCollection.find().fetch();
+					sorted = documentCollection.find({}, {sort: {$natural:1}}).fetch();
 				break;
 			}
 		
@@ -424,7 +425,7 @@ Meteor.startup(function ()
 		switch(type){
 		
 				case "picture":
-					sorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
+					sorted = pictureCollection.find().fetch();
 				break;
 		
 				case "audio":

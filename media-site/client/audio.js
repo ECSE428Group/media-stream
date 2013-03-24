@@ -102,10 +102,12 @@ Template.audiogrid.events(
 Template.audiopage.events({
   'click #buttonMenuAudio .createPlaylistButton':function(event,template){
     createPlaylist(event,template,"audio");
+    updatePlaylists();
   },
   
   'touchstart #buttonMenuAudio .createPlaylistButton':function(event,template){
     createPlaylist(event,template,"audio");
+    updatePlaylists();
   }, 
   
   'click #audiogrid .addToPlaylist':function(event,template){

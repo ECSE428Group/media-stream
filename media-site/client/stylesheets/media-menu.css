@@ -1,7 +1,13 @@
+.main.navbar
+{
+  margin-bottom:20px;
+}
+
 .navbar
 {
-  margin-bottom:0px
+  margin-bottom:0px;
 }
+
 .navbar-inner
 {
   webkit-border-radius:0px

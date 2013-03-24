@@ -67,10 +67,12 @@ Template.videopage.events(
 {
     'click #buttonMenuVid .createPlaylistButton':function(event,template){
     createPlaylist(event,template,"video");
+    updatePlaylists();
   },
   
   'touchstart #buttonMenuVid .createPlaylistButton':function(event,template){
     createPlaylist(event,template,"video");
+    updatePlaylists();
   },
   
   'click #videogrid .addToPlaylist':function(event,template){

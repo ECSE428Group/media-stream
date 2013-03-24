@@ -1,24 +1,24 @@
 function createPlaylist(event,template,type){
-  var name, divTag;
+  var name, type;
   switch(type){
     case "video":
-      divTag = "#buttonMenuVid .playlistName";
-      name = $(divTag).val();
+      name = $(event.target).prev().val();
+      type = "video";
       break;
     case "audio":
-      divTag = "#buttonMenuAudio .playlistName";
-      name = $(divTag).val();
+      name = $(event.target).prev().val();
+      type = "audio";
       break;
     case "picture":
-      divTag = "#buttonMenuPic .playlistName";
-      name = $('#buttonMenuPic .playlistName').val();
+      name = $(event.target).prev().val();
+      type = "picture";
       break;
   }
+  
   if(name){
     Meteor.call('createPlaylist',name,type,function(error,result){
       if(!result){
         show_success("Successfully created playlist");
-        $(divTag).val("");
       }else{
         show_error("Playlist with the same name already exists.");
       }
@@ -110,3 +110,13 @@ function viewPlaylist(event,template,type){
   });
 }
 
+//Need to look into this. Normally, this should not be needed as changes to the 
+//database automatically cause the page to update. Problem could be due to 
+//disabling of autopublish.
+function updatePlaylists(){
+  Meteor.call('getPlaylists',function(error,result){
+	Session.set("video-playlists",result.video);
+    Session.set("audio-playlists",result.audio);
+    Session.set("picture-playlists",result.picture);
+  });
+}

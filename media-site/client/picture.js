@@ -74,10 +74,12 @@ Template.picturegrid.rendered = function()
 Template.picturepage.events({
 	'click #buttonMenuPic .createPlaylistButton':function(event, template){
 		createPlaylist(event,template,"picture");
+    updatePlaylists();
 	},
     
   'touchstart #buttonMenuPic .createPlaylistButton':function(event, template){
 		createPlaylist(event,template,"picture");
+    updatePlaylists();
 	},
   
   'click #picturegrid .addToPlaylist':function(event,template){

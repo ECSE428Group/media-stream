@@ -11,6 +11,12 @@
 	text-align:center;
 }
 
+.mediaThumbnails
+{
+	height: 200px;
+	width: 100%;
+}
+
 .sm2-inline-list .ui360, .sm2-inline-block .ui360
 {
 	float:none;

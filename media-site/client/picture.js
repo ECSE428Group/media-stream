@@ -144,14 +144,15 @@ Template.picturepage.events({
   
   'touchstart #buttonMenuPic .search.btn':function(event,template){
     search(event,template,"picture");
-  }
-  	'click #buttonMenuPic .sortByNameButton':function(event, template){
-		sortByName(event,template,"picture");
-	},
+  },
+
+  'click #buttonMenuPic .sortByNameButton':function(event, template){
+    sortByName(event,template,"picture");
+  },
 	
-	'click #buttonMenuPic .sortByTypeButton':function(event, template){
-		sortByType(event,template,"picture");
-	}
+  'click #buttonMenuPic .sortByTypeButton':function(event, template){
+    sortByType(event,template,"picture");
+  }
 });
 
 //Error handling

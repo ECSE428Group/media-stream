@@ -238,6 +238,7 @@ Meteor.startup(function ()
         //TODO - Find more efficient way to do this
         createPlaylist: function(playlistName,playlistType){
           var userId = Meteor.userId();
+          var userId = Meteor.userId();
           var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
 
           if(usersPlaylist.length == 0){
@@ -397,7 +398,11 @@ Meteor.startup(function ()
 			switch(type){
 		
 				case "picture":
-					sorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
+					sorted = pictureCollection.find().fetch();
+					sorted.sort();
+					//sorted = pictureList;
+				
+					//sorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
 				break;
 		
 				case "audio":
@@ -422,22 +427,105 @@ Meteor.startup(function ()
 		var sorted = [];
 		
 		//check whether it's picture, audio, video, or doc
-		switch(type){
-		
+		switch(type){		
 				case "picture":
-					sorted = pictureCollection.find().fetch();
+					var pictureList = pictureCollection.find().fetch();
+					
+					for (var i = 0; i < pictureCollection.length(); i++){
+						if (pictureList.indexOf(".jpg") != -1){
+							sorted.push(pictureList[i].file);
+						}
+					}
+					for (var i = 0; i < pictureCollection.length(); i++){
+						if (pictureList.indexOf(".png") != -1){
+							sorted.push(pictureList[i].file);
+						}
+					}
+					for (var i = 0; i < pictureCollection.length(); i++){
+						if (pictureList.indexOf(".gif") != -1){
+							sorted.push(pictureList[i].file);
+						}
+					}
+					for (var i = 0; i < pictureCollection.length(); i++){
+						if (pictureList.indexOf(".bmp") != -1){
+							sorted.push(pictureList[i].file);
+						}
+					}
 				break;
 		
 				case "audio":
-					sorted = audioCollection.find().fetch();
+					var audioList = audioCollection.find().fetch();
+					
+					for (var i = 0; i < audioCollection.length(); i++){
+						if (audioList.indexOf(".mp3") != -1){
+							sorted.push(audioList[i].file);
+						}
+					}
+					for (var i = 0; i < audioCollection.length(); i++){
+						if (audioList.indexOf(".wav") != -1){
+							sorted.push(audioList[i].file);
+						}
+					}
+					for (var i = 0; i < audioCollection.length(); i++){
+						if (audioList.indexOf(".wma") != -1){
+							sorted.push(audioList[i].file);
+						}
+					}
+					for (var i = 0; i < audioCollection.length(); i++){
+						if (audioList.indexOf("ogg") != -1){
+							sorted.push(audioList[i].file);
+						}
+					}
 				break;
 		
 				case "video":
-					sorted = videoCollection.find().fetch();
+					var videoList = videoCollection.find().fetch();
+					
+					for (var i = 0; i < videoCollection.length(); i++){
+						if (videoList.indexOf(".mp4") != -1){
+							sorted.push(videoList[i].file);
+						}
+					}
+					for (var i = 0; i < videoCollection.length(); i++){
+						if (videoList.indexOf(".avi") != -1){
+							sorted.push(videoList[i].file);
+						}
+					}
+					for (var i = 0; i < videoCollection.length(); i++){
+						if (videoList.indexOf(".mov") != -1){
+							sorted.push(videoList[i].file);
+						}
+					}
+					for (var i = 0; i < videoCollection.length(); i++){
+						if (videoList.indexOf(".mkv") != -1){
+							sorted.push(videoList[i].file);
+						}
+					}
 				break;
 		
 				case "document":
-					sorted = documentCollection.find().fetch();
+					var documentList = documentCollection.find().fetch();
+					
+					for (var i = 0; i < documentCollection.length(); i++){
+						if (documentList.indexOf(".txt") != -1){
+							sorted.push(documentList[i].file);
+						}
+					}
+					for (var i = 0; i < documentCollection.length(); i++){
+						if (documentList.indexOf(".c") != -1){
+							sorted.push(documentList[i].file);
+						}
+					}
+					for (var i = 0; i < documentCollection.length(); i++){
+						if (documentList.indexOf(".java") != -1){
+							sorted.push(documentList[i].file);
+						}
+					}
+					for (var i = 0; i < documentCollection.length(); i++){
+						if (documentList.indexOf(".xml") != -1){
+							sorted.push(documentList[i].file);
+						}
+					}
 				break;
 			}
 		

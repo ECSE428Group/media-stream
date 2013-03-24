@@ -386,7 +386,21 @@ Meteor.startup(function ()
                 console.log("Finish Playlist Request");
             });
         },
-
+		
+		//sorts files alphabetically
+		sortByName: function(){
+		
+		var pictureSorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
+		return pictureSorted;
+		
+		},
+		
+		//sorts files by file type
+		sortByType: function(){
+		
+		},
+		
+		
         isFileTranscodedToWebM: function(file){
             var output = file.substr(0, file.lastIndexOf('.')) || file;
             var webmfile = path.join(rootPath, "/transcoded/"+output +".webm");

@@ -217,6 +217,7 @@ function process_login_more()
 	$('#tab-audio').show();
 	$('#tab-video').show();
 	$('#tab-picture').show();
+	$('#tab-document').show();
 	$('#tab-profile').show();
 	$('#tab-logout').show();
 	$('#tab-login').hide();
@@ -238,6 +239,7 @@ function process_logout()
 	$('#tab-audio').hide();
 	$('#tab-video').hide();
 	$('#tab-picture').hide();
+	$('#tab-document').hide();
 	$('#tab-profile').hide();
 	$('#tab-logout').hide();
 	$('#tab-login').show();

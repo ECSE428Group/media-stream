@@ -406,15 +406,18 @@ Meteor.startup(function ()
 				break;
 		
 				case "audio":
-					sorted = audioCollection.find({}, {sort: {$natural:1}}).fetch();
+					sorted = audioCollection.find().fetch();
+					sorted.sort();
 				break;
 		
 				case "video":
-					sorted = videoCollection.find({}, {sort: {$natural:1}}).fetch();
+					sorted = videoCollection.find().fetch();
+					sorted.sort();
 				break;
 		
 				case "document":
-					sorted = documentCollection.find({}, {sort: {$natural:1}}).fetch();
+					sorted = documentCollection.find().fetch();
+					sorted.sort();
 				break;
 			}
 		

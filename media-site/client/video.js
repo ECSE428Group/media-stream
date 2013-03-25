@@ -514,11 +514,12 @@ Meteor.saveFile = function(blob, name, path, type, callback) {
       encoding = 'binary';
       break;
   }
-
   fileReader.onload = function(file) {
     Meteor.call('saveFile', file.srcElement.result, name, path, encoding, callback);
   };
+
   fileReader[method](blob);
+
 };
 
 function onLoad() {

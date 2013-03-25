@@ -146,12 +146,12 @@ var language_array =
                       },
 
     "enter_info":        {
-                        "en": "You must enter information in order to endit your profile ",
+                        "en": "You must enter information in order to edit your profile.",
                         "fr": "Ajouter de l'information pour modifier votre profile. "
                       },
 
     "no_old_pass":        {
-                        "en": "The old password you entered was not found in the database ",
+                        "en": "The old password you entered was not found in the database.",
                         "fr": "Le mot de passe que vous avez inscrit n'est pas dans la base de donees."
                       },
 

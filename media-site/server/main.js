@@ -238,7 +238,6 @@ Meteor.startup(function ()
         //TODO - Find more efficient way to do this
         createPlaylist: function(playlistName,playlistType){
           var userId = Meteor.userId();
-          var userId = Meteor.userId();
           var usersPlaylist = playlistCollection.find({"id":userId}).fetch();
 
           if(usersPlaylist.length == 0){

@@ -35,7 +35,7 @@ Meteor.call('getMedia', Meteor.userId(), mediaPath, function (error, result)
 	Session.set("video-contents", result.video);
 	Session.set("audio-contents", result.audio);
 	Session.set("picture-contents", result.picture);
-  Session.set("document-contents",result.documents);
+	Session.set("document-contents",result.documents);
 });
 
 Meteor.call('getPlaylists',function(error,result){

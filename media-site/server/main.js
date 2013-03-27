@@ -70,6 +70,7 @@ Meteor.startup(function ()
             path = chroot + (path ? '/' + path + '/' : '/');
             // TODO Add file existance checks, etc...
             console.log("PATH", path);
+		
             fs.writeFile(path + name, blob, encoding, function(err) {
               if (err) {
                 throw (new Meteor.Error(500, 'Failed to save file.', err));

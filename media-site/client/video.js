@@ -25,6 +25,30 @@ try{
         return Session.get("video-playlists");
     };
 
+    Template.videoMenu.userList = function(){
+        // Important: Async call!
+        // Must store value in a dynamic session var.
+        Meteor.call('getAllUsers', function(error, result)
+        {
+                Session.set("all_users", result);
+        });
+
+        // Get the dynamic session variable here
+        return Session.get("all_users");
+    };
+
+    Template.videoMenu.friendList = function(){
+        // Important: Async call!
+        // Must store value in a dynamic session var.
+        Meteor.call('getAllUsers', function(error, result)
+        {
+                Session.set("all_users", result);
+        });
+
+        // Get the dynamic session variable here
+        return Session.get("all_users");
+    };
+
     Template.videogridOptions.userlist = function(){
             // Important: Async call!
             // Must store value in a dynamic session var.

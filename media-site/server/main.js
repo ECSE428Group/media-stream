@@ -14,6 +14,9 @@ var media_server = { "audio" : [] , "video" : [], "picture" : []};
 var fileEncoding = "";
 var x = 0;
 
+// For deployment, this must be called "static/"
+var public_folder = "public/";
+
 // Startup Function
 Meteor.startup(function ()
 {
@@ -31,7 +34,7 @@ Meteor.startup(function ()
         // Read File contents
         readFile: function(file)
         {
-            mediaPath = "public/";
+            mediaPath = public_folder;
             var require = __meteor_bootstrap__.require;
             var path = require('path');
             var fs = require('fs');
@@ -43,7 +46,7 @@ Meteor.startup(function ()
         },
         //Update the file that was edited
         writeFile: function (file , data){
-            mediaPath = "public/";
+            mediaPath = public_folder;
             var require = __meteor_bootstrap__.require;
             var path = require('path');
             var fs = require('fs');
@@ -63,7 +66,7 @@ Meteor.startup(function ()
         saveFile: function(blob, name, path, encoding) {
             var path = cleanPath(path), fs = __meteor_bootstrap__.require('fs'),
               name = cleanName(name || 'file'), encoding = encoding || 'binary',
-              chroot = Meteor.chroot || 'public';
+              chroot = Meteor.chroot || public_folder;
             // Clean up the path. Remove any initial and final '/' -we prefix them-,
             // any sort of attempt to go to the parent directory '..' and any empty directories in
             // between '/////' - which may happen after removing '..'
@@ -562,7 +565,7 @@ Meteor.startup(function ()
 function load_media( audioCollection , videoCollection , pictureCollection , documentCollection)
 {
     if (typeof mediaPath === 'undefined')
-        mediaPath = "public/";
+        mediaPath = public_folder;
 
     var require = __meteor_bootstrap__.require;
     var path = require('path');

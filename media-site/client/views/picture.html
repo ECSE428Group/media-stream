@@ -47,12 +47,32 @@
               <li>
                 <a href="#">Share</a>
               </li>
+	      <li class="dropdown">
+		<a class"dropdown-toggle" data-toggle="dropdown" href="#"> <i class="icon-user"></i>+ <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+		  {{#each userList}}
+		    <li>
+		      <a href="#" class="friendUser">Friend {{this}}</a>
+		    </li>
+		  {{/each}}
+		</ul>
+	      </li>
+	      <li class="dropdown">
+		<a class"dropdown-toggle" data-toggle="dropdown" href="#"> <i class="icon-user"></i>- <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+		  {{#each friendList}}
+		    <li>
+		      <a href="#" class="unfriendUser">Unfriend {{this}}</a>
+		    </li>
+		  {{/each}}
+		</ul>
+	      </li>
             </ul>
              
             <div class="navbar-form pull-right">
               <input type="text" class="span3" placeholder="Type playlist name...">
               <button type="button" class="createPlaylistButton btn">Create</button>
-              <input type="text" class="span3" placeholder="Type search keyword...">
+              <input type="text" class="span2" placeholder="Type search keyword...">
               <button type="button" class="search btn">Search</button>
             </div>
           </div>

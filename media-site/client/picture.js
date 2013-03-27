@@ -138,6 +138,20 @@ Template.picturepage.events({
         Meteor.call('disallowUser', name, file);
   },
 
+  'click #buttonMenuPic .friendUser': function(event){
+        var s = "Friend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeFriend', name);
+  },
+
+  'click #buttonMenuPic .unfriendUser': function(event){
+        var s = "Unfriend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeUnfriend', name);
+  },
+
   'touchstart #picturegrid .allowUser': function(event){
         var s = "Allow ";
         var name = event.target.innerHTML.substr(s.length);
@@ -154,6 +168,20 @@ Template.picturepage.events({
         Meteor.call('disallowUser', name, file);
   },
   
+  'touchstart #buttonMenuPic .friendUser': function(event){
+        var s = "Friend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeFriend', name);
+  },
+
+  'touchstart #buttonMenuPic .unfriendUser': function(event){
+        var s = "Unfriend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeUnfriend', name);
+  },
+
   'click #buttonMenuPic .viewPlaylist':function(event,template){
     viewPlaylist(event,template,"picture");   
   },

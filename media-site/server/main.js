@@ -125,6 +125,11 @@ Meteor.startup(function ()
 	// Lets a user see a particular media file
 	allowUser : function(username, file)
 	{
+		// CHECK! IS THIS THE ADMIN ACCOUNT?
+            	var admin_user = Meteor.users.findOne({"username": "Admin"});
+		if (admin_user._id != Meteor.userId())
+			return false;
+
 		// Add to file names
             	var user = Meteor.users.findOne({"username": username});
 
@@ -138,6 +143,11 @@ Meteor.startup(function ()
 	// Disallows a user from being able to see a particular media file
 	disallowUser : function(username, file)
 	{
+		// CHECK! IS THIS THE ADMIN ACCOUNT?
+            	var admin_user = Meteor.users.findOne({"username": "Admin"});
+		if (admin_user._id != Meteor.userId())
+			return false;
+
 		// Remove to file names
 		var i;
 		var file_list;
@@ -156,6 +166,41 @@ Meteor.startup(function ()
 		}
 
 		Meteor.users.update({"username": username}, {$set: {"profile.files": new_list} });
+	},
+
+	// Lets a user see our Media Files
+	makeFriend : function(username)
+	{
+		// Add our ID to the Friend's List of friends
+            	var user = Meteor.users.findOne({"username": username});
+
+        	// Can't find them
+           	if (typeof user === 'undefined')
+               		return false;
+
+		Meteor.users.update({"username": username}, {$addToSet: {"profile.friends": Meteor.userId()} });
+	},
+
+	// Disallows a user from being able to see our media files
+	makeUnfriend : function(username)
+	{
+		var i;
+		var friend_list;
+		var new_list = [];
+            	var user = Meteor.users.findOne({"username": username});
+
+        	// Can't find them
+           	if (typeof user === 'undefined' || typeof user.profile === 'undefined' || typeof user.profile.friends === 'undefined')
+               		return false;
+
+		friend_list = user.profile.friends;
+		for (i = 0; i < friend_list.length; i++)
+		{
+			if (friend_list[i] != Meteor.userId())
+				new_list.push(friend_list[i]);
+		}
+
+		Meteor.users.update({"username": username}, {$set: {"profile.friends": new_list} });
 	},
 
         // Load the media files into the session based on what the user can see

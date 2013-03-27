@@ -138,6 +138,34 @@ Template.videopage.events(
 
         Meteor.call('disallowUser', name, file);
   },
+
+  'click #buttonMenuVid .friendUser': function(event){
+        var s = "Friend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeFriend', name);
+  },
+
+  'click #buttonMenuVid .unfriendUser': function(event){
+        var s = "Unfriend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeUnfriend', name);
+  },
+
+  'touchstart #buttonMenuVid .friendUser': function(event){
+        var s = "Friend ";
+        var name = event.target.innerHTML.substr(s.length);
+    
+        Meteor.call('makeFriend', name);
+  },
+  
+  'touchstart #buttonMenuVid .unfriendUser': function(event){
+        var s = "Unfriend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeUnfriend', name);
+  },
   
   'click #videogrid .removeFromPlaylist':function(event,template){
     removeFromPlaylist(event,template,"video");

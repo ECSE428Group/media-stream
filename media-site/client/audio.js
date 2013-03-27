@@ -158,6 +158,20 @@ Template.audiopage.events({
         Meteor.call('disallowUser', name, file);
   },
 
+  'click #buttonMenuAudio .friendUser': function(event){
+        var s = "Friend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeFriend', name);
+  },
+
+  'click #buttonMenuAudio .unfriendUser': function(event){
+        var s = "Unfriend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeUnfriend', name);
+  },
+
   'touchstart #audiogrid .allowUser': function(event){
         var s = "Allow ";
         var name = event.target.innerHTML.substr(s.length);
@@ -172,6 +186,20 @@ Template.audiopage.events({
         var file = $(event.target).closest('.thumbnail').find('.imgContainer').find('a').first().attr('href');
 
         Meteor.call('disallowUser', name, file);
+  },
+
+  'touchstart #buttonMenuAudio .friendUser': function(event){
+        var s = "Friend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeFriend', name);
+  },
+
+  'touchstart #buttonMenuAudio .unfriendUser': function(event){
+        var s = "Unfriend ";
+        var name = event.target.innerHTML.substr(s.length);
+
+        Meteor.call('makeUnfriend', name);
   },
   
   'click #audiogrid .removeFromPlaylist':function(event,template){

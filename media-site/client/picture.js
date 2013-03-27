@@ -152,6 +152,18 @@ Template.picturepage.events({
 	
   'click #buttonMenuPic .sortByTypeButton':function(event, template){
     sortByType(event,template,"picture");
+  },
+  
+  'click #buttonMenuPic .sortByFileName':function(event, template){
+    Meteor.call('sortByName',"picture",function(error,result){
+        Session.set("picture-contents",result);
+    });
+  },
+  
+  'touchstart #buttonMenuPic .sortByFileName':function(event, template){
+    Meteor.call('sortByName',"picture",function(error,result){
+        Session.set("picture-contents",result);
+    });
   }
 });
 

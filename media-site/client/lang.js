@@ -63,7 +63,7 @@ var language_array =
   "headings":
   {
     // Headings
-    "home":       { "en": "Media Site", "fr": "Media Site" },
+    "home":       { "en": "Media Site - BUILD 164", "fr": "Media Site" },
     "video":      { "en": "My Videos",  "fr": "Mes Videos" },
     "audio":      { "en": "My Audio",   "fr": "Ma Musique" },
     "picture":    { "en": "My Images",  "fr": "Mes Photos" },

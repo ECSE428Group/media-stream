@@ -175,6 +175,18 @@ Template.videopage.events(
         alert("Finished Transcoding all your files!");
       });
     }
+  },
+  
+  'click #buttonMenuVid .sortByFileName':function(event, template){
+    Meteor.call('sortByName',"video",function(error,result){
+        Session.set("video-contents",result);
+    });
+  },
+  
+  'touchstart #buttonMenuVid .sortByFileName':function(event, template){
+    Meteor.call('sortByName',"video",function(error,result){
+        Session.set("video-contents",result);
+    });
   }
 });
 

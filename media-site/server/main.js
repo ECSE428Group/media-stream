@@ -393,37 +393,41 @@ Meteor.startup(function ()
 		
 		//sorts files alphabetically
 		//TODO: 
-		sortByName: function(){
+		sortByName: function(type){
 		
+            var items = [];
 			var sorted = [];
 		
 		//check whether it's picture, audio, video, or doc
 			switch(type){
 		
 				case "picture":
-					sorted = pictureCollection.find().fetch();
-					sorted.sort();
+					items = pictureCollection.find().fetch();
 					//sorted = pictureList;
 				
 					//sorted = pictureCollection.find({}, {sort: {$natural:1}}).fetch();
 				break;
 		
 				case "audio":
-					sorted = audioCollection.find().fetch();
-					sorted.sort();
+					items = audioCollection.find().fetch();
 				break;
 		
 				case "video":
-					sorted = videoCollection.find().fetch();
-					sorted.sort();
+					items = videoCollection.find().fetch();
 				break;
 		
 				case "document":
-					sorted = documentCollection.find().fetch();
-					sorted.sort();
+					items = documentCollection.find().fetch();
 				break;
 			}
-		
+            if(items){
+                for( var i = 0; i < items.length; i++ ){   
+                    sorted.push(items[i].file);
+                }
+                sorted.sort(function (a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+            }
 			return sorted;
 		},		
 		

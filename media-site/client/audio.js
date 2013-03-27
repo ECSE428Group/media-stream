@@ -203,5 +203,17 @@ Template.audiopage.events({
   
   'touchstart #buttonMenuAudio .search.btn':function(event,template){
     search(event,template,"audio");
+  },
+  
+  'click #buttonMenuAudio .sortByFileName':function(event, template){
+    Meteor.call('sortByName',"audio",function(error,result){
+        Session.set("audio-contents",result);
+    });
+  },
+  
+  'touchstart #buttonMenuAudio .sortByFileName':function(event, template){
+    Meteor.call('sortByName',"audio",function(error,result){
+        Session.set("audio-contents",result);
+    });
   }
 });

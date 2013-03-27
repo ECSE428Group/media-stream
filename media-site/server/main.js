@@ -208,9 +208,12 @@ Meteor.startup(function ()
         {
             // Declarations
 	    var filesLen;
+	    var duplicate_file = false;
+	    var file_list = [];
 	    var override = false;
             var media = { "audio" : [] , "video" : [], "picture" : [], "documents" : []};
 	    var user = Meteor.users.findOne({_id: userid});
+	    var user_friend;
 
 	    // Does the user exist
 	    if(typeof user === 'undefined')
@@ -233,49 +236,113 @@ Meteor.startup(function ()
 	    else
 		filesLen = user.profile.files.length;
 
-	    // Special case if we are the owner:
-	    // we need to make sure we loop exactly once through
-	    // all media files.
-	    if (override)
-		filesLen = 1;
+            // Make a copy of the user's file list
+	    for( var i = 0; i < filesLen; i++ )
+		file_list.push(user.profile.files[i]);
+
+	    // Get Friends if they exist
+	    if (typeof user.profile != 'undefined' && typeof user.profile.friends != 'undefined')
+	    {
+	    	for( var i = 0; i < user.profile.friends.length; i++)
+	    	{
+	    	   user_friend = Meteor.users.findOne({_id: user.profile.friends[i]});
+
+		   if(typeof user_friend != 'undefined' && typeof user_friend.profile != 'undefined' && typeof user_friend.profile.files != 'undefined')
+		   {
+			// Add their media files to the main list
+			// only if they aren't already there
+			for (var j = 0; j < user_friend.profile.files.length; j++)
+			{
+			   duplicate_file = false;
+
+			   for (var k = 0; k < file_list; k++)
+			   {
+			      if (user_friend.profile.files[j] == file_list[k])
+				duplicate_file = true;
+			   }
+
+			   if(!duplicate_file)
+				file_list.push(user_friend.profile.files[j]);
+			}
+
+		   }
+		   
+	    	}
+
+	    }
 
             var audioList = audioCollection.find().fetch();
-            for( var i = 0; i < audioList.length; i++ ){
-		for( var j = 0; j < filesLen; j++ )
+            for( var i = 0; i < audioList.length; i++ )
+	    {
+		if (override)
+                	media.audio.push(audioList[i].file);
+
+		else
 		{
+		   for( var j = 0; j < file_list.length; j++ )
+	   	   {
 			// Do we have access to the media
-			if (override || audioList[i].file == user.profile.files[j])
+			if (audioList[i].file == file_list[j])
                 		media.audio.push(audioList[i].file);
+		   }
+
 		}
             }
 
             var videoList = videoCollection.find().fetch();
-            for( var i = 0; i < videoList.length; i++ ){
-		for( var j = 0; j < filesLen; j++ )
+            for( var i = 0; i < videoList.length; i++ )
+	    {
+		if (override)
+			media.video.push(videoList[i].file);
+
+		else
 		{
+		  for( var j = 0; j < file_list.length; j++ )
+	  	  {
 			// Do we have access to the media
-			if (override || videoList[i].file == user.profile.files[j])
+			if (videoList[i].file == file_list[j])
 				media.video.push(videoList[i].file);
+		  }
+
 		}
             }
 
             var pictureList = pictureCollection.find().fetch();
-            for( var i = 0; i < pictureList.length; i++ ){
-		for( var j = 0; j < filesLen; j++ )
+            for( var i = 0; i < pictureList.length; i++ )
+	    {
+		if (override)
+                	media.picture.push(pictureList[i].file);
+
+		else
 		{
+		   for( var j = 0; j < file_list.length; j++ )
+		   {
 			// Do we have access to the media
-			if (override || pictureList[i].file == user.profile.files[j])
+			if (pictureList[i].file == file_list[j])
                 		media.picture.push(pictureList[i].file);
+		   }
+
 		}
             }
 
             var documentList = documentCollection.find().fetch();
-            for( var i = 0; i < documentList.length; i++ ){
-		for( var j = 0; j < filesLen; j++ )
+            for( var i = 0; i < documentList.length; i++ )
+	    {
+		// Temporary: REMOVE ME
+		override = true;
+
+		if (override)
+                	media.documents.push(documentList[i].file);
+
+		else
 		{
+		   for( var j = 0; j < file_list.length; j++ )
+		   {
 			// Do we have access to the media
-			//if (override || documentList[i].file == user.profile.files[j])
+			if (documentList[i].file == file_list[j])
                 		media.documents.push(documentList[i].file);
+		   }
+
 		}
             }
 

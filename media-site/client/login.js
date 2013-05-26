@@ -83,9 +83,6 @@ function prepare_login()
 	}
 	// Log-in
 	//TEST
-	if(!thisIsTesting){
-  	process_login(user_id, pass);
-  }
 	// Clear the user and pass fields
 	$('#login-user').val("");
 	$('#login-pass').val("");
@@ -144,9 +141,6 @@ function prepare_register()
 
 	// Finally, try to add the user
 	//TEST
-	if(!thisIsTesting){
-	  process_login(user_id, pass, true, email);
-  }
 
 	// Clear the user and pass fields
 	$('#reg-user').val("");

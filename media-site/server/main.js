@@ -683,9 +683,8 @@ function load_media( audioCollection , videoCollection , pictureCollection , doc
     if (typeof mediaPath === 'undefined')
         mediaPath = public_folder;
 
-    var require = __meteor_bootstrap__.require;
-    var path = require('path');
-    var fs = require('fs');
+    var path = Npm.require('path');
+    var fs = Npm.require('fs');
     var basepath = (path.resolve('.'));
 
     var contents = fs.readdirSync(path.resolve(basepath + "/" + mediaPath));
